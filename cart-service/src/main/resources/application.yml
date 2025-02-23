@@ -1,0 +1,38 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: cart-service
+  profiles:
+    active: default
+  config:
+    import: "optional:configserver:http://localhost:8071"
+    
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      default-zone: http://localhost:8761/eureka
+ 
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "cart-service"
+    description: "AtoZ cart application"
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+  info:
+    env:
+      enabled: true
