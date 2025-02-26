@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: atozmart-gatewayserver
+  config:
+    import: "optional:configserver:http://localhost:8071"
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false # disable default routes
+          lower-case-service-id: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: "http://localhost:8073/realms/master/protocol/openid-connect/certs"
+          
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+    shutdown:
+      enabled: true
+    info:
+      env:
+        enabled: true
+      
+endpoints:
+  gateway:
+    enabled: true
+  shutdown:
+    enabled: true
+      
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "atozmart-gatewayserver"
+    description: "AtoZ mart gateway server"
+    version: 1.0.0
+    
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+    
+
