@@ -1,12 +1,1 @@
-server:
-  port: 8761
 
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    fetch-registry: false #to avoid fetching ip addrs of all other ms
-    register-with-eureka: false
-    service-url: 
-      default-zone: http://${eureka.instance.hostname}:${server.port}/eureka/
-    
