@@ -1,3 +1,6 @@
+server:
+  port: 8072
+
 spring:
   application:
     name: atozmart-gatewayserver
@@ -14,7 +17,16 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: "http://localhost:8073/realms/master/protocol/openid-connect/certs"
-          
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+        
 management:
   endpoints:
     web:
@@ -25,10 +37,18 @@ management:
       enabled: true
     shutdown:
       enabled: true
-    info:
-      env:
+    health:
+      probes:
         enabled: true
-      
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+             
 endpoints:
   gateway:
     enabled: true
@@ -45,5 +65,5 @@ info:
 logging:
   level:
     com.netflix.discovery.DiscoveryClient: OFF
-    
-
+  pattern:
+    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"

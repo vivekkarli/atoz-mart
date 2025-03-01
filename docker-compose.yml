@@ -1,0 +1,210 @@
+services:
+  cart:
+    image: "atozmart/cart:v1"
+    container_name: "cart-service"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      cartdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_APPLICATION_NAME: cart-service
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: "jdbc:mysql://cartdb:3306/cartdb"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      OTEL_SERVICE_NAME: cart-service
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: none
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+
+  catalog:
+    image: "atozmart/catalog:v1"
+    container_name: "catalog-service"
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      catalogdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: "jdbc:mysql://catalogdb:3306/catalogdb"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
+      SPRING_APPLICATION_NAME: catalog-service
+      OTEL_SERVICE_NAME: catalog-service
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: none
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+
+      
+  configserver:
+    image: "atozmart/configserver:v1"
+    container_name: "atozmart-configserver"
+    ports:
+      - 8071:8071
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+      
+  eurekaserver:
+    image: "atozmart/eurekaserver:v1"
+    container_name: "atozmart-eurekaserver"
+    ports:
+      - 8761:8761
+    healthcheck:
+      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      configserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      
+  gatewayserver:
+    image: "atozmart/gatewayserver:v1"
+    container_name: "atozmart-gatewayserver"
+    ports:
+      - 8072:8072
+    healthcheck:
+      test: "curl --fail --silent localhost:8072/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+      cart:
+        condition: service_healthy
+      catalog:
+        condition: service_healthy
+      #authserver:
+        #condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://authserver:8080/realms/master/protocol/openid-connect/certs"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
+      SPRING_APPLICATION_NAME: atozmart-gatewayserver
+      OTEL_SERVICE_NAME: atozmart-gatewayserver
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: none
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+
+  authserver:
+    image: "quay.io/keycloak/keycloak:latest"
+    container_name: "atozmart-authserver"
+    ports:
+      - 8073:8080
+    #healthcheck:
+      #test: "curl --fail --silent http://localhost:8080/realms/master || exit 1"
+      #interval: 10s
+      #timeout: 5s
+      #retries: 10
+      #start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "atozmart-admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "admin"
+    command: "start-dev"
+
+  cartdb:
+    image: mysql:latest
+    container_name: cartdb
+    ports:
+      - 3307:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cartdb
+    networks:
+      - atozmart
+
+  catalogdb:
+    image: mysql:latest
+    container_name: catalogdb
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: catalogdb
+    networks:
+      - atozmart
+
+      
+networks:
+  atozmart:
+    driver: bridge

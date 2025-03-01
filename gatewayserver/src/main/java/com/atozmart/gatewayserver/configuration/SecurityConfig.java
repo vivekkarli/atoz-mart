@@ -26,7 +26,8 @@ public class SecurityConfig {
 				.pathMatchers(HttpMethod.GET).permitAll()
 				.pathMatchers("/actuator/**").permitAll()
 				.pathMatchers(HttpMethod.DELETE, "/atozmart/catalog/**").hasRole("ADMIN")
-				.pathMatchers(HttpMethod.DELETE, "/atozmart/card/**").hasRole("ADMIN"))
+				.pathMatchers(HttpMethod.DELETE, "/atozmart/cart/**").hasRole("ADMIN")
+				.anyExchange().permitAll())
 		.oauth2ResourceServer(oauth2spec -> oauth2spec
 				.jwt(jwtSpec -> jwtSpec
 						.jwtAuthenticationConverter(grantedAuthoritiesExtractor())));

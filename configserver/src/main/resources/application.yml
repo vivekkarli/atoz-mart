@@ -17,4 +17,26 @@ spring:
 server:
   port: 8071
   
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+    
+      
+endpoints:
+  shutdown:
+    enabled: true
+      
 
