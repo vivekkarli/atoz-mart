@@ -18,6 +18,9 @@ public class GatewayConfig {
 				.route(p -> p.path("/atozmart/cart/**")
 						.filters(f -> f.rewritePath("atozmart/cart/(?<segment>.*)", "/${segment}"))
 						.uri("lb://CART-SERVICE"))
+				.route(p -> p.path("/atozmart/wishlist/**")
+						.filters(f -> f.rewritePath("atozmart/wishlist/(?<segment>.*)", "/${segment}"))
+						.uri("lb://WISHLIST-SERVICE"))
 				.build();
 
 	}

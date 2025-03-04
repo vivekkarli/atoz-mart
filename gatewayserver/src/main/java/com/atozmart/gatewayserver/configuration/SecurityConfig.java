@@ -6,11 +6,13 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity.CsrfSpec;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 
 import reactor.core.publisher.Mono;
@@ -23,10 +25,10 @@ public class SecurityConfig {
 	public SecurityWebFilterChain secuFilterChain(ServerHttpSecurity http) {
 		
 		http.authorizeExchange(exchanges -> exchanges
-				.pathMatchers(HttpMethod.GET).permitAll()
 				.pathMatchers("/actuator/**").permitAll()
 				.pathMatchers(HttpMethod.DELETE, "/atozmart/catalog/**").hasRole("ADMIN")
 				.pathMatchers(HttpMethod.DELETE, "/atozmart/cart/**").hasRole("ADMIN")
+				.pathMatchers("/atozmart/wishlist/**").hasAnyRole("USER","ADMIN")
 				.anyExchange().permitAll())
 		.oauth2ResourceServer(oauth2spec -> oauth2spec
 				.jwt(jwtSpec -> jwtSpec
@@ -37,7 +39,7 @@ public class SecurityConfig {
 		return http.build();
 	}
 	
-	Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor(){
+	private Converter<Jwt, Mono<AbstractAuthenticationToken>> grantedAuthoritiesExtractor(){
 		
 		JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
 		
