@@ -38,6 +38,7 @@ public class WishlistController {
 	@GetMapping("/items")
 	public ResponseEntity<List<WishlistDto>> viewItems(@RequestHeader("X-Username") String username)
 			throws WishlistException {
+		log.info("X-Username: {}",username);
 		log.info("showing items from wishlist");
 		List<WishlistDto> wishlistDtos = wishlistService.viewItems(username);
 		return ResponseEntity.ok(wishlistDtos);
