@@ -1,0 +1,60 @@
+server:
+  port: 8074
+
+spring:
+  application:
+    name: atozmart-authserver
+  config:
+    import: "optional:configserver:http://localhost:8071"
+  
+  
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+             
+endpoints:
+  shutdown:
+    enabled: true
+      
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "atozmart-authserver"
+    description: "AtoZ mart auth server"
+    version: 1.0.0
+    
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+  pattern:
+    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
+    
+jwt:
+  secret-key: "jgjshdfjysusyejgytsfdedfuewyyfhgzcgzfdgdwteccar6"
+  expiration-time: 3600000
+    
