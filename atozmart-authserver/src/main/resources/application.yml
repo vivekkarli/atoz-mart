@@ -4,8 +4,20 @@ server:
 spring:
   application:
     name: atozmart-authserver
+  profiles:
+    active: default
   config:
     import: "optional:configserver:http://localhost:8071"
+  datasource:
+    url: jdbc:mysql://localhost:3306/atozmart_authserver_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: update
   
   
 eureka:
@@ -51,6 +63,7 @@ info:
 logging:
   level:
     com.netflix.discovery.DiscoveryClient: OFF
+    com.atozmart.authserver: DEBUG
   pattern:
     level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
     
