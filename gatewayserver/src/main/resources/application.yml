@@ -84,4 +84,9 @@ logging:
     com.atozmart.gatewayserver: DEBUG
   pattern:
     level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
-    
+
+
+atozmart:
+  auth:
+    authorize-endpoint: http://localhost:8074/authorize
+    issuer: atozmart-authserver
