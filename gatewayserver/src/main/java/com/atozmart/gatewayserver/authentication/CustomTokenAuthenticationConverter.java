@@ -1,4 +1,4 @@
-package com.atozmart.gatewayserver.service;
+package com.atozmart.gatewayserver.authentication;
 
 import java.util.Collections;
 import java.util.List;
@@ -87,7 +87,7 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 					if (response.valid()) {
 						log.info("AtozmartAuthorizeResponse: {}", response);
 						List<GrantedAuthority> authorities = extractedAuthoritiesFrom(response.roles());
-						return Mono.just(new CustomAtozmartAuthentication(token, authorities))
+						return Mono.just(new AtozmartAuthenticationToken(response, null, authorities))
 								.cast(Authentication.class);
 					} else {
 						return Mono.error(new OAuth2AuthenticationException("Invalid atozmart token"));

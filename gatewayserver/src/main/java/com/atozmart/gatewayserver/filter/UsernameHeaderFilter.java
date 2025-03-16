@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.atozmart.gatewayserver.entity.AppUser;
+import com.atozmart.gatewayserver.authentication.AtozmartAuthenticationToken;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -49,16 +49,17 @@ public class UsernameHeaderFilter implements GlobalFilter {
 		log.info("authentication: {}", authentication);
 		String username = "anonymousUser";
 
-		if (authentication instanceof UsernamePasswordAuthenticationToken upat) {
-			AppUser appUser = (AppUser) upat.getPrincipal();
-			username = appUser.getUsername();
+		if (authentication instanceof AtozmartAuthenticationToken atozmartToken) {
+			username = atozmartToken.getAuthorizeResponse().username();
 			log.info("extracted username: {}", username);
 		} else if (authentication instanceof JwtAuthenticationToken jwtAuthToken) {
 			Jwt token = jwtAuthToken.getToken();
 			username = token.getClaimAsString("preferred_username");
 			log.info("extracted username: {}", username);
+		} else if (authentication instanceof UsernamePasswordAuthenticationToken upat) {
+			username = (String) upat.getPrincipal();
+			log.info("extracted username: {}", username);
 		}
-
 		return username;
 
 	}
