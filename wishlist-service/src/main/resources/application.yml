@@ -18,9 +18,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: none
-  sql:
-    init:
-      mode: always
 
 eureka:
   instance:

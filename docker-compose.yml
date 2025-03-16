@@ -67,7 +67,40 @@ services:
       OTEL_TRACES_EXPORTER: none
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
 
-      
+  wishlist:
+    image: "atozmart/wishlist:v1"
+    container_name: "wishlist-service"
+    healthcheck:
+      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      wishlistdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: "jdbc:mysql://wishlistdb:3306/wishlistdb"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
+      SPRING_APPLICATION_NAME: wishlist-service
+      OTEL_SERVICE_NAME: wishlist-service
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: none
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+   
   configserver:
     image: "atozmart/configserver:v1"
     container_name: "atozmart-configserver"
@@ -129,6 +162,8 @@ services:
         condition: service_healthy
       catalog:
         condition: service_healthy
+      atozmart-authserver:
+        condition: service_healthy
       #authserver:
         #condition: service_healthy
     deploy:
@@ -147,10 +182,11 @@ services:
       OTEL_METRICS_EXPORTER: none
       OTEL_TRACES_EXPORTER: none
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+      ATOZMART_AUTH_AUTHORIZE-ENDPOINT: "http://atozmart-authserver:8074/authorize"
 
-  authserver:
+  keycloak-authserver:
     image: "quay.io/keycloak/keycloak:latest"
-    container_name: "atozmart-authserver"
+    container_name: "keycloak-authserver"
     ports:
       - 8073:8080
     #healthcheck:
@@ -166,9 +202,43 @@ services:
     networks:
       - atozmart
     environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: "atozmart-admin"
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
       KC_BOOTSTRAP_ADMIN_PASSWORD: "admin"
     command: "start-dev"
+
+  atozmart-authserver:
+    image: "atozmart/authserver:v1"
+    container_name: "atozmart-authserver"
+    healthcheck:
+      test: "curl --fail --silent localhost:8074/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      atozmart-authserver-db:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_APPLICATION_NAME: atozmart-authserver
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: "jdbc:mysql://atozmart-authserver-db:3306/atozmart_authserver_db"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      OTEL_SERVICE_NAME: atozmart-authserver
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: none
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
 
   cartdb:
     image: mysql:latest
@@ -204,6 +274,39 @@ services:
     networks:
       - atozmart
 
+  wishlistdb:
+    image: mysql:latest
+    container_name: wishlistdb
+    ports:
+      - 3308:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wishlistdb
+    networks:
+      - atozmart
+  
+  atozmart-authserver-db:
+    image: mysql:latest
+    container_name: atozmart-authserver-db
+    ports:
+      - 3309:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: atozmart_authserver_db
+    networks:
+      - atozmart
       
 networks:
   atozmart:
