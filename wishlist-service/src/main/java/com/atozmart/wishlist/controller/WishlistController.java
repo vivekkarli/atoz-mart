@@ -46,7 +46,9 @@ public class WishlistController {
 	}
 
 	@PostMapping("/cart")
-	public ResponseEntity<String> addToCart(@RequestBody ItemDto itemDto) {
+	public ResponseEntity<String> addToCart(@RequestHeader("X-Username") String username, @RequestBody ItemDto itemDto) {
+		log.info("X-Username: {}",username);
+		log.info("adding items to cart");
 		String msg = wishlistService.addToCart(itemDto);
 
 		return new ResponseEntity<>(msg, HttpStatus.CREATED);

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.atozmart.wishlist.dto.ItemDto;
 
-@FeignClient(url = "localhost:8081", name = "CartFeignClient")
+@FeignClient(name = "cart-service")
 public interface CartFeignClient {
 
 	@PostMapping("/items")
