@@ -3,6 +3,7 @@ package com.atozmart.authserver.controller;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,7 +39,7 @@ public class AuthServerController {
 	@PostMapping("/signup")
 	public ResponseEntity<LoginResponse> signUp(@RequestBody SignUpForm signUpForm) {
 		authServerService.signUp(signUpForm);
-		return new ResponseEntity<>(new LoginResponse("sign up successfully"), HttpStatus.OK);
+		return new ResponseEntity<>(new LoginResponse("sign up successfully"), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/authorize")

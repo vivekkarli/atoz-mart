@@ -48,6 +48,7 @@ public class AuthServerService {
 	}
 	
 	public void signUp(SignUpForm signUpForm) {
+		
 		AppUser appUser = new AppUser();
 		appUser.setUsername(signUpForm.username());
 		appUser.setPassword(passwordEncoder.encode(signUpForm.password()));
@@ -79,6 +80,8 @@ public class AuthServerService {
 		AuthorizeResponse response = new AuthorizeResponse();
 		response.setValid(true);
 		response.setRoles(roles);
+		response.setUsername(username);
+		response.setExpiresAt(jwtService.extractExpiration(token));
 		log.debug("AuthorizeResponse: {}", response);
 		return response;
 
