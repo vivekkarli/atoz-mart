@@ -68,6 +68,6 @@ logging:
     level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
     
 jwt:
-  secret-key: "jgjshdfjysusyejgytsfdedfuewyyfhgzcgzfdgdwteccar6"
+  secret-key: "dcb5c3ceffb04b1c390eeeba1896f56cc13c3cb5215fc49c4dea65979dbbf609"
   expiration-time: 3600000
     
