@@ -12,6 +12,9 @@ public class GatewayConfig {
 	public RouteLocator routeLocator(RouteLocatorBuilder builder) {
 
 		return builder.routes()
+				.route(p -> p.path("/atozmart/authserver/**")
+						.filters(f -> f.rewritePath("atozmart/authserver/(?<segment>.*)", "/${segment}"))
+						.uri("lb://ATOZMART-AUTHSERVER"))
 				.route(p -> p.path("/atozmart/catalog/**")
 						.filters(f -> f.rewritePath("atozmart/catalog/(?<segment>.*)", "/${segment}"))
 						.uri("lb://CATALOG-SERVICE"))

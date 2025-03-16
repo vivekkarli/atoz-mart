@@ -14,7 +14,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
-import com.atozmart.gatewayserver.service.CustomTokenAuthenticationConverter;
+import com.atozmart.gatewayserver.authentication.CustomTokenAuthenticationConverter;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -38,6 +38,9 @@ public class SecurityConfig {
 				// gateway endpoints
 				.pathMatchers("/test").permitAll()
 				// .pathMatchers("/actuator/**").permitAll()
+				
+				// atozmart-authserver endpoints
+				.pathMatchers("/atozmart/authserver/**").permitAll()
 
 				// catalog-service endpoints
 				.pathMatchers(HttpMethod.DELETE, "/atozmart/catalog/**").hasRole("ADMIN")
