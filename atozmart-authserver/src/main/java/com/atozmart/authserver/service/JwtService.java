@@ -37,7 +37,8 @@ public class JwtService {
 		return Jwts.builder()
 				.subject(appUser.getUsername())
 				.claims(customClaims)
-				.issuedAt(new Date(System.currentTimeMillis())).issuer("atozmart-authserver")
+				.issuedAt(new Date(System.currentTimeMillis()))
+				.issuer("atozmart-authserver")
 				.expiration(new Date(System.currentTimeMillis() + expirationTime))
 				.signWith(getSignInKey()).compact();
 
@@ -51,10 +52,10 @@ public class JwtService {
 		final String username = extractUsername(token);
 		return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
 	}
-	
+
 	public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
+		return extractClaim(token, Claims::getSubject);
+	}
 
 	public boolean isTokenExpired(String token) {
 		return extractExpiration(token).before(new Date());

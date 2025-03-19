@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,12 +34,16 @@ public class AuthServerService {
 	private JwtService jwtService;
 
 	private PasswordEncoder passwordEncoder;
-	
-	public String login(LoginForm loginForm) {
-		AppUser appUser = (AppUser) appUserDao.loadUserByUsername(loginForm.username());
 
-		if (appUser == null || !passwordEncoder.matches(loginForm.password(), appUser.getPassword()))
-			throw new BadCredentialsException("invalid credentials");
+	private final AuthenticationManager authenticationManager;
+
+	public String login(LoginForm loginForm) throws BadCredentialsException {
+
+		Authentication authenticateduser = authenticationManager
+				.authenticate(new UsernamePasswordAuthenticationToken(loginForm.username(), loginForm.password()));
+		
+		log.info("{}",authenticateduser);
+		AppUser appUser = (AppUser) authenticateduser.getPrincipal();
 
 		List<String> roles = appUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		Map<String, Object> customClaims = new HashMap<>();
@@ -44,20 +51,19 @@ public class AuthServerService {
 		customClaims.put("roles", roles);
 
 		return jwtService.generateToken(appUser, customClaims);
-
 	}
-	
+
 	public void signUp(SignUpForm signUpForm) {
-		
+
 		AppUser appUser = new AppUser();
 		appUser.setUsername(signUpForm.username());
 		appUser.setPassword(passwordEncoder.encode(signUpForm.password()));
 		appUser.setMail(signUpForm.mail());
 		appUser.setMobileNo(signUpForm.mobileNo());
-		appUser.setRoles("USER");
-		
-		log.debug("appUser: {}", appUser);
-		
+		appUser.setRoles("ROLE_USER");
+
+		log.debug("new appUser: {}", appUser);
+
 		appUserDao.signUp(appUser);
 	}
 
@@ -67,7 +73,7 @@ public class AuthServerService {
 		log.debug("username: {}", username);
 		UserDetails userDetails = appUserDao.loadUserByUsername(username);
 		log.debug("userDetails: {}", userDetails);
-		
+
 		if (userDetails == null)
 			throw new AuthServerException(username + " not found");
 
@@ -76,7 +82,7 @@ public class AuthServerService {
 
 		Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 		List<String> roles = authorities.stream().map(s -> s.getAuthority()).toList();
-		
+
 		AuthorizeResponse response = new AuthorizeResponse();
 		response.setValid(true);
 		response.setRoles(roles);
