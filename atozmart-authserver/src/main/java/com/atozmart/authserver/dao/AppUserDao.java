@@ -8,28 +8,29 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.authserver.entity.AppUser;
+import com.atozmart.authserver.entity.EmailVerification;
+import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.repository.AppUserRepository;
+import com.atozmart.authserver.repository.EmailVerificationRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Repository
 @AllArgsConstructor
-public class AppUserDao implements UserDetailsService{
-	
+public class AppUserDao implements UserDetailsService {
+
 	private AppUserRepository appUserRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<AppUser> appUserOpt = appUserRepository.findById(username);
-		return appUserOpt.get();
+		return appUserRepository.findById(username).get();
 	}
-	
+
 	public void signUp(AppUser appUser) {
-		
-		//appUserRepository.existsById(appUser.getUsername())
-		
+		if(appUserRepository.existsById(appUser.getUsername()))
+			throw new AuthServerException("user already exists");
 		appUserRepository.save(appUser);
 	}
-	
 
 }

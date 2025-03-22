@@ -37,6 +37,10 @@ public class AppUser implements UserDetails{
 	
 	private String roles;
 	
+	private Boolean emailVerified;
+	
+	private Boolean mobileNoVerified;
+	
 	@CreationTimestamp
 	@Column(updatable = false)
 	private LocalDateTime createdAt;
