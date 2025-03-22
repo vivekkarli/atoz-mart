@@ -1,0 +1,63 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: notification-service
+  profile:
+    active: defualt
+  config:
+    import: "optional:configserver:http://localhost:8071"
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    connection-timeout: 10s
+    
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+             
+endpoints:
+  shutdown:
+    enabled: true
+      
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "atozmart-notification-service"
+    description: "AtoZ mart notification service"
+    version: 1.0.0
+    
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+    com.atozmart.notification: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
