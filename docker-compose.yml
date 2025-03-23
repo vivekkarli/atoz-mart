@@ -100,7 +100,42 @@ services:
       OTEL_METRICS_EXPORTER: none
       OTEL_TRACES_EXPORTER: none
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
-   
+  
+  notification:
+    image: "atozmart/notification-service:v1"
+    container_name: "notification-service"
+    healthcheck:
+      test: "curl --fail --silent localhost:8073/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_APPLICATION_NAME: notification-service
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_PROFILES_ACTIVE: default
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      OTEL_SERVICE_NAME: notification-service
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: none
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SECRET_APP_MAIL: "akhk tuxc ntpx wyal"
+
   configserver:
     image: "atozmart/configserver:v1"
     container_name: "atozmart-configserver"
@@ -174,7 +209,7 @@ services:
       - atozmart
     environment:
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://authserver:8080/realms/master/protocol/openid-connect/certs"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak-authserver:8080/realms/master/protocol/openid-connect/certs"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: atozmart-gatewayserver
       OTEL_SERVICE_NAME: atozmart-gatewayserver
@@ -207,7 +242,7 @@ services:
     command: "start-dev"
 
   atozmart-authserver:
-    image: "atozmart/authserver:v1"
+    image: "atozmart/atozmart-authserver:v1"
     container_name: "atozmart-authserver"
     healthcheck:
       test: "curl --fail --silent localhost:8074/actuator/health/readiness | grep UP || exit 1"
@@ -221,6 +256,8 @@ services:
       configserver:
         condition: service_healthy
       eurekaserver:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
     deploy:
       resources:
@@ -239,6 +276,27 @@ services:
       OTEL_METRICS_EXPORTER: none
       OTEL_TRACES_EXPORTER: none
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  rabbitmq:
+    image: "rabbitmq:4.0-management"
+    container_name: "rabbitmq"
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
 
   cartdb:
     image: mysql:latest

@@ -73,7 +73,10 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 					// Convert Jwt to Authentication (returns Mono<AbstractAuthenticationToken>)
 					Mono<? extends Authentication> authentication = Mono.just(jwtAuthenticationConverter.convert(jwt));
 					return authentication.cast(Authentication.class);
-				}).onErrorMap(e -> new OAuth2AuthenticationException("Invalid Keycloak token: " + e.getMessage()));
+				}).onErrorMap(e -> {
+					log.info("exception: {}", e.getMessage());
+					return new OAuth2AuthenticationException("Invalid Keycloak token: " + e.getMessage());
+				});
 	}
 
 	// Validate atozmartAuthServer token by calling /authorize endpoint

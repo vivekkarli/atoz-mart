@@ -30,7 +30,6 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: "http://localhost:8073/realms/master/protocol/openid-connect/certs"
-          issuer-uri: "http://localhost:8073/realms/master"
   main:
     allow-bean-definition-overriding: true
   
