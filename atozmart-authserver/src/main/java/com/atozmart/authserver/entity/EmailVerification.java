@@ -3,6 +3,7 @@ package com.atozmart.authserver.entity;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,9 +22,15 @@ public class EmailVerification {
 	
 	private String email;
 	
+	private Boolean notificationSent;
+	
 	@Column(updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createdAt;
+	
+	@Column(insertable = false)
+	@UpdateTimestamp
+	private LocalDateTime modifiedAt;
 	
 
 }

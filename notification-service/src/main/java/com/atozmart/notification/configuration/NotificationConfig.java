@@ -10,7 +10,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import com.atozmart.notification.dto.MailContentDto;
 
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.AllArgsConstructor;
@@ -36,11 +35,10 @@ public class NotificationConfig {
 
 				javaMailSender.send(mimeMessage);
 
-			} catch (AddressException e) {
-				e.printStackTrace();
 			} catch (MessagingException e) {
-				e.printStackTrace();
-			}
+				log.error("sending mail failed: {}", e.getMessage());
+				return "failed";
+			} 
 
 			return "mail sent successfully";
 		};

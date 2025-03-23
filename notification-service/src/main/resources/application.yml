@@ -8,6 +8,17 @@ spring:
     active: defualt
   config:
     import: "optional:configserver:http://localhost:8071"
+  cloud:
+    function: 
+      defination: emailVerification
+    stream:
+      bindings:
+        emailVerification-in-0:
+          destination: in-email-verification #queue
+          group: atozmart
+        emailVerification-out-0:
+          destination: out-email-verification #queue
+          group: atozmart
   rabbitmq:
     host: localhost
     port: 5672

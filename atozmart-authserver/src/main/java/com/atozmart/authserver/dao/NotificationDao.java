@@ -16,11 +16,11 @@ import lombok.AllArgsConstructor;
 @Repository
 @AllArgsConstructor
 public class NotificationDao {
-	
+
 	private AppUserRepository appUserRepository;
 
 	private EmailVerificationRepository emailVerificationRepo;
-	
+
 	@Transactional
 	public void verifyEmail(String code) {
 
@@ -37,7 +37,7 @@ public class NotificationDao {
 		emailVerificationRepo.deleteById(code);
 
 	}
-	
+
 	public void updateEmailVerificationTable(EmailVerification emailVerification) {
 		emailVerificationRepo.save(emailVerification);
 	}

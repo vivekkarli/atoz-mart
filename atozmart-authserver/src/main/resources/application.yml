@@ -17,7 +17,18 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     hibernate:
-      ddl-auto: update   
+      ddl-auto: update
+  cloud:
+    function:
+      defination: emailVerificationMailConfirmation
+    stream:
+     bindings:
+       emailVerificationMailConfirmation-in-0:
+         destination: out-email-verification #queue
+         group: atozmart
+       emailVerificationMail-out-0:
+          destination: in-email-verification #queue
+          group: atozmart
   rabbitmq:
     host: localhost
     port: 5672

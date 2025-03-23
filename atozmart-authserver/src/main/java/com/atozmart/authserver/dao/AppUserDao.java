@@ -1,19 +1,14 @@
 package com.atozmart.authserver.dao;
 
-import java.util.Optional;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.authserver.entity.AppUser;
-import com.atozmart.authserver.entity.EmailVerification;
 import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.repository.AppUserRepository;
-import com.atozmart.authserver.repository.EmailVerificationRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Repository
