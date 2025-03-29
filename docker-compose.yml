@@ -199,6 +199,10 @@ services:
         condition: service_healthy
       atozmart-authserver:
         condition: service_healthy
+      wishlist:
+        condition: service_healthy
+      notification:
+        condition: service_healthy
       #authserver:
         #condition: service_healthy
     deploy:
