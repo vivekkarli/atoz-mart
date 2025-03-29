@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-deployment
+  labels:
+    app: notification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification
+  template:
+    metadata:
+      labels:
+        app: notification
+    spec:
+      containers:
+      - name: notification-service
+        image: vivekkarli/notification-service:v1
+        envFrom:
+          - configMapRef:
+              name: atozmart-configmap
+        env:
+          - name: SPRING_APPLICATION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: NOTIFICATION_SPRING_APPLICATION_NAME
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: NOTIFICATION_OTEL_SERVICE_NAME
+          - name: SPRING_RABBITMQ_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: NOTIFICATION_SPRING_RABBITMQ_HOST
+          - name: SECRET_APP_MAIL
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: NOTIFICATION_SECRET_APP_MAIL
+        ports:
+          - containerPort: 8083
+

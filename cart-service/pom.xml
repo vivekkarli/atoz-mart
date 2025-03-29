@@ -132,7 +132,7 @@
 				<version>3.4.2</version>
 				<configuration>
 					<to>
-						<image>atozmart/cart:v1</image>
+						<image>vivekkarli/cart:v1</image>
 					</to>
 				</configuration>
 			</plugin>

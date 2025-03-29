@@ -141,7 +141,7 @@
 				<version>3.4.2</version>
 				<configuration>
 					<to>
-						<image>atozmart/wishlist:v1</image>
+						<image>vivekkarli/wishlist:v1</image>
 					</to>
 				</configuration>
 			</plugin>

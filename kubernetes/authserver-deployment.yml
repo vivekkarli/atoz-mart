@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authserver-deployment
+  labels:
+    app: authserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authserver
+  template:
+    metadata:
+      labels:
+        app: authserver
+    spec:
+      containers:
+      - name: atozmart-authserver
+        image: vivekkarli/atozmart-authserver:v1
+        ports:
+          - containerPort: 8074
+        envFrom:
+          - configMapRef:
+              name: atozmart-configmap
+        env:
+          - name: SPRING_DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: AUTHSERVER_SPRING_DATASOURCE_URL
+          - name: SPRING_APPLICATION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: AUTHSERVER_SPRING_APPLICATION_NAME
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: AUTHSERVER_OTEL_SERVICE_NAME
+          - name: SPRING_RABBITMQ_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: AUTHSERVER_SPRING_RABBITMQ_HOST
+
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: authserver
+spec:
+  selector:
+    app: authserver
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8074
+      targetPort: 8074

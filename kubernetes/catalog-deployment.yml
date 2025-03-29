@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-deployment
+  labels:
+    app: catalog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: catalog
+  template:
+    metadata:
+      labels:
+        app: catalog
+    spec:
+      containers:
+      - name: catalog-service
+        image: vivekkarli/catalog:v1
+        ports:
+          - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: atozmart-configmap
+        env:
+          - name: SPRING_DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: CATALOG_SPRING_DATASOURCE_URL
+          - name: SPRING_APPLICATION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: CATALOG_SPRING_APPLICATION_NAME
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: CATALOG_OTEL_SERVICE_NAME
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog
+spec:
+  selector:
+    app: catalog
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

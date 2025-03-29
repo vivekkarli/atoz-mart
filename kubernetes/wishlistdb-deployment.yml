@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wishlistdb-deployment
+  labels:
+    app: wishlistdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wishlistdb
+  template:
+    metadata:
+      labels:
+        app: wishlistdb
+    spec:
+      containers:
+      - name: wishlistdb
+        image: mysql:latest
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: WISHLIST_MYSQL_ROOT_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: WISHLIST_MYSQL_DATABASE
+        ports:
+          - containerPort: 3306
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wishlistdb
+spec:
+  selector:
+    app: wishlistdb
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 3308
+      targetPort: 3306
