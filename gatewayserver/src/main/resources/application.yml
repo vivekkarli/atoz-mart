@@ -6,19 +6,6 @@ spring:
     name: atozmart-gatewayserver
   config:
     import: "optional:configserver:http://localhost:8071"
-  datasource:
-    url: jdbc:mysql://localhost:3306/gatewaydb
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-  sql:
-    init:
-      mode: always
   cloud:
     gateway:
       discovery:
