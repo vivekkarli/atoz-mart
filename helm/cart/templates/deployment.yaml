@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-deployment
+  labels:
+    app: cart
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cart
+  template:
+    metadata:
+      labels:
+        app: cart
+    spec:
+      containers:
+      - name: cart-service
+        image: vivekkarli/cart:v1
+        ports:
+          - containerPort: 8081
+        envFrom:
+          - configMapRef:
+              name: atozmart-configmaps
+        env:
+          - name: SPRING_DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: CART_SPRING_DATASOURCE_URL
+          - name: SPRING_APPLICATION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: CART_SPRING_APPLICATION_NAME
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: CART_OTEL_SERVICE_NAME

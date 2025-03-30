@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatewayserver-deployment
+  labels:
+    app: gatewayserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gatewayserver
+  template:
+    metadata:
+      labels:
+        app: gatewayserver
+    spec:
+      containers:
+      - name: atozmart-gatewayserver
+        image: vivekkarli/gatewayserver:v1
+        ports:
+          - containerPort: 8072
+        envFrom:
+          - configMapRef:
+              name: atozmart-configmaps
+        env:
+          - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: GATEWAY_SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI
+          - name: SPRING_APPLICATION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: GATEWAY_SPRING_APPLICATION_NAME
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: GATEWAY_OTEL_SERVICE_NAME
+          - name: ATOZMART_AUTH_AUTHORIZE-ENDPOINT
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: GATEWAY_ATOZMART_AUTH_AUTHORIZE-ENDPOINT

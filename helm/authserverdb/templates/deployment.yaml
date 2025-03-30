@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authserverdb-deployment
+  labels:
+    app: authserverdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authserverdb
+  template:
+    metadata:
+      labels:
+        app: authserverdb
+    spec:
+      containers:
+      - name: atozmart-authserver-db
+        image: mysql:latest
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: atozmart-secrets
+                key: AUTHSERVER_MYSQL_ROOT_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmap
+                key: AUTHSERVER_MYSQL_DATABASE
+        ports:
+          - containerPort: 3306
+

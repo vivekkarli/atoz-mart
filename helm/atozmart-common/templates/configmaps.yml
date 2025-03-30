@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atozmart-configmaps
+data:
+  #common
+  SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+  SPRING_PROFILES_ACTIVE: default
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+  OTEL_LOGS_EXPORTER: none
+  OTEL_METRICS_EXPORTER: none
+  OTEL_TRACES_EXPORTER: none
+  JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+
+  #cart-service
+  CART_SPRING_APPLICATION_NAME: cart-service
+  CART_SPRING_DATASOURCE_URL: "jdbc:mysql://cartdb:3307/cartdb"
+  CART_OTEL_SERVICE_NAME: cart-service
+
+  #catalog-service
+  CATALOG_SPRING_DATASOURCE_URL: "jdbc:mysql://catalogdb:3306/catalogdb"
+  CATALOG_SPRING_APPLICATION_NAME: catalog-service
+  CATALOG_OTEL_SERVICE_NAME: catalog-service
+  
+  #wishlist-service
+  WISHLIST_SPRING_DATASOURCE_URL: "jdbc:mysql://wishlistdb:3308/wishlistdb"
+  WISHLIST_SPRING_APPLICATION_NAME: wishlist-service
+  WISHLIST_OTEL_SERVICE_NAME: wishlist-service
+
+  #notification-service
+  NOTIFICATION_SPRING_APPLICATION_NAME: notification-service
+  NOTIFICATION_OTEL_SERVICE_NAME: notification-service
+  NOTIFICATION_SPRING_RABBITMQ_HOST: rabbitmq.default.svc.cluster.local
+  NOTIFICATION_SPRING_RABBITMQ_USERNAME: admin
+
+  #configserver
+
+  #eurekaserver
+
+  #gatewayserver
+  GATEWAY_SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak.default.svc.cluster.local:8073/realms/master/protocol/openid-connect/certs"
+  GATEWAY_SPRING_APPLICATION_NAME: atozmart-gatewayserver
+  GATEWAY_OTEL_SERVICE_NAME: atozmart-gatewayserver
+  GATEWAY_ATOZMART_AUTH_AUTHORIZE-ENDPOINT: "http://authserver:8074/authorize"
+
+  #keycloak
+  KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+
+  #atozmart-authserver
+  AUTHSERVER_SPRING_APPLICATION_NAME: atozmart-authserver
+  AUTHSERVER_SPRING_DATASOURCE_URL: "jdbc:mysql://authserverdb:3309/atozmart_authserver_db"
+  AUTHSERVER_OTEL_SERVICE_NAME: atozmart-authserver
+  AUTHSERVER_SPRING_RABBITMQ_HOST: rabbitmq.default.svc.cluster.local
+  AUTHSERVER_SPRING_RABBITMQ_USERNAME: admin
+
+  #rabbitmq
+
+  #cartdb
+  CART_MYSQL_DATABASE: cartdb
+
+  #catalogdb
+  CATALOG_MYSQL_DATABASE: catalogdb
+
+  #wishlistdb
+  WISHLIST_MYSQL_DATABASE: wishlistdb
+
+  #atozmart-authserver-db
+  AUTHSERVER_MYSQL_DATABASE: atozmart_authserver_db

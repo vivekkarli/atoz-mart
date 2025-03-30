@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wishlist-deployment
+  labels:
+    app: wishlist
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wishlist
+  template:
+    metadata:
+      labels:
+        app: wishlist
+    spec:
+      containers:
+      - name: wishlist-service
+        image: vivekkarli/wishlist:v1
+        ports:
+          - containerPort: 8082
+        envFrom:
+          - configMapRef:
+              name: atozmart-configmaps
+        env:
+          - name: SPRING_DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: WISHLIST_SPRING_DATASOURCE_URL
+          - name: SPRING_APPLICATION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: WISHLIST_SPRING_APPLICATION_NAME
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: WISHLIST_OTEL_SERVICE_NAME
+
+
+

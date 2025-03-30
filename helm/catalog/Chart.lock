@@ -1,0 +1,6 @@
+dependencies:
+- name: atozmart-common
+  repository: file://../atozmart-common
+  version: 0.1.0
+digest: sha256:cdad83e5fab1339213503010f0df917fe6b7fc9b26e20b33e24741670c935203
+generated: "2025-03-30T19:53:20.3823984+05:30"

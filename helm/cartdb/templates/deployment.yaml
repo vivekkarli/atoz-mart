@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cartdb-deployment
+  labels:
+    app: cartdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cartdb
+  template:
+    metadata:
+      labels:
+        app: cartdb
+    spec:
+      containers:
+      - name: cartdb
+        image: mysql:latest
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: atozmart-secrets
+                key: CART_MYSQL_ROOT_PASSWORD
+          - name: MYSQL_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: CART_MYSQL_DATABASE
+        ports:
+          - containerPort: 3306
