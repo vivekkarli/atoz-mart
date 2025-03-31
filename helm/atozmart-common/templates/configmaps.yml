@@ -30,7 +30,7 @@ data:
   #notification-service
   NOTIFICATION_SPRING_APPLICATION_NAME: notification-service
   NOTIFICATION_OTEL_SERVICE_NAME: notification-service
-  NOTIFICATION_SPRING_RABBITMQ_HOST: rabbitmq.default.svc.cluster.local
+  NOTIFICATION_SPRING_RABBITMQ_HOST: rabbitmq
   NOTIFICATION_SPRING_RABBITMQ_USERNAME: admin
 
   #configserver
@@ -38,7 +38,7 @@ data:
   #eurekaserver
 
   #gatewayserver
-  GATEWAY_SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak.default.svc.cluster.local:8073/realms/master/protocol/openid-connect/certs"
+  GATEWAY_SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak:8073/realms/master/protocol/openid-connect/certs"
   GATEWAY_SPRING_APPLICATION_NAME: atozmart-gatewayserver
   GATEWAY_OTEL_SERVICE_NAME: atozmart-gatewayserver
   GATEWAY_ATOZMART_AUTH_AUTHORIZE-ENDPOINT: "http://authserver:8074/authorize"
@@ -50,10 +50,11 @@ data:
   AUTHSERVER_SPRING_APPLICATION_NAME: atozmart-authserver
   AUTHSERVER_SPRING_DATASOURCE_URL: "jdbc:mysql://authserverdb:3309/atozmart_authserver_db"
   AUTHSERVER_OTEL_SERVICE_NAME: atozmart-authserver
-  AUTHSERVER_SPRING_RABBITMQ_HOST: rabbitmq.default.svc.cluster.local
+  AUTHSERVER_SPRING_RABBITMQ_HOST: rabbitmq
   AUTHSERVER_SPRING_RABBITMQ_USERNAME: admin
 
   #rabbitmq
+  RABBITMQ_DEFAULT_USER: admin
 
   #cartdb
   CART_MYSQL_DATABASE: cartdb

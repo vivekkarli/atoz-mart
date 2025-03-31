@@ -34,10 +34,10 @@ dependencies:
     version: 0.1.0
     repository: file://..//eurekaserver
   - name: rabbitmq
-    version: 15.4.1
+    version: 0.1.0
     repository: file://..//rabbitmq
   - name: keycloak
-    version: 24.4.13
+    version: 0.1.0
     repository: file://..//keycloak
   - name: cartdb
     version: 0.1.0

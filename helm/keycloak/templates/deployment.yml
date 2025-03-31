@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak-deployment
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak-authserver
+        image: quay.io/keycloak/keycloak:latest
+        args: ["start-dev"]
+        env:
+          - name: KC_BOOTSTRAP_ADMIN_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: atozmart-configmaps
+                key: KC_BOOTSTRAP_ADMIN_USERNAME
+          - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: atozmart-secrets
+                key: KC_BOOTSTRAP_ADMIN_PASSWORD
+        ports:
+        - containerPort: 8080

@@ -10,10 +10,10 @@ dependencies:
   version: 0.1.0
 - name: rabbitmq
   repository: file://..//rabbitmq
-  version: 15.4.1
+  version: 0.1.0
 - name: keycloak
   repository: file://..//keycloak
-  version: 24.4.13
+  version: 0.1.0
 - name: cartdb
   repository: file://..//cartdb
   version: 0.1.0
@@ -44,5 +44,5 @@ dependencies:
 - name: gatewayserver
   repository: file://..//gatewayserver
   version: 0.1.0
-digest: sha256:717c10957ce15472691b06fc95b33fecbe309f0e9b8bf8d7691375fd67a2c966
-generated: "2025-03-30T23:10:17.9413582+05:30"
+digest: sha256:25abda289eb5ad4cd17f7486bf9dcd6580a3a4007e0a186ff333a2d54d9024b9
+generated: "2025-03-31T09:55:44.1967024+05:30"
