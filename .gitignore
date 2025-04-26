@@ -34,3 +34,6 @@ build/
 
 #helm
 **/charts
+
+#grafana
+.data
