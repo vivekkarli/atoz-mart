@@ -1,0 +1,44 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: cart
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - cart:8081
+  - job_name: catalog
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - catalog:8080
+  - job_name: wishlist
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - wishlist:8082
+  - job_name: notification
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - notification:8083
+  - job_name: configserver
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - configserver:8071
+  - job_name: eurekaserver
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - eurekaserver:8761
+  - job_name: gatewayserver
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - gatewayserver:8072
+  - job_name: atozmart-authserver
+    metrics_path: 'actuator/prometheus'
+    static_configs:
+      - targets:
+        - atozmart-authserver:8074
