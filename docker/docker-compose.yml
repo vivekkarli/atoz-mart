@@ -26,11 +26,12 @@ services:
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
       SPRING_PROFILES_ACTIVE: default
       SPRING_DATASOURCE_URL: "jdbc:mysql://cartdb:3306/cartdb"
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       OTEL_SERVICE_NAME: cart-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
       OTEL_LOGS_EXPORTER: none
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
 
   catalog:
@@ -62,9 +63,10 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: catalog-service
       OTEL_SERVICE_NAME: catalog-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
       OTEL_LOGS_EXPORTER: none
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
 
   wishlist:
@@ -96,9 +98,10 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: wishlist-service
       OTEL_SERVICE_NAME: wishlist-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
       OTEL_LOGS_EXPORTER: none
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
   
   notification:
@@ -127,11 +130,12 @@ services:
       SPRING_APPLICATION_NAME: notification-service
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
       SPRING_PROFILES_ACTIVE: default
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       OTEL_SERVICE_NAME: notification-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
       OTEL_LOGS_EXPORTER: none
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
       SPRING_RABBITMQ_HOST: rabbitmq
       SECRET_APP_MAIL: "akhk tuxc ntpx wyal"
@@ -217,9 +221,10 @@ services:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: atozmart-gatewayserver
       OTEL_SERVICE_NAME: atozmart-gatewayserver
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
       OTEL_LOGS_EXPORTER: none
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
       ATOZMART_AUTH_AUTHORIZE-ENDPOINT: "http://atozmart-authserver:8074/authorize"
 
@@ -274,11 +279,12 @@ services:
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
       SPRING_PROFILES_ACTIVE: default
       SPRING_DATASOURCE_URL: "jdbc:mysql://atozmart-authserver-db:3306/atozmart_authserver_db"
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       OTEL_SERVICE_NAME: atozmart-authserver
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
       OTEL_LOGS_EXPORTER: none
       OTEL_METRICS_EXPORTER: none
-      OTEL_TRACES_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
       SPRING_RABBITMQ_HOST: rabbitmq
 
@@ -458,6 +464,32 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - atozmart
+  init:
+    image: &tempoImage grafana/tempo:latest
+    user: root
+    entrypoint:
+      - "chown"
+      - "10001:10001"
+      - "/var/tempo"
+    volumes:
+      - ./tempo-data:/var/tempo
+      
+  tempo:
+    image: *tempoImage
+    container_name: tempo
+    command: ["-config.file=/var/tempo.yml"]
+    ports:
+      - "3200:3200" # Tempo HTTP port
+      - "4317:4317" # OTLP gRPC port
+      - "4318:4318" # OTLP HTTP port
+      - "14268:14268" # Jaeger port
+    volumes:
+      - ./tempo-data:/var/tempo
+      - ./tempo.yml:/var/tempo.yml
+    depends_on:
+      - init
+    networks:
+      - atozmart
 
   grafana:
     image: grafana/grafana:latest
@@ -465,6 +497,7 @@ services:
       - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_FEATURE_TOGGLES_ENABLE=traceqlEditor metricsSummary
     depends_on:
       - gateway
     volumes:

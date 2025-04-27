@@ -37,3 +37,4 @@ build/
 
 #grafana
 .data
+tempo-data

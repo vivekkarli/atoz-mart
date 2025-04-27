@@ -3,6 +3,7 @@ apiVersion: 1
 deleteDatasources:
   - name: Prometheus
   - name: Loki
+  - name: Tempo
 
 datasources:
   - name: Loki
@@ -14,16 +15,32 @@ datasources:
       httpHeaderName1: "X-Scope-OrgID"
     secureJsonData:
       httpHeaderValue1: "tenant1"
-   
   - name: Prometheus
     type: prometheus
     uid: prometheus
-    url: http://prometheus:9090
     access: proxy
     orgId: 1
+    url: http://prometheus:9090
     basicAuth: false
     isDefault: false
     version: 1
-    editable: true
+    editable: false
+    jsonData:
+      httpMethod: GETT
+  - name: Tempo
+    type: tempo
+    access: proxy
+    orgId: 1
+    url: http://tempo:3200
+    basicAuth: false
+    isDefault: true
+    version: 1
+    editable: false
+    apiVersion: 1
+    uid: tempo
     jsonData:
       httpMethod: GET
+    serviceMap:
+      datasourceUid: prometheus
+    streamingEnabled:
+      search: true
