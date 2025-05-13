@@ -49,7 +49,7 @@ public class WishlistController {
 	public ResponseEntity<String> addToCart(@RequestHeader("X-Username") String username, @RequestBody ItemDto itemDto) {
 		log.info("X-Username: {}",username);
 		log.info("adding items to cart");
-		String msg = wishlistService.addToCart(itemDto);
+		String msg = wishlistService.addToCart(username, itemDto);
 
 		return new ResponseEntity<>(msg, HttpStatus.CREATED);
 

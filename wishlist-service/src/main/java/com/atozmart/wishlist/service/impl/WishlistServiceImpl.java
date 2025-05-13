@@ -2,6 +2,7 @@ package com.atozmart.wishlist.service.impl;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.atozmart.wishlist.dao.WishlistDao;
@@ -11,6 +12,7 @@ import com.atozmart.wishlist.exception.WishlistException;
 import com.atozmart.wishlist.service.CartFeignClient;
 import com.atozmart.wishlist.service.WishlistService;
 
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,9 +26,13 @@ public class WishlistServiceImpl implements WishlistService {
 	private WishlistDao wishlistDao;
 	
 	@Override
-	public String addToCart(ItemDto itemDto) {
+	public String addToCart(String username, ItemDto itemDto) {
 		log.info("method: addToCart");
-		return cartFeignClient.addItem(itemDto);
+		try {
+		return cartFeignClient.addItem(username, itemDto);
+		} catch (FeignException e) {
+			throw new WishlistException(e.getMessage());
+		}
 	}
 
 	@Override

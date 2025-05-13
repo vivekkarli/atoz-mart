@@ -4,11 +4,13 @@ import lombok.Data;
 
 @Data
 public class ItemDto {
-
-	private String name;
-
-	private String price;
+	
+	private String item;
+	
+	private double unitPrice;
 	
 	private int quantity;
+	
+	private double effectivePrice;
 
 }

@@ -8,7 +8,7 @@ import com.atozmart.wishlist.exception.WishlistException;
 
 public interface WishlistService {
 
-	String addToCart(ItemDto itemDto);
+	String addToCart(String username, ItemDto itemDto);
 
 	List<WishlistDto> viewItems(String username) throws WishlistException;
 
