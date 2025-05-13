@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthServerController {
 
 	private AuthServerService authServerService;
-	
+
 	private NotificationService notificationService;
 
 	@PostMapping("/login")
@@ -35,9 +35,9 @@ public class AuthServerController {
 	public ResponseEntity<LoginResponse> signUp(@RequestBody SignUpForm signUpForm) {
 		return authServerService.signUp(signUpForm);
 	}
-	
+
 	@GetMapping("/verify-email")
-	public ResponseEntity<String> verifyEmail(@RequestParam String code){
+	public ResponseEntity<String> verifyEmail(@RequestParam String code) {
 		return notificationService.verifyEmail(code);
 	}
 

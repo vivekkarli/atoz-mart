@@ -1,6 +1,5 @@
 package com.atozmart.authserver.dao;
 
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
@@ -18,12 +17,12 @@ public class AppUserDao implements UserDetailsService {
 	private AppUserRepository appUserRepository;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return appUserRepository.findById(username).get();
+	public AppUser loadUserByUsername(String username) throws UsernameNotFoundException {
+		return appUserRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
 	}
 
-	public void signUp(AppUser appUser) {
-		if(appUserRepository.existsById(appUser.getUsername()))
+	public void signUp(AppUser appUser) throws AuthServerException {
+		if (appUserRepository.existsById(appUser.getUsername()))
 			throw new AuthServerException("user already exists");
 		appUserRepository.save(appUser);
 	}

@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,8 @@ public class AuthServerService {
 
 	private final AuthenticationManager authenticationManager;
 
-	public ResponseEntity<LoginResponse> login(LoginForm loginForm) throws BadCredentialsException {
+	public ResponseEntity<LoginResponse> login(LoginForm loginForm)
+			throws BadCredentialsException, UsernameNotFoundException {
 
 		Authentication authenticateduser = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginForm.username(), loginForm.password()));
@@ -63,7 +65,7 @@ public class AuthServerService {
 		return new ResponseEntity<>(new LoginResponse("logged in successfully"), httpHeaders, HttpStatus.OK);
 	}
 
-	public ResponseEntity<LoginResponse> signUp(SignUpForm signUpForm) {
+	public ResponseEntity<LoginResponse> signUp(SignUpForm signUpForm) throws AuthServerException {
 
 		AppUser appUser = new AppUser();
 		appUser.setUsername(signUpForm.username());
@@ -84,7 +86,7 @@ public class AuthServerService {
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.CREATED);
 	}
 
-	public ResponseEntity<AuthorizeResponse> authorizeToken(String token) {
+	public ResponseEntity<AuthorizeResponse> authorizeToken(String token) throws AuthServerException {
 
 		String username = jwtService.extractUsername(token);
 		log.debug("username: {}", username);
@@ -109,6 +111,10 @@ public class AuthServerService {
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
+	}
+
+	public String getEmail(String username) throws UsernameNotFoundException {
+		return appUserDao.loadUserByUsername(username).getMail();
 	}
 
 }

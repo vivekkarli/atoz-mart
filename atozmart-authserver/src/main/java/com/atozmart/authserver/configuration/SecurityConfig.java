@@ -24,7 +24,9 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(authorize -> 
-		authorize.anyRequest().permitAll());
+		authorize
+		.requestMatchers("/admin/email/**").hasAnyRole("ADMIN", "APP")
+		.anyRequest().permitAll());
 		http.csrf(csrfSpec-> csrfSpec.disable());
 		http.httpBasic(Customizer.withDefaults());
 		

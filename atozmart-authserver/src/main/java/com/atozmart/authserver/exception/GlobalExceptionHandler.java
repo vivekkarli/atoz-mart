@@ -3,6 +3,7 @@ package com.atozmart.authserver.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,6 +17,11 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(ex.getMessage()));
 	}
 	
+	@ExceptionHandler(UsernameNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handlerUsernameNotFoundException(UsernameNotFoundException ex){
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+	}
+	
 	@ExceptionHandler(AuthServerException.class)
 	public ResponseEntity<ErrorResponse> handlerAuthServerException(AuthServerException ex){
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage()));
@@ -23,7 +29,7 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorResponse> handlerGeneralException(Exception ex){
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage()));
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ex.getMessage()));
 	}
 
 }
