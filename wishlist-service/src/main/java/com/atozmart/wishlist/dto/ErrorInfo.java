@@ -1,11 +1,7 @@
 package com.atozmart.wishlist.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+public record ErrorInfo(
 
-@Data
-public class ErrorInfo {
-	
-	private String msg;
+		String msg) {
 
 }

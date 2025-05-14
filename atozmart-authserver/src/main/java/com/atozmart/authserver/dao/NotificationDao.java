@@ -2,6 +2,8 @@ package com.atozmart.authserver.dao;
 
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.authserver.entity.AppUser;
@@ -27,9 +29,10 @@ public class NotificationDao {
 		Optional<EmailVerification> emailVerifyOpt = emailVerificationRepo.findById(code);
 
 		EmailVerification emailVerify = emailVerifyOpt
-				.orElseThrow(() -> new AuthServerException("invalid verification link"));
+				.orElseThrow(() -> new AuthServerException("invalid verification link", HttpStatus.BAD_REQUEST));
 
-		AppUser appUser = appUserRepository.findById(emailVerify.getUsername()).get();
+		AppUser appUser = appUserRepository.findById(emailVerify.getUsername())
+				.orElseThrow(() -> new UsernameNotFoundException("user not found"));
 		appUser.setEmailVerified(true);
 
 		appUserRepository.save(appUser);

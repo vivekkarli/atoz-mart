@@ -94,10 +94,10 @@ public class AuthServerService {
 		log.debug("userDetails: {}", userDetails);
 
 		if (userDetails == null)
-			throw new AuthServerException(username + " not found");
+			throw new AuthServerException(username + " not found", HttpStatus.NOT_FOUND);
 
 		if (jwtService.isTokenExpired(token))
-			throw new AuthServerException("token expired");
+			throw new AuthServerException("token expired", HttpStatus.UNAUTHORIZED);
 
 		Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
 		List<String> roles = authorities.stream().map(s -> s.getAuthority()).toList();

@@ -12,9 +12,7 @@ public class CartException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String msg;
-
-	private HttpStatus httpStatus;
+	private final HttpStatus httpStatus;
 
 	public CartException(String msg, HttpStatus httpStatus) {
 		super(msg);

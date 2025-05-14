@@ -18,8 +18,9 @@ import com.atozmart.cart.dto.order.PlaceOrderRequest;
 import com.atozmart.cart.dto.order.PlaceOrderResponce;
 import com.atozmart.cart.entity.Cart;
 import com.atozmart.cart.exception.CartException;
+import com.atozmart.commons.dto.DownStreamException;
 
-import feign.FeignException.FeignClientException;
+import feign.FeignException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -130,8 +131,8 @@ public class CartService {
 					placeOrderRequest);
 			return placeOrderResponse.getBody().orderId();
 
-		} catch (FeignClientException e) {
-			throw new CartException(e.getMessage(), HttpStatus.valueOf(e.status()));
+		} catch (FeignException e) {
+			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));
 		}
 	}
 

@@ -3,6 +3,7 @@ package com.atozmart.catalog.service.impl;
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.atozmart.catalog.dao.CatalogDao;
@@ -26,7 +27,7 @@ public class CatalogServiceImpl implements CatalogService {
 		List<Item> items = catalogDao.getItems();
 
 		if (items.isEmpty())
-			throw new CatalogException("no items found");
+			throw new CatalogException("no items found", HttpStatus.NOT_FOUND);
 
 		return items.stream().map(item -> mapper.map(item, ItemDto.class)).toList();
 
@@ -37,11 +38,9 @@ public class CatalogServiceImpl implements CatalogService {
 		List<Item> items = catalogDao.getItems(pageNo, size, sortBy, sortDirection);
 
 		if (items.isEmpty())
-			throw new CatalogException("no items found");
+			throw new CatalogException("no items found", HttpStatus.NOT_FOUND);
 
 		return items.stream().map(item -> mapper.map(item, ItemDto.class)).toList();
 	}
-
-	
 
 }

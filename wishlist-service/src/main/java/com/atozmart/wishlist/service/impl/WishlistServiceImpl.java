@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.atozmart.commons.dto.DownStreamException;
 import com.atozmart.wishlist.dao.WishlistDao;
 import com.atozmart.wishlist.dto.ItemDto;
 import com.atozmart.wishlist.dto.WishlistDto;
@@ -31,7 +32,7 @@ public class WishlistServiceImpl implements WishlistService {
 		try {
 		return cartFeignClient.addItem(username, itemDto);
 		} catch (FeignException e) {
-			throw new WishlistException(e.getMessage());
+			throw new DownStreamException(e.getMessage(), HttpStatus.valueOf(e.status()));
 		}
 	}
 
@@ -40,7 +41,7 @@ public class WishlistServiceImpl implements WishlistService {
 		List<WishlistDto> wishlistDtos = wishlistDao.getAllByUsername(username);
 		
 		if(wishlistDtos.isEmpty())
-			throw new WishlistException("no items in wishlist");
+			throw new WishlistException("no items in wishlist", HttpStatus.NOT_FOUND);
 		
 		return wishlistDtos;
 	}

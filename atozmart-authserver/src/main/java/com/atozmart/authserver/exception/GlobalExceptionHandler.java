@@ -7,29 +7,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.atozmart.authserver.dto.ErrorResponse;
+import com.atozmart.commons.dto.CustomErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(BadCredentialsException.class)
-	public ResponseEntity<ErrorResponse> handlerBadCredentialsException(BadCredentialsException ex){
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(ex.getMessage()));
+	public ResponseEntity<CustomErrorResponse> handlerBadCredentialsException(BadCredentialsException ex){
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new CustomErrorResponse(ex.getMessage(),null));
 	}
 	
 	@ExceptionHandler(UsernameNotFoundException.class)
-	public ResponseEntity<ErrorResponse> handlerUsernameNotFoundException(UsernameNotFoundException ex){
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(ex.getMessage()));
+	public ResponseEntity<CustomErrorResponse> handlerUsernameNotFoundException(UsernameNotFoundException ex){
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomErrorResponse(ex.getMessage(),null));
 	}
 	
 	@ExceptionHandler(AuthServerException.class)
-	public ResponseEntity<ErrorResponse> handlerAuthServerException(AuthServerException ex){
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(ex.getMessage()));
-	}
-	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handlerGeneralException(Exception ex){
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(ex.getMessage()));
+	public ResponseEntity<CustomErrorResponse> handlerAuthServerException(AuthServerException ex){
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new CustomErrorResponse(ex.getMessage(),null));
 	}
 
 }

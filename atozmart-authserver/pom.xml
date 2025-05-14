@@ -123,6 +123,12 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.atozmart.commons</groupId>
+			<artifactId>atozmart-common-utils</artifactId>
+			<version>0.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>

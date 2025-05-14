@@ -1,5 +1,5 @@
 package com.atozmart.cart.dto;
 
-public record CartErrorResponse(String msg) {
+public record CartErrorResponse(String errorMsg) {
 
 }
