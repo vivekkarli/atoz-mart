@@ -4,6 +4,7 @@ import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.atozmart.commons.exception.dto.DownStreamException;
 import com.atozmart.order.dao.OrdersDao;
 import com.atozmart.order.dto.MailContentDto;
 import com.atozmart.order.dto.PlaceOrderRequest;
@@ -33,7 +34,7 @@ public class OrderService {
 		try {
 			email = authServerFeignClient.getEmail(username).getBody();
 		} catch (FeignException e) {
-			throw new OrderException(e.getMessage(), HttpStatus.valueOf(e.status()));
+			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));
 		}
 
 		MailContentDto mailContentDto = new MailContentDto(email, null, "order is placed with order id: " + orderId,

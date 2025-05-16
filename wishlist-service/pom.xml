@@ -4,10 +4,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<groupId>com.atozmart.commons</groupId>
+		<artifactId>atozmart-common-utils</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../common-utils/pom.xml</relativePath> <!-- lookup parent
+		from repository -->
 	</parent>
 	<groupId>com.atozmart.wishlist</groupId>
 	<artifactId>wishlist-service</artifactId>
@@ -28,10 +29,14 @@
 		<url />
 	</scm>
 	<properties>
-		<java.version>21</java.version>
-		<spring-cloud.version>2024.0.0</spring-cloud.version>
+
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>com.atozmart.exception</groupId>
+			<artifactId>atozmart-exception-handler</artifactId>
+			<version>${atozmart-exception-handler.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -86,25 +91,21 @@
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>3.2.2</version>
+			<version>${modelmapper.version}</version>
 		</dependency>
-		
+
 		<!--
 		https://mvnrepository.com/artifact/io.opentelemetry.javaagent/opentelemetry-javaagent -->
 		<dependency>
 			<groupId>io.opentelemetry.javaagent</groupId>
 			<artifactId>opentelemetry-javaagent</artifactId>
-			<version>2.13.2</version>
+			<version>${otel-javaagent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>com.atozmart.commons</groupId>
-			<artifactId>atozmart-common-utils</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -147,7 +148,7 @@
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.4.2</version>
+				<version>${jib-maven-plugin.version}</version>
 				<configuration>
 					<to>
 						<image>vivekkarli/wishlist:v1</image>

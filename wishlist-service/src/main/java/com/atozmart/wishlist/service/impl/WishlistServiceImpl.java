@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.atozmart.commons.dto.DownStreamException;
+import com.atozmart.commons.exception.dto.DownStreamException;
 import com.atozmart.wishlist.dao.WishlistDao;
 import com.atozmart.wishlist.dto.ItemDto;
 import com.atozmart.wishlist.dto.WishlistDto;
@@ -32,7 +32,7 @@ public class WishlistServiceImpl implements WishlistService {
 		try {
 		return cartFeignClient.addItem(username, itemDto);
 		} catch (FeignException e) {
-			throw new DownStreamException(e.getMessage(), HttpStatus.valueOf(e.status()));
+			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));
 		}
 	}
 

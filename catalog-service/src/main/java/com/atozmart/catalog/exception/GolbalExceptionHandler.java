@@ -4,14 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.atozmart.commons.dto.CustomErrorResponse;
+import com.atozmart.commons.exception.dto.GlobalErrorResponse;
 
 @RestControllerAdvice
 public class GolbalExceptionHandler {
 
 	@ExceptionHandler(exception = CatalogException.class)
-	public ResponseEntity<CustomErrorResponse> handleCatalogException(CatalogException ce) {
-		return new ResponseEntity<>(new CustomErrorResponse(ce.getMessage(), null), ce.getHttpStatus());
+	public ResponseEntity<GlobalErrorResponse> handleCatalogException(CatalogException ex) {
+		return new ResponseEntity<>(new GlobalErrorResponse(ex.getMessage(), null), ex.getHttpStatus());
 	}
 
 }

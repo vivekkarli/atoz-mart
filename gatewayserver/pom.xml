@@ -4,10 +4,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<groupId>com.atozmart.commons</groupId>
+		<artifactId>atozmart-common-utils</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../common-utils/pom.xml</relativePath> <!-- lookup parent
+		from repository -->
 	</parent>
 	<groupId>com.atozmart.gatewayserver</groupId>
 	<artifactId>atozmart-gatewayserver</artifactId>
@@ -28,8 +29,7 @@
 		<url />
 	</scm>
 	<properties>
-		<java.version>21</java.version>
-		<spring-cloud.version>2024.0.0</spring-cloud.version>
+
 	</properties>
 	<dependencies>
 		<dependency>
@@ -49,11 +49,6 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-test</artifactId>
@@ -77,21 +72,21 @@
 		<dependency>
 			<groupId>io.opentelemetry.javaagent</groupId>
 			<artifactId>opentelemetry-javaagent</artifactId>
-			<version>2.13.2</version>
+			<version>${otel-javaagent.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.12.6</version>
+			<version>${jjwt-api.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.12.6</version>
+			<version>${jjwt-impl.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -99,7 +94,7 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
-			<version>0.12.6</version>
+			<version>${jjwt-jackson.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -156,7 +151,7 @@
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.4.2</version>
+				<version>${jib-maven-plugin.version}</version>
 				<configuration>
 					<to>
 						<image>vivekkarli/gatewayserver:v1</image>

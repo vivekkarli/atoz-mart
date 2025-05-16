@@ -18,7 +18,7 @@ import com.atozmart.cart.dto.order.PlaceOrderRequest;
 import com.atozmart.cart.dto.order.PlaceOrderResponce;
 import com.atozmart.cart.entity.Cart;
 import com.atozmart.cart.exception.CartException;
-import com.atozmart.commons.dto.DownStreamException;
+import com.atozmart.commons.exception.dto.DownStreamException;
 
 import feign.FeignException;
 import jakarta.transaction.Transactional;

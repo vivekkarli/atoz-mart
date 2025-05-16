@@ -4,10 +4,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.3</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<groupId>com.atozmart.commons</groupId>
+		<artifactId>atozmart-common-utils</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../common-utils/pom.xml</relativePath> <!-- lookup parent
+		from repository -->
 	</parent>
 	<groupId>com.atozmart.authserver</groupId>
 	<artifactId>atozmart-authserver</artifactId>
@@ -27,11 +28,13 @@
 		<tag />
 		<url />
 	</scm>
-	<properties>
-		<java.version>21</java.version>
-		<spring-cloud.version>2024.0.0</spring-cloud.version>
-	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>com.atozmart.exception</groupId>
+			<artifactId>atozmart-exception-handler</artifactId>
+			<version>${atozmart-exception-handler.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -47,16 +50,7 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -74,14 +68,14 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
-			<version>0.12.6</version>
+			<version>${jjwt-api.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
-			<version>0.12.6</version>
+			<version>${jjwt-impl.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -89,7 +83,7 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
-			<version>0.12.6</version>
+			<version>${jjwt-jackson.version}</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -97,7 +91,7 @@
 		<dependency>
 			<groupId>org.modelmapper</groupId>
 			<artifactId>modelmapper</artifactId>
-			<version>3.2.2</version>
+			<version>${modelmapper.version}</version>
 		</dependency>
 
 		<!--
@@ -105,7 +99,7 @@
 		<dependency>
 			<groupId>io.opentelemetry.javaagent</groupId>
 			<artifactId>opentelemetry-javaagent</artifactId>
-			<version>2.13.2</version>
+			<version>${otel-javaagent.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -123,25 +117,7 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>com.atozmart.commons</groupId>
-			<artifactId>atozmart-common-utils</artifactId>
-			<version>0.0.1</version>
-		</dependency>
 	</dependencies>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>${spring-cloud.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 
 	<build>
 		<plugins>
@@ -172,7 +148,7 @@
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>3.4.2</version>
+				<version>${jib-maven-plugin.version}</version>
 				<configuration>
 					<to>
 						<image>vivekkarli/${project.artifactId}:v1</image>
