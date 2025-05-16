@@ -10,14 +10,14 @@ spring:
     import: "optional:configserver:http://localhost:8071"
   cloud:
     function: 
-      defination: emailVerification
+      defination: sendEmail
     stream:
       bindings:
-        emailVerification-in-0:
-          destination: in-email-verification #queue
+        sendEmail-in-0:
+          destination: in-send-email
           group: atozmart
-        emailVerification-out-0:
-          destination: out-email-verification #queue
+        sendEmail-out-0:
+          destination: out-send-email #queue
           group: atozmart
   rabbitmq:
     host: localhost

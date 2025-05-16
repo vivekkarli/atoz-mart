@@ -22,15 +22,10 @@ spring:
     init:
       mode: always
   cloud:
-    function:
-      defination: emailVerificationMailConfirmation
     stream:
      bindings:
-       orderConfirmationMail-in-0:
-         destination: out-order-confirmation #queue
-         group: atozmart
-       orderConfirmationMail-out-0:
-          destination: in-order-confirmation #queue
+       sendEmail-out-0:
+          destination: in-send-email #queue
           group: atozmart
   rabbitmq:
     host: localhost

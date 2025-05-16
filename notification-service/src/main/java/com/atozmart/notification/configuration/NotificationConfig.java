@@ -23,7 +23,7 @@ public class NotificationConfig {
 	private JavaMailSender javaMailSender;
 
 	@Bean
-	public Function<MailContentDto, String> emailVerification() {
+	public Function<MailContentDto, String> sendEmail() {
 		return mailContent -> {
 			log.info("sending mail");
 			try {

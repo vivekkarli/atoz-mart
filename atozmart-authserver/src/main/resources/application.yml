@@ -24,10 +24,10 @@ spring:
     stream:
      bindings:
        emailVerificationMailConfirmation-in-0:
-         destination: out-email-verification #queue
+         destination: out-send-email #queue
          group: atozmart
-       emailVerificationMail-out-0:
-          destination: in-email-verification #queue
+       sendEmail-out-0:
+          destination: in-send-email #queue
           group: atozmart
   rabbitmq:
     host: localhost

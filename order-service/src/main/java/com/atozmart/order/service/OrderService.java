@@ -39,7 +39,7 @@ public class OrderService {
 
 		MailContentDto mailContentDto = new MailContentDto(email, null, "order is placed with order id: " + orderId,
 				null);
-		streamBridge.send("orderConfirmationMail-out-0", mailContentDto);
+		streamBridge.send("sendEmail-out-0", mailContentDto);
 		return new PlaceOrderResponce(orderId, "success");
 	}
 

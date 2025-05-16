@@ -38,7 +38,7 @@ public class NotificationService {
 		
 		// step-3 call notification service
 		MailContentDto mailContentDto = new MailContentDto(appUser.getMail(), null, body, null);
-		streamBridge.send("emailVerificationMail-out-0", mailContentDto);
+		streamBridge.send("sendEmail-out-0", mailContentDto);
 		
 	}
 	
