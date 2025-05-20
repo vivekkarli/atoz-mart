@@ -140,6 +140,44 @@ services:
       SPRING_RABBITMQ_HOST: rabbitmq
       SECRET_APP_MAIL: "akhk tuxc ntpx wyal"
 
+  order:
+    image: "vivekkarli/order:v1"
+    container_name: "order-service"
+    healthcheck:
+      test: "curl --fail --silent localhost:8084/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      orderdb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_APPLICATION_NAME: order-service
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: "jdbc:mysql://orderdb:3306/orderdb"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
+      OTEL_SERVICE_NAME: cart-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+      ATOZMART_ADMIN_USER: "order_service"
+      ATOZMART_ADMIN_PWD: "1234"
+      SPRING_RABBITMQ_HOST: rabbitmq
+      
   configserver:
     image: "vivekkarli/configserver:v1"
     container_name: "atozmart-configserver"
@@ -308,28 +346,11 @@ services:
     networks:
       - atozmart
 
-  cartdb:
-    image: mysql:latest
-    container_name: cartdb
-    ports:
-      - 3307:3306
-    healthcheck:
-      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: cartdb
-    networks:
-      - atozmart
-
   catalogdb:
     image: mysql:latest
     container_name: catalogdb
     ports:
-      - 3306:3306
+      - 3307:3306
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 10s
@@ -342,11 +363,28 @@ services:
     networks:
       - atozmart
 
+  cartdb:
+    image: mysql:latest
+    container_name: cartdb
+    ports:
+      - 3308:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: cartdb
+    networks:
+      - atozmart
+
   wishlistdb:
     image: mysql:latest
     container_name: wishlistdb
     ports:
-      - 3308:3306
+      - 3309:3306
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 10s
@@ -363,7 +401,7 @@ services:
     image: mysql:latest
     container_name: atozmart-authserver-db
     ports:
-      - 3309:3306
+      - 3310:3306
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 10s
@@ -373,6 +411,23 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: atozmart_authserver_db
+    networks:
+      - atozmart
+      
+  orderdb:
+    image: mysql:latest
+    container_name: orderdb
+    ports:
+      - 3311:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: orderdb
     networks:
       - atozmart
 
