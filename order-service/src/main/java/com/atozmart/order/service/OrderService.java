@@ -26,21 +26,24 @@ public class OrderService {
 	private AuthServerFeignClient authServerFeignClient;
 
 	@Transactional
-	public PlaceOrderResponce placeOrder(String username, PlaceOrderRequest placeOrderRequest) throws OrderException {
+	public PlaceOrderResponce placeOrder(String username, String email, PlaceOrderRequest placeOrderRequest) throws OrderException {
 		String orderId = ordersDao.placeOrder(username, placeOrderRequest);
+		sendEmailNotification(username, email, orderId);
+		return new PlaceOrderResponce(orderId, "success");
+	}
 
-		// send email notification
-		String email = null;
+	private void sendEmailNotification(String username, String email, String orderId) {
 		try {
-			email = authServerFeignClient.getEmail(username).getBody();
+			if (email == null)
+				email = authServerFeignClient.getEmail(username).getBody();
 		} catch (FeignException e) {
 			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));
 		}
 
+		// send email notification
 		MailContentDto mailContentDto = new MailContentDto(email, null, "order is placed with order id: " + orderId,
 				null);
 		streamBridge.send("sendEmail-out-0", mailContentDto);
-		return new PlaceOrderResponce(orderId, "success");
 	}
 
 }

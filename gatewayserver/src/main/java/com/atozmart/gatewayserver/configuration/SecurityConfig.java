@@ -46,7 +46,7 @@ public class SecurityConfig {
 				.pathMatchers(HttpMethod.DELETE, "/atozmart/catalog/**").hasRole("ADMIN")
 
 				// cart-service endpoints
-				.pathMatchers(HttpMethod.DELETE, "/atozmart/cart/**").hasRole("ADMIN")
+				.pathMatchers("/atozmart/cart/**").permitAll()
 
 				// wishlist-service endpoints
 				.pathMatchers("/atozmart/wishlist/**").hasAnyRole("USER", "ADMIN")

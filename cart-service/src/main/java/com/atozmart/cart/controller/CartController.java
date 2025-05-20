@@ -57,8 +57,9 @@ public class CartController {
 
 	@PostMapping("/checkout")
 	public ResponseEntity<CheckOutResponse> proceedToPayment(@RequestHeader("X-Username") String username,
-			@RequestBody @Valid CheckOutRequest checkOutRequest) throws CartException{
-		String orderId = cartService.proceedToPayment(username, checkOutRequest);
+			@RequestHeader(name = "X-User-Email", required = false) String email, @RequestBody @Valid CheckOutRequest checkOutRequest)
+			throws CartException {
+		String orderId = cartService.proceedToPayment(username, email, checkOutRequest);
 		return new ResponseEntity<>(new CheckOutResponse(orderId, "order placed successfully"), HttpStatus.CREATED);
 	}
 

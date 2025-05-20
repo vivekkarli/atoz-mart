@@ -13,7 +13,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -90,22 +89,23 @@ public class AuthServerService {
 
 		String username = jwtService.extractUsername(token);
 		log.debug("username: {}", username);
-		UserDetails userDetails = appUserDao.loadUserByUsername(username);
-		log.debug("userDetails: {}", userDetails);
+		AppUser appUser = appUserDao.loadUserByUsername(username);
+		log.debug("userDetails: {}", appUser);
 
-		if (userDetails == null)
+		if (appUser == null)
 			throw new AuthServerException(username + " not found", HttpStatus.NOT_FOUND);
 
 		if (jwtService.isTokenExpired(token))
 			throw new AuthServerException("token expired", HttpStatus.UNAUTHORIZED);
 
-		Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+		Collection<? extends GrantedAuthority> authorities = appUser.getAuthorities();
 		List<String> roles = authorities.stream().map(s -> s.getAuthority()).toList();
 
 		AuthorizeResponse response = new AuthorizeResponse();
 		response.setValid(true);
 		response.setRoles(roles);
 		response.setUsername(username);
+		response.setEmail(appUser.getMail());
 		response.setExpiresAt(jwtService.extractExpiration(token));
 		log.debug("AuthorizeResponse: {}", response);
 

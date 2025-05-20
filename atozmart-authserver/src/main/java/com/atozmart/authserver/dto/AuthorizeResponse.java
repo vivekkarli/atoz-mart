@@ -9,6 +9,7 @@ import lombok.Data;
 public class AuthorizeResponse {
 	private boolean valid;
 	private String username;
+	private String email;
 	private Date expiresAt;
 	private List<String> roles;
 

@@ -73,7 +73,7 @@ public class CartService {
 	}
 
 	@Transactional
-	public String proceedToPayment(String username, CheckOutRequest checkOutRequest) throws CartException {
+	public String proceedToPayment(String username, String email, CheckOutRequest checkOutRequest) throws CartException {
 
 		if (!checkOutRequest.paymentMode().equals("COD"))
 			throw new CartException("can't place order for %s. only COD is eligible to place order"
@@ -97,7 +97,7 @@ public class CartService {
 		// payment
 
 		// place order
-		String orderId = placeOrder(username, checkOutRequest, cartDetails);
+		String orderId = placeOrder(username, email, checkOutRequest, cartDetails);
 
 		// delete items from cart
 		cartDao.deleteAllByusername(username);
@@ -106,10 +106,11 @@ public class CartService {
 	}
 
 	/**
+	 * @param email 
 	 * @returns orderId
 	 */
 
-	private String placeOrder(String username, CheckOutRequest checkOutRequest, ViewCartResponse cartDetails)
+	private String placeOrder(String username, String email, CheckOutRequest checkOutRequest, ViewCartResponse cartDetails)
 			throws CartException {
 
 		PlaceOrderRequest placeOrderRequest = new PlaceOrderRequest();
@@ -127,7 +128,7 @@ public class CartService {
 		log.debug("placeOrderRequest: {}", placeOrderRequest);
 
 		try {
-			ResponseEntity<PlaceOrderResponce> placeOrderResponse = orderFeignClient.placeOrder(username,
+			ResponseEntity<PlaceOrderResponce> placeOrderResponse = orderFeignClient.placeOrder(username, email,
 					placeOrderRequest);
 			return placeOrderResponse.getBody().orderId();
 

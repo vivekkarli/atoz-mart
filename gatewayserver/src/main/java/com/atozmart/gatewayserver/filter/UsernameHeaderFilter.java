@@ -30,10 +30,14 @@ public class UsernameHeaderFilter implements GlobalFilter {
 				.flatMap(authentication -> {
 
 					if (authentication != null && authentication.isAuthenticated()) {
-						String username = extractusername(authentication);
+						String username = extractUsername(authentication);
+						String email = extractEmail(authentication);
 
 						ServerWebExchange serverWebExchange = exchange.mutate()
-								.request(exchange.getRequest().mutate().header("X-Username", username).build()).build();
+								.request(exchange.getRequest().mutate().headers(httpHeaders -> {
+									httpHeaders.add("X-Username", username);
+									httpHeaders.add("X-User-Email", email);
+								}).build()).build();
 
 						return chain.filter(serverWebExchange);
 					} else {
@@ -44,7 +48,27 @@ public class UsernameHeaderFilter implements GlobalFilter {
 
 	}
 
-	private String extractusername(Authentication authentication) {
+	private String extractEmail(Authentication authentication) {
+
+		log.info("authentication: {}", authentication);
+		String email = null;
+
+		if (authentication instanceof AtozmartAuthenticationToken atozmartToken) {
+			email = atozmartToken.getAuthorizeResponse().email();
+			log.info("extracted email: {}", email);
+		} else if (authentication instanceof JwtAuthenticationToken jwtAuthToken) {
+			Jwt token = jwtAuthToken.getToken();
+			email = token.getClaimAsString("email");
+			log.info("extracted email: {}", email);
+		} else if (authentication instanceof UsernamePasswordAuthenticationToken upat) {
+			email = (String) upat.getPrincipal();
+			log.info("extracted email: {}", email);
+		}
+		return email;
+
+	}
+
+	private String extractUsername(Authentication authentication) {
 
 		log.info("authentication: {}", authentication);
 		String username = "anonymousUser";

@@ -16,6 +16,6 @@ public interface OrderFeignClient {
 
 	@PostMapping("/placeOrder")
 	public ResponseEntity<PlaceOrderResponce> placeOrder(@RequestHeader("X-Username") String username,
-			@RequestBody @Valid PlaceOrderRequest placeOrderRequest);
+			@RequestHeader("X-User-Email") String email, @RequestBody @Valid PlaceOrderRequest placeOrderRequest);
 
 }

@@ -7,9 +7,9 @@ import org.springframework.security.core.GrantedAuthority;
 
 import com.atozmart.gatewayserver.dto.AuthorizeResponse;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class AtozmartAuthenticationToken extends UsernamePasswordAuthenticationToken{
 	
 	/**
