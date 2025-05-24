@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.atozmart.wishlist.dto.ItemDto;
+import com.atozmart.wishlist.dto.cart.ItemDto;
 
 @FeignClient(name = "cart-service")
 public interface CartFeignClient {

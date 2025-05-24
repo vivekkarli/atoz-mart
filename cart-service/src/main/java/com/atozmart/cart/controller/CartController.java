@@ -49,9 +49,9 @@ public class CartController {
 
 	@DeleteMapping("/items")
 	public ResponseEntity<Object> removeItemsFromCart(@RequestHeader("X-Username") String username,
-			@RequestParam String item, @RequestParam(required = false, defaultValue = "0") @Min(0) int quantity) {
+			@RequestParam String itemName, @RequestParam(required = false, defaultValue = "0") @Min(0) int quantity) {
 		log.info("X-Username: {}", username);
-		cartService.removeItemsFromCart(username, item, quantity);
+		cartService.removeItemsFromCart(username, itemName, quantity);
 		return ResponseEntity.noContent().build();
 	}
 

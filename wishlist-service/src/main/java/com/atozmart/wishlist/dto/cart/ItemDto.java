@@ -1,11 +1,11 @@
-package com.atozmart.wishlist.dto;
+package com.atozmart.wishlist.dto.cart;
 
 import lombok.Data;
 
 @Data
 public class ItemDto {
 	
-	private String item;
+	private String itemName;
 	
 	private double unitPrice;
 	

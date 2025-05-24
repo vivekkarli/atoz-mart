@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.atozmart.commons.exception.dto.DownStreamException;
 import com.atozmart.wishlist.dao.WishlistDao;
-import com.atozmart.wishlist.dto.ItemDto;
 import com.atozmart.wishlist.dto.WishlistDto;
+import com.atozmart.wishlist.dto.cart.ItemDto;
 import com.atozmart.wishlist.exception.WishlistException;
 import com.atozmart.wishlist.service.CartFeignClient;
 import com.atozmart.wishlist.service.WishlistService;

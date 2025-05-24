@@ -7,20 +7,22 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
 import lombok.Data;
 
 @Data
-@IdClass(CartCompositeId.class)
 @Entity
 public class Cart {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
 	private String username;
 	
-	@Id
-	private String item;
+	private String itemName;
 	
 	private double unitPrice;
 	

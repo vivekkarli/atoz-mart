@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class WishlistDto {
 
-	private String name;
+	private String itemName;
 
 	private String price;
 	

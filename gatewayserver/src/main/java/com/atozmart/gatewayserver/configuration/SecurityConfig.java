@@ -77,6 +77,7 @@ public class SecurityConfig {
         corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
         corsConfiguration.addAllowedHeader("Authorization");
         corsConfiguration.addAllowedHeader("Content-Type");
+        corsConfiguration.addExposedHeader("X-Access-Token");
         corsConfiguration.setAllowCredentials(true); // Allow cookies/credentials
         corsConfiguration.setMaxAge(3600L); // Cache preflight response for 1 hour
 

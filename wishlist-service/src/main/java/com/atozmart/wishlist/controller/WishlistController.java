@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.atozmart.wishlist.dto.ItemDto;
 import com.atozmart.wishlist.dto.WishlistDto;
+import com.atozmart.wishlist.dto.cart.ItemDto;
 import com.atozmart.wishlist.exception.WishlistException;
 import com.atozmart.wishlist.service.WishlistService;
 

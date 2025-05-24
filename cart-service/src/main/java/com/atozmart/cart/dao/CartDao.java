@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 
 import com.atozmart.cart.dto.ItemDto;
 import com.atozmart.cart.entity.Cart;
-import com.atozmart.cart.entity.CartCompositeId;
 import com.atozmart.cart.exception.CartException;
 import com.atozmart.cart.repository.CartRepository;
 
@@ -30,7 +29,7 @@ public class CartDao {
 	public void addItemsToCart(ItemDto itemDto, String username) {
 
 		// check if item already exists
-		Optional<Cart> existingItemOpt = cartRepo.findById(new CartCompositeId(username, itemDto.getItem()));
+		Optional<Cart> existingItemOpt = cartRepo.findByUsernameAndItemName(username, itemDto.getItemName());
 
 		existingItemOpt.ifPresentOrElse(existingItem ->
 		// if exists, increment quantity, update to new price
@@ -40,15 +39,16 @@ public class CartDao {
 
 	}
 
-	public void deleteItemsFromCart(String username, String item, int quantity) throws CartException {
+	@Transactional
+	public void deleteItemsFromCart(String username, String itemName, int quantity) throws CartException {
 
 		if (quantity == 0) {
-			cartRepo.deleteById(new CartCompositeId(username, item));
+			cartRepo.deleteByUsernameAndItemName(username, itemName);
 			return;
 		}
 
 		// check if item already exists
-		Optional<Cart> existingItemOpt = cartRepo.findById(new CartCompositeId(username, item));
+		Optional<Cart> existingItemOpt = cartRepo.findByUsernameAndItemName(username, itemName);
 
 		existingItemOpt.ifPresentOrElse(existingItem -> {
 			// if exists, set quantity

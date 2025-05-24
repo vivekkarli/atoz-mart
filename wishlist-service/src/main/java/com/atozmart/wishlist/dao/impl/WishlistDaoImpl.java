@@ -1,17 +1,17 @@
 package com.atozmart.wishlist.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.wishlist.dao.WishlistDao;
-import com.atozmart.wishlist.dto.ItemDto;
 import com.atozmart.wishlist.dto.WishlistDto;
 import com.atozmart.wishlist.entity.Wishlist;
+import com.atozmart.wishlist.exception.WishlistException;
 import com.atozmart.wishlist.repository.WishlistRepository;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +25,7 @@ public class WishlistDaoImpl implements WishlistDao {
 	private ModelMapper mapper;
 
 	public List<WishlistDto> getAllByUsername(String username){
-		List<Wishlist> wishlists = wishlistRepo.findAllById(Arrays.asList(username));
+		List<Wishlist> wishlists = wishlistRepo.findByUsername(username);
 		
 		if(wishlists.isEmpty())
 			return new ArrayList<>();
@@ -34,10 +34,14 @@ public class WishlistDaoImpl implements WishlistDao {
 	}
 
 	@Override
-	public void addItem(WishlistDto wishlistDto, String username) {
+	public void addItem(WishlistDto wishlistDto, String username) throws WishlistException{
 		Wishlist wishlist = mapper.map(wishlistDto, Wishlist.class);
 		wishlist.setUsername(username);
-		wishlistRepo.save(wishlist);
+		try {
+			wishlistRepo.save(wishlist);
+		} catch (DataIntegrityViolationException e) {
+			throw new WishlistException("item already present", HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }
