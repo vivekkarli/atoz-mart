@@ -23,7 +23,6 @@ public class OrderController {
 	@PostMapping("/placeOrder")
 	public ResponseEntity<PlaceOrderResponce> placeOrder(@RequestHeader("X-Username") String username,
 			@RequestHeader(name = "X-User-Email", required = false) String email, @RequestBody @Valid PlaceOrderRequest placeOrderRequest) {
-		System.out.println("X-User-Email: "+email);
 		return new ResponseEntity<>(orderService.placeOrder(username, email, placeOrderRequest), HttpStatus.CREATED);
 	}
 	

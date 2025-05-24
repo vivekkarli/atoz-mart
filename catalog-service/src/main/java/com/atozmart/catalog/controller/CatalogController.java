@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,7 +15,6 @@ import com.atozmart.catalog.service.CatalogService;
 
 import lombok.AllArgsConstructor;
 
-@CrossOrigin
 @RestController
 @AllArgsConstructor
 public class CatalogController {
