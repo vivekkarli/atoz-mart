@@ -10,4 +10,6 @@ public interface WishlistDao {
 	
 	void addItem(WishlistDto wishlistDto, String username);
 	
+	void deleteItems(String username, String itemName);
+	
 }

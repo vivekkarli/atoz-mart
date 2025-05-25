@@ -6,5 +6,6 @@ create table wishlist (
 	item_name varchar(255),
 	price float(53) not null,
 	primary key (id),
+	created_at datetime(6) not null,
 	constraint uc_username_itemname unique (username, item_name)
 );

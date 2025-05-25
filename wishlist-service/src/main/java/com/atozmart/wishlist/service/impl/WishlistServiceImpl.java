@@ -51,6 +51,11 @@ public class WishlistServiceImpl implements WishlistService {
 		wishlistDao.addItem(wishlistDto, username);
 		
 	}
+
+	@Override
+	public void deleteItems(String username, String itemName) {
+		wishlistDao.deleteItems(username, itemName);		
+	}
 	
 	
 	

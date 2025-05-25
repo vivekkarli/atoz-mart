@@ -14,6 +14,7 @@ import com.atozmart.wishlist.entity.Wishlist;
 import com.atozmart.wishlist.exception.WishlistException;
 import com.atozmart.wishlist.repository.WishlistRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -42,6 +43,20 @@ public class WishlistDaoImpl implements WishlistDao {
 		} catch (DataIntegrityViolationException e) {
 			throw new WishlistException("item already present", HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@Override
+	@Transactional
+	public void deleteItems(String username, String itemName) {
+		if(itemName == null || itemName.isBlank()) {
+			// delete all by username
+			wishlistRepo.deleteByUserName(username);
+			return;
+		}
+		
+		// delete by username and itemname
+		wishlistRepo.deleteByUserNameAndItemName(username, itemName);
+		
 	}
 
 }

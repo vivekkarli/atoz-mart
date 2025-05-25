@@ -13,5 +13,7 @@ public interface WishlistService {
 	List<WishlistDto> viewItems(String username) throws WishlistException;
 
 	void addItem(WishlistDto wishlistDto, String username);
+	
+	void deleteItems(String username, String itemName);
 
 }

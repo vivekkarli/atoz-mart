@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atozmart.wishlist.dto.WishlistDto;
@@ -55,10 +56,10 @@ public class WishlistController {
 
 	}
 
-	@DeleteMapping("/item")
-	public ResponseEntity<String> removeItem(@RequestHeader("X-Username") String username, @RequestBody WishlistDto wishlistDto) {
-
-		return null;
+	@DeleteMapping("/items")
+	public ResponseEntity<Void> removeItem(@RequestHeader("X-Username") String username, @RequestParam(required = false) String itemName) {
+		wishlistService.deleteItems(username, itemName);
+		return ResponseEntity.noContent().build();
 
 	}
 
