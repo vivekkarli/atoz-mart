@@ -72,7 +72,11 @@ function WishlistPage({ accessToken, logout, isAuthenticated }) {
       setError(null);
     } catch (error) {
       console.error('Error fetching wishlist:', error);
-      if (error.response) {
+      if (error.response && error.response.status === 404 && error.response.data?.errorMsg === 'no items in wishlist') {
+        // Handle the expected case of an empty wishlist
+        setWishlistItems([]);
+        setError(null);
+      } else if (error.response) {
         setError(`Failed to fetch wishlist: ${error.response.data?.message || error.message}`);
       } else if (error.request) {
         setError('Failed to reach the server. Possible CORS issue or server is down.');
@@ -100,10 +104,10 @@ function WishlistPage({ accessToken, logout, isAuthenticated }) {
 
       const quantity = quantities[item.name] || 1;
       await axios.post(
-        'http://localhost:8072/atozmart/wishlist/cart',
+        'http://localhost:8072/atozmart/cart/items',
         {
           itemName: item.name,
-          price: item.price,
+          unitPrice: item.price,
           quantity: parseInt(quantity),
         },
         {
@@ -140,10 +144,50 @@ function WishlistPage({ accessToken, logout, isAuthenticated }) {
       }
 
       console.log(`Deleting item from wishlist: ${item.name}`);
+
+      await axios.delete('http://localhost:8072/atozmart/wishlist/items', {
+        params: { itemName: item.name },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setError(null);
+      alert(`Removed ${item.name} from wishlist`);
+      fetchWishlist(); // Refresh the wishlist after deletion
     } catch (error) {
       console.error('Error deleting from wishlist:', error);
       if (error.response) {
         setError(`Failed to delete from wishlist: ${error.response.data?.message || error.message}`);
+      } else if (error.request) {
+        setError('Failed to reach the server. Possible CORS issue or server is down.');
+      } else {
+        setError(error.message);
+      }
+    }
+  };
+
+  const clearWishlist = async () => {
+    try {
+      let token = currentToken;
+      const authType = localStorage.getItem('authType');
+      if (authType === 'keycloak' && isTokenExpired()) {
+        token = await refreshAccessToken();
+        setCurrentToken(token);
+      } else if (isTokenExpired()) {
+        setError('Session expired. Please log in again.');
+        return;
+      }
+
+      await axios.delete('http://localhost:8072/atozmart/wishlist/items', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setError(null);
+      alert('Wishlist cleared successfully');
+      fetchWishlist(); // Refresh the wishlist after clearing
+    } catch (error) {
+      console.error('Error clearing wishlist:', error);
+      if (error.response) {
+        setError(`Failed to clear wishlist: ${error.response.data?.message || error.message}`);
       } else if (error.request) {
         setError('Failed to reach the server. Possible CORS issue or server is down.');
       } else {
@@ -174,41 +218,51 @@ function WishlistPage({ accessToken, logout, isAuthenticated }) {
       {wishlistItems.length === 0 ? (
         <p className="text-gray-600">Your wishlist is empty.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {wishlistItems.map((item) => (
-            <div key={item.name} className="border p-4 rounded shadow">
-              <img
-                src="https://via.placeholder.com/150"
-                alt={item.name || 'Item'}
-                className="w-full h-40 object-cover mb-2"
-              />
-              <h2 className="text-xl font-semibold">{item.name}</h2>
-              <p className="text-gray-600">₹{item.price}</p>
-              <div className="mt-2">
-                <input
-                  type="number"
-                  min="1"
-                  value={quantities[item.name] || 1}
-                  onChange={(e) => handleQuantityChange(item.name, e.target.value)}
-                  className="w-16 p-1 border rounded"
+        <div>
+          <div className="mb-4">
+            <button
+              onClick={clearWishlist}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >
+              Clear Wishlist
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {wishlistItems.map((item) => (
+              <div key={item.name} className="border p-4 rounded shadow">
+                <img
+                  src="https://via.placeholder.com/150"
+                  alt={item.name || 'Item'}
+                  className="w-full h-40 object-cover mb-2"
                 />
+                <h2 className="text-xl font-semibold">{item.name}</h2>
+                <p className="text-gray-600">₹{item.price}</p>
+                <div className="mt-2">
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantities[item.name] || 1}
+                    onChange={(e) => handleQuantityChange(item.name, e.target.value)}
+                    className="w-16 p-1 border rounded"
+                  />
+                </div>
+                <div className="mt-4 flex space-x-2">
+                  <button
+                    onClick={() => addToCart(item)}
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                  >
+                    Add to Cart
+                  </button>
+                  <button
+                    onClick={() => deleteFromWishlist(item)}
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
-              <div className="mt-4 flex space-x-2">
-                <button
-                  onClick={() => addToCart(item)}
-                  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                >
-                  Add to Cart
-                </button>
-                <button
-                  onClick={() => deleteFromWishlist(item)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
     </div>

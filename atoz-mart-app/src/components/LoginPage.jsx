@@ -21,7 +21,7 @@ function LoginPage({ setAccessToken, setIsAuthenticated }) {
       console.log(response.headers);
       localStorage.setItem('accessToken', response.headers['x-access-token']);
       localStorage.setItem('authType', 'atozmart');
-      localStorage.setItem('tokenExpiration', Date.now() + 60 * 1000);
+      localStorage.setItem('tokenExpiration', Date.now() + 60 * 60 * 1000); // 60 mins
       setAccessToken(response.headers['x-access-token']);
       setIsAuthenticated(true);
       setError(null);
