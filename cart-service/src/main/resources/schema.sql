@@ -13,10 +13,10 @@ create table cart(
 	id integer auto_increment,
 	username varchar(255),
 	item_name varchar(255),
-	unit_price double not null,
 	quantity int default 1,
+	unit_price double not null,
 	created_at datetime not null,
 	updated_at datetime,
 	primary key (id),
-	constraint uc_username_itemname unique (username, item_name)
+	constraint uc_cart unique (username, item_name, quantity, unit_price)
 );

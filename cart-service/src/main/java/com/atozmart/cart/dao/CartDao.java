@@ -4,12 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.cart.dto.ItemDto;
 import com.atozmart.cart.entity.Cart;
-import com.atozmart.cart.exception.CartException;
 import com.atozmart.cart.repository.CartRepository;
 
 import jakarta.transaction.Transactional;
@@ -26,7 +24,7 @@ public class CartDao {
 	private ModelMapper modelMapper;
 
 	@Transactional
-	public void addItemsToCart(ItemDto itemDto, String username) {
+	public void addOrUpdateItemInCart(ItemDto itemDto, String username) {
 
 		// check if item already exists
 		Optional<Cart> existingItemOpt = cartRepo.findByUsernameAndItemName(username, itemDto.getItemName());
@@ -40,34 +38,16 @@ public class CartDao {
 	}
 
 	@Transactional
-	public void deleteItemsFromCart(String username, String itemName, int quantity) throws CartException {
-
-		if (quantity == 0) {
-			cartRepo.deleteByUsernameAndItemName(username, itemName);
+	public void deleteItems(String username, String itemName) {
+		if (itemName == null || itemName.isBlank()) {
+			// delete all by username
+			cartRepo.deleteByUsername(username);
 			return;
 		}
 
-		// check if item already exists
-		Optional<Cart> existingItemOpt = cartRepo.findByUsernameAndItemName(username, itemName);
+		// delete by username and itemname
+		cartRepo.deleteByUsernameAndItemName(username, itemName);
 
-		existingItemOpt.ifPresentOrElse(existingItem -> {
-			// if exists, set quantity
-			log.debug("existing item: {}", existingItem);
-			if (quantity >= existingItem.getQuantity()) {
-				throw new CartException("quantity specified should be less than the actual quantity",
-						HttpStatus.BAD_REQUEST);
-			}
-			existingItem.setQuantity(quantity);
-			log.debug("updated item: {}", existingItem);
-			cartRepo.save(existingItem);
-		}, () -> {
-			throw new CartException("item not present in cart", HttpStatus.NOT_FOUND);
-		});
-
-	}
-
-	public void deleteAllByusername(String username) {
-		cartRepo.deleteByUsername(username);
 	}
 
 	private void addNewItemToCart(ItemDto itemDto, String username) {
@@ -84,7 +64,8 @@ public class CartDao {
 
 		Cart updatedItem = new Cart();
 		modelMapper.map(existingItem, updatedItem);
-		updatedItem.setQuantity(existingItem.getQuantity() + newItem.getQuantity());
+		// updatedItem.setQuantity(existingItem.getQuantity() + newItem.getQuantity());
+		updatedItem.setQuantity(newItem.getQuantity());
 		updatedItem.setUnitPrice(newItem.getUnitPrice());
 		log.debug("updated item: {}", updatedItem);
 

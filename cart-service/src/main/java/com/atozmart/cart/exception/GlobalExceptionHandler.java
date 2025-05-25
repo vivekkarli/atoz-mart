@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 		}
 
 	}
-
+	
 	@ExceptionHandler(CartException.class)
 	public ResponseEntity<GlobalErrorResponse> handleCartException(CartException ce) {
 		return new ResponseEntity<>(new GlobalErrorResponse(ce.getMessage(), null), ce.getHttpStatus());

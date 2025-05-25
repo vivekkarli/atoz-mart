@@ -63,17 +63,17 @@ public class CartService {
 
 	}
 
-	public void addItemsToCart(ItemDto itemDto, String username) {
-		cartDao.addItemsToCart(itemDto, username);
+	public void addOrUpdateItemInCart(ItemDto itemDto, String username) {
+		cartDao.addOrUpdateItemInCart(itemDto, username);
 	}
 
-	public void removeItemsFromCart(String username, String item, int quantity) throws CartException {
-		cartDao.deleteItemsFromCart(username, item, quantity);
-
+	public void removeItemsFromCart(String username, String item) throws CartException {
+		cartDao.deleteItems(username, item);
 	}
 
 	@Transactional
-	public String proceedToPayment(String username, String email, CheckOutRequest checkOutRequest) throws CartException {
+	public String proceedToPayment(String username, String email, CheckOutRequest checkOutRequest)
+			throws CartException {
 
 		if (!checkOutRequest.paymentMode().equals("COD"))
 			throw new CartException("can't place order for %s. only COD is eligible to place order"
@@ -100,18 +100,17 @@ public class CartService {
 		String orderId = placeOrder(username, email, checkOutRequest, cartDetails);
 
 		// delete items from cart
-		cartDao.deleteAllByusername(username);
+		cartDao.deleteItems(username, null);
 
 		return orderId;
 	}
 
 	/**
-	 * @param email 
+	 * @param email
 	 * @returns orderId
 	 */
-
-	private String placeOrder(String username, String email, CheckOutRequest checkOutRequest, ViewCartResponse cartDetails)
-			throws CartException {
+	private String placeOrder(String username, String email, CheckOutRequest checkOutRequest,
+			ViewCartResponse cartDetails) throws CartException {
 
 		PlaceOrderRequest placeOrderRequest = new PlaceOrderRequest();
 		placeOrderRequest.setOrderAmount(checkOutRequest.orderAmount());

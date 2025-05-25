@@ -4,9 +4,9 @@ import java.net.URI;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -21,12 +21,10 @@ import com.atozmart.cart.exception.CartException;
 import com.atozmart.cart.service.CartService;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Validated
 @RestController
 @AllArgsConstructor
 public class CartController {
@@ -34,9 +32,10 @@ public class CartController {
 	private CartService cartService;
 
 	@PostMapping("/items")
-	public ResponseEntity<Object> addToCart(@RequestHeader("X-Username") String username, @RequestBody ItemDto item) {
+	public ResponseEntity<Object> addToCart(@RequestHeader("X-Username") String username,
+			@RequestBody @Valid ItemDto item) {
 		log.info("X-Username: {}", username);
-		cartService.addItemsToCart(item, username);
+		cartService.addOrUpdateItemInCart(item, username);
 		return ResponseEntity.created(URI.create("/items")).build();
 	}
 
@@ -48,17 +47,26 @@ public class CartController {
 	}
 
 	@DeleteMapping("/items")
-	public ResponseEntity<Object> removeItemsFromCart(@RequestHeader("X-Username") String username,
-			@RequestParam String itemName, @RequestParam(required = false, defaultValue = "0") @Min(0) int quantity) {
+	public ResponseEntity<Void> removeItemsFromCart(@RequestHeader("X-Username") String username,
+			@RequestParam(required = false) String itemName) {
 		log.info("X-Username: {}", username);
-		cartService.removeItemsFromCart(username, itemName, quantity);
+		cartService.removeItemsFromCart(username, itemName);
 		return ResponseEntity.noContent().build();
+	}
+
+	@PatchMapping("/items")
+	public ResponseEntity<Void> updateItemsInCart(@RequestHeader("X-Username") String username,
+			@RequestBody @Valid ItemDto item) {
+		log.info("X-Username: {}", username);
+		cartService.addOrUpdateItemInCart(item, username);
+		return ResponseEntity.ok().build();
+
 	}
 
 	@PostMapping("/checkout")
 	public ResponseEntity<CheckOutResponse> proceedToPayment(@RequestHeader("X-Username") String username,
-			@RequestHeader(name = "X-User-Email", required = false) String email, @RequestBody @Valid CheckOutRequest checkOutRequest)
-			throws CartException {
+			@RequestHeader(name = "X-User-Email", required = false) String email,
+			@RequestBody @Valid CheckOutRequest checkOutRequest) throws CartException {
 		String orderId = cartService.proceedToPayment(username, email, checkOutRequest);
 		return new ResponseEntity<>(new CheckOutResponse(orderId, "order placed successfully"), HttpStatus.CREATED);
 	}
