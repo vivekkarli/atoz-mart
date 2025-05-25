@@ -25,15 +25,23 @@ public class CatalogDaoImpl implements CatalogDao {
 	}
 
 	@Override
-	public List<Item> getItems(int pageNo, int size, String sortBy, String sortDirection) {
+	public Page<Item> getItems(int pageNo, int size, String sortBy, String sortDirection, boolean isLastPage) {
 
 		Sort sort = Sort.by(Direction.ASC, sortBy);
-		
+
 		if (sortDirection.equals("desc"))
 			sort = Sort.by(Direction.DESC, sortBy);
 
-		Page<Item> pages = itemRepo.findAll(PageRequest.of(pageNo, size).withSort(sort));
-		return pages.getContent();
+		if (!isLastPage)
+			return itemRepo.findAll(PageRequest.of(pageNo, size).withSort(sort));
+
+		long totalItems = itemRepo.count();
+		int lastPageNo = (int) (totalItems / size);
+		if (totalItems % size == 0 && lastPageNo > 0) {
+			lastPageNo--; // Adjust for the case when totalElements is an exact multiple of pageSize
+		}
+		return itemRepo.findAll(PageRequest.of(lastPageNo, size).withSort(sort));
+
 	}
 
 }
