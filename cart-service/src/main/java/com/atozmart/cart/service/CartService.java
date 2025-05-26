@@ -22,21 +22,21 @@ import com.atozmart.commons.exception.dto.DownStreamException;
 
 import feign.FeignException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CartService {
 
-	private CartDao cartDao;
+	private final CartDao cartDao;
 
-	private CouponDao couponDao;
+	private final CouponDao couponDao;
 
-	private OrderFeignClient orderFeignClient;
+	private final OrderFeignClient orderFeignClient;
 
-	private ModelMapper mapper;
+	private final ModelMapper mapper;
 
 	public ViewCartResponse getCartDetails(String username) throws CartException {
 
@@ -85,7 +85,9 @@ public class CartService {
 			throw new CartException("order amount mismatch", HttpStatus.BAD_REQUEST);
 
 		// validate orderSavings
-		double discountPercentage = couponDao.getCouponDiscount(checkOutRequest.couponCode());
+		double discountPercentage = checkOutRequest.couponCode() == null || checkOutRequest.couponCode().isBlank() ? 0
+				: couponDao.getCouponDiscount(checkOutRequest.couponCode());
+		
 		double discountAmount = checkOutRequest.orderAmount() * (discountPercentage / 100);
 		if (discountAmount != checkOutRequest.orderSavings())
 			throw new CartException("order savings mismatch", HttpStatus.BAD_REQUEST);
@@ -95,6 +97,7 @@ public class CartService {
 			throw new CartException("order total mismatch", HttpStatus.BAD_REQUEST);
 
 		// payment
+		// TODO
 
 		// place order
 		String orderId = placeOrder(username, email, checkOutRequest, cartDetails);
@@ -106,8 +109,7 @@ public class CartService {
 	}
 
 	/**
-	 * @param email
-	 * @returns orderId
+	 * @return orderId
 	 */
 	private String placeOrder(String username, String email, CheckOutRequest checkOutRequest,
 			ViewCartResponse cartDetails) throws CartException {

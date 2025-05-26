@@ -21,15 +21,15 @@ import com.atozmart.cart.exception.CartException;
 import com.atozmart.cart.service.CartService;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CartController {
 
-	private CartService cartService;
+	private final CartService cartService;
 
 	@PostMapping("/items")
 	public ResponseEntity<Object> addToCart(@RequestHeader("X-Username") String username,
