@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.atozmart.commons.exception.dto.GlobalErrorResponse;
 
 @RestControllerAdvice
-public class GolbalExceptionHandler {
+public class CatalogExceptionHandler {
 
 	@ExceptionHandler(exception = CatalogException.class)
 	public ResponseEntity<GlobalErrorResponse> handleCatalogException(CatalogException ex) {

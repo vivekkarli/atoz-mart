@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.atozmart.commons.exception.dto.GlobalErrorResponse;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class AuthServerExceptionHandler {
 
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<GlobalErrorResponse> handlerBadCredentialsException(BadCredentialsException ex) {

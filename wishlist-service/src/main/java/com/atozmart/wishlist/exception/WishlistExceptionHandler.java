@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class WishlistExceptionHandler {
 
 	@ExceptionHandler(WishlistException.class)
 	public ResponseEntity<GlobalErrorResponse> handlerWishlistException(WishlistException ex) {

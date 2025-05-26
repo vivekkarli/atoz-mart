@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableAsync
 @EnableTransactionManagement
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.atozmart.authserver", "com.atozmart.commons" })
 public class AtozmartAuthserverApplication {
 
 	public static void main(String[] args) {

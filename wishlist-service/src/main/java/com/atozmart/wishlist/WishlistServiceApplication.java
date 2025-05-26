@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableFeignClients
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.atozmart.wishlist", "com.atozmart.commons" })
 public class WishlistServiceApplication {
 
 	public static void main(String[] args) {

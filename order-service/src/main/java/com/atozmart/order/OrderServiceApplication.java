@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @EnableFeignClients
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.atozmart.order", "com.atozmart.commons" })
 public class OrderServiceApplication {
 
 	public static void main(String[] args) {

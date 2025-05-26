@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableFeignClients
 @EnableTransactionManagement
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.atozmart.cart", "com.atozmart.commons" })
 public class CartServiceApplication {
 
 	public static void main(String[] args) {
