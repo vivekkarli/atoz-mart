@@ -5,36 +5,18 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.atozmart.commons.exception.dto.DownStreamException;
 import com.atozmart.wishlist.dao.WishlistDao;
 import com.atozmart.wishlist.dto.WishlistDto;
-import com.atozmart.wishlist.dto.cart.ItemDto;
 import com.atozmart.wishlist.exception.WishlistException;
-import com.atozmart.wishlist.service.CartFeignClient;
 import com.atozmart.wishlist.service.WishlistService;
 
-import feign.FeignException;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 
-@Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class WishlistServiceImpl implements WishlistService {
 
-	private CartFeignClient cartFeignClient;
-	
-	private WishlistDao wishlistDao;
-	
-	@Override
-	public String addToCart(String username, ItemDto itemDto) {
-		log.info("method: addToCart");
-		try {
-		return cartFeignClient.addItem(username, itemDto);
-		} catch (FeignException e) {
-			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));
-		}
-	}
+	private final WishlistDao wishlistDao;
 
 	@Override
 	public List<WishlistDto> viewItems(String username) throws WishlistException {

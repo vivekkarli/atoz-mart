@@ -15,15 +15,15 @@ import com.atozmart.wishlist.exception.WishlistException;
 import com.atozmart.wishlist.repository.WishlistRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Repository
 public class WishlistDaoImpl implements WishlistDao {
 
-	private WishlistRepository wishlistRepo;
+	private final WishlistRepository wishlistRepo;
 
-	private ModelMapper mapper;
+	private final ModelMapper mapper;
 
 	public List<WishlistDto> getAllByUsername(String username){
 		List<Wishlist> wishlists = wishlistRepo.findByUsername(username);

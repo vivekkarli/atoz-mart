@@ -13,19 +13,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atozmart.wishlist.dto.WishlistDto;
-import com.atozmart.wishlist.dto.cart.ItemDto;
 import com.atozmart.wishlist.exception.WishlistException;
 import com.atozmart.wishlist.service.WishlistService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class WishlistController {
 
-	private WishlistService wishlistService;
+	private final WishlistService wishlistService;
 
 	@PostMapping("/items")
 	public ResponseEntity<String> addItem(@RequestHeader("X-Username") String username,
@@ -43,16 +42,6 @@ public class WishlistController {
 		log.info("showing items from wishlist");
 		List<WishlistDto> wishlistDtos = wishlistService.viewItems(username);
 		return ResponseEntity.ok(wishlistDtos);
-
-	}
-
-	@PostMapping("/cart")
-	public ResponseEntity<String> addToCart(@RequestHeader("X-Username") String username, @RequestBody ItemDto itemDto) {
-		log.info("X-Username: {}",username);
-		log.info("adding items to cart");
-		String msg = wishlistService.addToCart(username, itemDto);
-
-		return new ResponseEntity<>(msg, HttpStatus.CREATED);
 
 	}
 
