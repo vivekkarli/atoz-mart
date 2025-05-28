@@ -25,21 +25,23 @@ import com.atozmart.authserver.dto.SignUpForm;
 import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.exception.AuthServerException;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthServerService {
 
-	private AppUserDao appUserDao;
+	private final AppUserDao appUserDao;
 
-	private NotificationService notificationService;
+	private final NotificationService notificationService;
+	
+	private final ProfileService profileService;
 
-	private JwtService jwtService;
+	private final JwtService jwtService;
 
-	private PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	private final AuthenticationManager authenticationManager;
 
@@ -78,8 +80,11 @@ public class AuthServerService {
 		log.debug("new appUser: {}", appUser);
 
 		appUserDao.signUp(appUser);
+		
+		// create profile, async process
+		profileService.createProfile(signUpForm);
 
-		// async process
+		// send email verification mail, async process
 		notificationService.sendEmailVerificationMail(appUser);
 
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.CREATED);

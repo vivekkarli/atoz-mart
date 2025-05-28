@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.atozmart.authserver.service.AuthServerService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/admin")
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthServerAdminController {
 	
-	private AuthServerService authServerService;
+	private final AuthServerService authServerService;
 	
 	/**
 	 * to find email id of the user.

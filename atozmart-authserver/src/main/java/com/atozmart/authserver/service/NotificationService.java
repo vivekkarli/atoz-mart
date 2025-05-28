@@ -13,15 +13,15 @@ import com.atozmart.authserver.dto.MailContentDto;
 import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.entity.EmailVerification;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NotificationService {
 	
-	private NotificationDao notificationDao;
+	private final NotificationDao notificationDao;
 	
-	private StreamBridge streamBridge;
+	private final StreamBridge streamBridge;
 	
 	public void sendEmailVerificationMail(AppUser appUser) {
 		// step-1 generate random code

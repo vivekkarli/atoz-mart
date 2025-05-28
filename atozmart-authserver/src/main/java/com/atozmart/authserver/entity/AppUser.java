@@ -37,9 +37,9 @@ public class AppUser implements UserDetails{
 	
 	private String roles;
 	
-	private Boolean emailVerified;
+	private boolean emailVerified;
 	
-	private Boolean mobileNoVerified;
+	private boolean mobileNoVerified;
 	
 	@CreationTimestamp
 	@Column(updatable = false)

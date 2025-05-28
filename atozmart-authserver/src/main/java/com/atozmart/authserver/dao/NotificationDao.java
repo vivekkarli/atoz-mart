@@ -13,15 +13,15 @@ import com.atozmart.authserver.repository.AppUserRepository;
 import com.atozmart.authserver.repository.EmailVerificationRepository;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NotificationDao {
 
-	private AppUserRepository appUserRepository;
+	private final AppUserRepository appUserRepository;
 
-	private EmailVerificationRepository emailVerificationRepo;
+	private final EmailVerificationRepository emailVerificationRepo;
 
 	@Transactional
 	public void verifyEmail(String code) {

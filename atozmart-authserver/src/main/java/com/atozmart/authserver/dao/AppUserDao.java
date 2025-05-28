@@ -9,13 +9,13 @@ import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.repository.AppUserRepository;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AppUserDao implements UserDetailsService {
 
-	private AppUserRepository appUserRepository;
+	private final AppUserRepository appUserRepository;
 
 	@Override
 	public AppUser loadUserByUsername(String username) throws UsernameNotFoundException {

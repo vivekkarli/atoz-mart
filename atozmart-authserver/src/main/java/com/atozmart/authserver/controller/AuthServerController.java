@@ -14,17 +14,17 @@ import com.atozmart.authserver.dto.SignUpForm;
 import com.atozmart.authserver.service.AuthServerService;
 import com.atozmart.authserver.service.NotificationService;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class AuthServerController {
 
-	private AuthServerService authServerService;
+	private final AuthServerService authServerService;
 
-	private NotificationService notificationService;
+	private final NotificationService notificationService;
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody LoginForm loginForm) {

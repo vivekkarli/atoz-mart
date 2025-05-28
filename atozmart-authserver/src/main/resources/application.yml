@@ -29,6 +29,11 @@ spring:
        sendEmail-out-0:
           destination: in-send-email #queue
           group: atozmart
+       registerNewUser-out-0:
+          destination: in-register-user #queue
+          group: atozmart
+          
+          
   rabbitmq:
     host: localhost
     port: 5672
