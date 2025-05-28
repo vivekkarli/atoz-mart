@@ -1,0 +1,15 @@
+package com.atozmart.profile;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication(scanBasePackages = { "com.atozmart.profile"
+		//, "com.atozmart.commons" 
+		})
+public class ProfileServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ProfileServiceApplication.class, args);
+	}
+
+}

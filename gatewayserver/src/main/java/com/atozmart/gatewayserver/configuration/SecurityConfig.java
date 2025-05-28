@@ -55,6 +55,9 @@ public class SecurityConfig {
 				
 				// order-service endpoints
 				.pathMatchers("/atozmart/order/**").hasAnyRole("USER", "ADMIN")
+				
+				// order-service endpoints
+				.pathMatchers("/atozmart/profile/**").hasAnyRole("USER", "ADMIN")
 
 				.anyExchange().permitAll());
 
