@@ -81,13 +81,13 @@ public class AuthServerService {
 
 		appUserDao.signUp(appUser);
 		
-		// create profile, async process
+		// create new profile, async process
 		profileService.createProfile(signUpForm);
 
 		// send email verification mail, async process
 		notificationService.sendEmailVerificationMail(appUser);
 
-		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.CREATED);
+		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
 	}
 
 	public ResponseEntity<AuthorizeResponse> authorizeToken(String token) throws AuthServerException {

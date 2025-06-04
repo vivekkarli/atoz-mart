@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class ProfileExceptionHandler {
 
 	@ExceptionHandler(ProfileException.class)
-	public ResponseEntity<GlobalErrorResponse> handleCartException(ProfileException ce) {
+	public ResponseEntity<GlobalErrorResponse> handleProfileException(ProfileException ce) {
 		return new ResponseEntity<>(new GlobalErrorResponse(ce.getMessage(), null), ce.getHttpStatus());
 	}
 	

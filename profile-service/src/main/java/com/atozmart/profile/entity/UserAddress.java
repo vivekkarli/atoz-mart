@@ -7,31 +7,19 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.IdClass;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
+@IdClass(UserAddressCompKey.class)
 @Data
-@EqualsAndHashCode(exclude = { "username" })
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(name = "unx_username_addType", columnNames = { "username",
-		"addressType" }))
 public class UserAddress {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private String username;
 
-	@ManyToOne
-	@JoinColumn(name = "username", nullable = false)
-	private UserProfile username;
-
+	@Id
 	private String addressType;
 
 	private boolean defaultAddress;
@@ -55,13 +43,5 @@ public class UserAddress {
 	@UpdateTimestamp
 	@Column(insertable = false)
 	private LocalDateTime updatedAt;
-
-	@Override
-	public String toString() {
-		return "UserAddress [id=" + id + ", username=" + username.getUsername() + ", addressType=" + addressType
-				+ ", defaultAddress=" + defaultAddress + ", addLine1=" + addLine1 + ", addLine2=" + addLine2
-				+ ", addLine3=" + addLine3 + ", pincode=" + pincode + ", country=" + country + ", createdAt="
-				+ createdAt + ", updatedAt=" + updatedAt + "]";
-	}
 
 }

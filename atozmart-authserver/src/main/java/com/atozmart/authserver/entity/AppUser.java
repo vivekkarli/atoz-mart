@@ -47,7 +47,7 @@ public class AppUser implements UserDetails{
 	
 	@UpdateTimestamp
 	@Column(insertable = false)
-	private LocalDateTime updateAt; 
+	private LocalDateTime updatedAt; 
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

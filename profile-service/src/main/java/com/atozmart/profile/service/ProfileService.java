@@ -1,20 +1,14 @@
 package com.atozmart.profile.service;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.atozmart.profile.dao.ProfileDao;
-import com.atozmart.profile.dto.AddressDetails;
-import com.atozmart.profile.dto.BasicDetails;
 import com.atozmart.profile.dto.ProfileDetails;
-import com.atozmart.profile.entity.UserAddress;
 import com.atozmart.profile.entity.UserProfile;
+import com.atozmart.profile.exception.ProfileException;
+import com.atozmart.profile.util.ProfileMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,53 +18,58 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ProfileService {
 
-	private final ModelMapper modelMapper;
-
 	private final ProfileDao profileDao;
+	
+	private final AuthServerFeignClient authServerFeignClient;
 
 	public ProfileDetails getProfileDetails(String username) {
 
 		UserProfile userProfile = profileDao.getProfileDetails(username);
 		log.debug("userProfile: {}", userProfile);
 
-		Set<UserAddress> userAddresses = userProfile.getAddresses();
-		log.debug("userAddress: {}", userAddresses);
+		return ProfileMapper.mapToProfileDetails(userProfile);
 
-		List<AddressDetails> addressDetails = userAddresses.stream()
-				.map(userAddress -> modelMapper.map(userAddress, AddressDetails.class)).toList();
-
-		BasicDetails basicDetails = modelMapper.map(userProfile, BasicDetails.class);
-
-		ProfileDetails profileDetails = new ProfileDetails();
-		profileDetails.setBasicDetails(basicDetails);
-		profileDetails.setAddressDetails(addressDetails);
-
-		return profileDetails;
 	}
 
 	public void addNewProfile(String username, ProfileDetails profileDetails) {
 
-		UserProfile userProfile = new UserProfile();
+		UserProfile userProfile = ProfileMapper.mapToUserProfile(username, profileDetails);
 
-		userProfile.setUsername(username);
-		userProfile.setFirstName(profileDetails.getBasicDetails().getFirstName());
-		userProfile.setLastName(profileDetails.getBasicDetails().getLastName());
-		userProfile.setMail(profileDetails.getBasicDetails().getMail());
-		userProfile.setMobileNo(profileDetails.getBasicDetails().getMobileNo());
+		profileDao.addOrUpdateProfile(userProfile);
 
-		Set<UserAddress> userAddresses = profileDetails.getAddressDetails() == null ? Collections.EMPTY_SET
-				: profileDetails.getAddressDetails().stream().map(address -> {
-					UserAddress userAddress = modelMapper.map(address, UserAddress.class);
-					userAddress.setUsername(userProfile);
-					return userAddress;
-				}).collect(Collectors.toSet());
+	}
 
-		log.debug("userAddresses: {}", userAddresses);
+	@Transactional
+	public void editProfileDetails(String username, ProfileDetails profileDetails) throws ProfileException {
 
-		userProfile.setAddresses(userAddresses);
-		log.debug("userProfile: {}", userProfile);
+		if (!profileDao.doesProfileExists(username))
+			throw new ProfileException("profile doesn't exist with username: %s".formatted(username), HttpStatus.NOT_FOUND);
 
-		profileDao.addNewProfile(userProfile);
+		var isUsernameChanged = !profileDetails.getBasicDetails().getUsername().equals(username);
+
+		// case-1 if username is not changed -> update profile
+		if (!isUsernameChanged) {
+			UserProfile userProfile = ProfileMapper.mapToUserProfile(username, profileDetails);
+			profileDao.addOrUpdateProfile(userProfile);
+			return;
+		}
+
+		// case-2 if username is changed
+		// check if new username is already taken
+		if (profileDao.doesProfileExists(profileDetails.getBasicDetails().getUsername()))
+			throw new ProfileException(
+					"username %s already taken".formatted(profileDetails.getBasicDetails().getUsername()), HttpStatus.BAD_REQUEST);
+
+		// create new profile
+		UserProfile userProfile = ProfileMapper.mapToUserProfile(profileDetails.getBasicDetails().getUsername(),
+				profileDetails);
+		profileDao.addOrUpdateProfile(userProfile);
+
+		// update the new username in auth server also --> synchronous call
+		authServerFeignClient.updateBasicDetails(username, profileDetails.getBasicDetails());
+
+		// delete old profile
+		profileDao.deleteProfile(username);
 
 	}
 

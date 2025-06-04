@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atozmart.profile.dto.ProfileDetails;
+import com.atozmart.profile.exception.ProfileException;
 import com.atozmart.profile.service.ProfileService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -35,16 +37,10 @@ public class ProfileController {
 	}
 
 	@PatchMapping
-	public ResponseEntity<ProfileDetails> editProfileDetails(@RequestHeader("X-Username") String username,
-			@RequestBody ProfileDetails profileDetails) {
-		
-		// if username is changed, update the username in auth server also.
-		// event
-		
-		// if default is changed, also update others to false
-		// username-addressType-default
-		
-		return null;
+	public ResponseEntity<Void> editProfileDetails(@RequestHeader("X-Username") String username,
+			@Valid @RequestBody ProfileDetails profileDetails) throws ProfileException {
+		profileService.editProfileDetails(username, profileDetails);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

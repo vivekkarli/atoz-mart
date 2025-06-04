@@ -15,9 +15,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
-@EqualsAndHashCode(exclude = {"address"})
+@EqualsAndHashCode(exclude = {"addresses"})
+@ToString(exclude = {"addresses"})
 @Entity
 public class UserProfile {
 
@@ -37,7 +39,7 @@ public class UserProfile {
 	@Column(insertable = false)
 	private LocalDateTime updatedAt;
 	
-	@OneToMany(mappedBy = "username", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "username", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<UserAddress> addresses;
 
 	

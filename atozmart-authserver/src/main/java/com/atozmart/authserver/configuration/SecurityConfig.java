@@ -25,7 +25,7 @@ public class SecurityConfig {
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(authorize -> 
 		authorize
-		.requestMatchers("/admin/email/**").hasAnyRole("ADMIN", "APP")
+		.requestMatchers("/admin/**").hasAnyRole("ADMIN", "APP")
 		.anyRequest().permitAll());
 		http.csrf(csrfSpec-> csrfSpec.disable());
 		http.httpBasic(Customizer.withDefaults());

@@ -14,6 +14,7 @@ import com.atozmart.authserver.dto.SignUpForm;
 import com.atozmart.authserver.service.AuthServerService;
 import com.atozmart.authserver.service.NotificationService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +33,7 @@ public class AuthServerController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<LoginResponse> signUp(@RequestBody SignUpForm signUpForm) {
+	public ResponseEntity<LoginResponse> signUp(@Valid @RequestBody SignUpForm signUpForm) {
 		return authServerService.signUp(signUpForm);
 	}
 
