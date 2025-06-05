@@ -11,6 +11,7 @@ import com.atozmart.profile.configuration.GeneralConfig;
 import com.atozmart.profile.dto.AddressDetails;
 import com.atozmart.profile.dto.BasicDetails;
 import com.atozmart.profile.dto.ProfileDetails;
+import com.atozmart.profile.entity.AddressTypeEnum;
 import com.atozmart.profile.entity.UserAddress;
 import com.atozmart.profile.entity.UserProfile;
 
@@ -39,6 +40,7 @@ public class ProfileMapper {
 				: profileDetails.getAddressDetails().stream().map(address -> {
 					UserAddress userAddress = MODEL_MAPPER.map(address, UserAddress.class);
 					userAddress.setUsername(username);
+					userAddress.setAddressType(AddressTypeEnum.fromString(address.getAddressType()));
 					return userAddress;
 				}).collect(Collectors.toSet());
 
@@ -55,8 +57,11 @@ public class ProfileMapper {
 		Set<UserAddress> userAddresses = userProfile.getAddresses();
 		log.debug("userAddress: {}", userAddresses);
 
-		List<AddressDetails> addressDetails = userAddresses.stream()
-				.map(userAddress -> MODEL_MAPPER.map(userAddress, AddressDetails.class)).toList();
+		List<AddressDetails> addressDetails = userAddresses.stream().map(userAddress -> {
+			AddressDetails addressDetailsTemp = MODEL_MAPPER.map(userAddress, AddressDetails.class);
+			addressDetailsTemp.setAddressType(userAddress.getAddressType().getAddressType());
+			return addressDetailsTemp;
+		}).toList();
 
 		BasicDetails basicDetails = MODEL_MAPPER.map(userProfile, BasicDetails.class);
 

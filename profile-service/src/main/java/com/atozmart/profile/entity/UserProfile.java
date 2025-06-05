@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -21,6 +23,8 @@ import lombok.ToString;
 @EqualsAndHashCode(exclude = {"addresses"})
 @ToString(exclude = {"addresses"})
 @Entity
+@DynamicInsert
+@DynamicUpdate
 public class UserProfile {
 
 	@Id
@@ -41,9 +45,5 @@ public class UserProfile {
 	
 	@OneToMany(mappedBy = "username", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<UserAddress> addresses;
-
 	
-	
-	
-
 }

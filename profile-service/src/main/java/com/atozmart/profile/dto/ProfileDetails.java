@@ -11,6 +11,7 @@ public class ProfileDetails {
 	@Valid
 	private BasicDetails basicDetails;
 	
+	@Valid
 	private List<AddressDetails> addressDetails;
 
 }
