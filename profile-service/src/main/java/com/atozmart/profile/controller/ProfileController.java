@@ -19,24 +19,28 @@ import com.atozmart.profile.service.ProfileService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/profile")
 @RestController
 public class ProfileController {
-	
+
 	private final ProfileDetailsValidator profileDetailsValidator;
 
 	private final ProfileService profileService;
 
 	@GetMapping
 	public ResponseEntity<ProfileDetails> getProfileDetails(@RequestHeader("X-Username") String username) {
+		log.info("X-Username: {}", username);
 		return ResponseEntity.ok(profileService.getProfileDetails(username));
 	}
 
 	@PostMapping
 	public ResponseEntity<Void> addNewProfile(@RequestHeader("X-Username") String username,
 			@Valid @RequestBody ProfileDetails profileDetails) {
+		log.info("X-Username: {}", username);
 		profileDetailsValidator.validateProfileDetails(profileDetails);
 		profileService.addNewProfile(username, profileDetails);
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -45,21 +49,24 @@ public class ProfileController {
 	@PatchMapping
 	public ResponseEntity<Void> editProfileDetails(@RequestHeader("X-Username") String username,
 			@Valid @RequestBody ProfileDetails profileDetails) throws ProfileException {
+		log.info("X-Username: {}", username);
 		profileDetailsValidator.validateProfileDetails(profileDetails);
 		profileService.editProfileDetails(username, profileDetails);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/address")
 	public ResponseEntity<Void> deleteAddress(@RequestHeader("X-Username") String username,
 			@RequestParam(required = false) String addressType) throws ProfileException {
+		log.info("X-Username: {}", username);
 		profileService.deleteAddress(username, addressType);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@PatchMapping("/address")
 	public ResponseEntity<Void> changeDefault(@RequestHeader("X-Username") String username,
 			@RequestParam String addressType) throws ProfileException {
+		log.info("X-Username: {}", username);
 		profileService.changeDefaultTo(username, addressType);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
