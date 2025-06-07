@@ -38,7 +38,7 @@ public class ProfileService {
 	}
 
 	public void updateBasicDetails(String username, BasicDetails basicDetails) {
-
+		
 		appUserDao.updateBasicDetails(username, basicDetails);
 
 	}

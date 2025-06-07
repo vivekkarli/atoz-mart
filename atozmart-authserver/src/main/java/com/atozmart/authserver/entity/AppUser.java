@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,6 +21,8 @@ import lombok.Data;
 
 @Entity
 @Data
+@DynamicUpdate
+@DynamicInsert
 public class AppUser implements UserDetails{
 	
 	/**

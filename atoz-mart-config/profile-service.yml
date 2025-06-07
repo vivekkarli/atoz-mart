@@ -89,5 +89,3 @@ logging:
   level:
     com.atozmart.profile: DEBUG
     com.netflix.discovery.DiscoveryClient: OFF
-
-    

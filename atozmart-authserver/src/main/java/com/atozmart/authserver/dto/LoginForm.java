@@ -1,5 +1,13 @@
 package com.atozmart.authserver.dto;
 
-public record LoginForm (String username, String password){
+import jakarta.validation.constraints.NotEmpty;
+
+public record LoginForm (
+		
+		@NotEmpty(message = "please enter your username")
+		String username, 
+		
+		@NotEmpty(message = "please enter your password")
+		String password){
 
 }

@@ -1,6 +1,6 @@
 package com.atozmart.profile.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -14,14 +14,14 @@ public class AddressDetails {
 
 	private boolean defaultAddress;
 
-	@NotNull(message = "address line 1 is mandatory")
+	@NotEmpty(message = "address line 1 is mandatory")
 	private String addLine1;
 
 	private String addLine2;
 
 	private String addLine3;
 
-	@NotNull(message = "pincode is mandatory")
+	@NotEmpty(message = "pincode is mandatory")
 	private String pincode;
 
 	private String country;

@@ -64,14 +64,6 @@ public class ProfileService {
 		
 		profileDao.changeDefaultTo(username, addressType);
 		
-		// get existing default address
-		
-		// get existing address with addressType
-		
-		// swap
-		
-		//save
-		
 	}
 
 }
