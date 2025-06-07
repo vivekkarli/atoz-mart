@@ -5,7 +5,9 @@ import LoginPage from './components/LoginPage';
 import LoginCallback from './components/LoginCallback';
 import HomePage from './components/HomePage';
 import WishlistPage from './components/WishlistPage';
-import CartPage from './components/CartPage'; // Add this import
+import CartPage from './components/CartPage';
+import ProfilePage from './components/ProfilePage';
+import EditProfilePage from './components/EditProfilePage';
 
 function App() {
   const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || null);
@@ -40,7 +42,8 @@ function App() {
           <Route path="/login/callback" element={<LoginCallback setAccessToken={setAccessToken} setIsAuthenticated={setIsAuthenticated} />} />
           <Route path="/wishlist" element={<WishlistPage accessToken={accessToken} logout={logout} isAuthenticated={isAuthenticated} />} />
           <Route path="/cart" element={<CartPage accessToken={accessToken} isAuthenticated={isAuthenticated} />} />
-          <Route path="/profile" element={<div className="text-center mt-10">Profile Page (Coming Soon)</div>} />
+          <Route path="/profile" element={<ProfilePage accessToken={accessToken} isAuthenticated={isAuthenticated} />} /> 
+          <Route path="/profile/edit" element={<EditProfilePage accessToken={accessToken} isAuthenticated={isAuthenticated} />} /> 
         </Routes>
       </div>
     </Router>
