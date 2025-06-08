@@ -9,6 +9,7 @@ create table orders (
 	payment_mode varchar(255),
 	payment_status varchar(255),
 	delivery_status varchar(255),
+	order_total double,
 	updated_at datetime(6),
 	created_at datetime(6) not null,
 	primary key (order_id)
