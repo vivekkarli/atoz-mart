@@ -17,10 +17,10 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
   sql:
     init:
-      mode: always
+      mode: never
   cloud:
     stream:
      bindings:

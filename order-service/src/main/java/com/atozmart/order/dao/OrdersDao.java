@@ -1,13 +1,17 @@
 package com.atozmart.order.dao;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.order.dto.PlaceOrderRequest;
 import com.atozmart.order.entity.OrderItem;
 import com.atozmart.order.entity.Orders;
+import com.atozmart.order.exception.OrderException;
 import com.atozmart.order.repository.OrdersRepository;
 
 import lombok.AllArgsConstructor;
@@ -21,7 +25,7 @@ public class OrdersDao {
 	private OrdersRepository orderRepo;
 
 	private ModelMapper mapper;
-
+	
 	public String placeOrder(String username, PlaceOrderRequest placeOrderRequest) {
 
 		Orders orders = new Orders();
@@ -29,12 +33,13 @@ public class OrdersDao {
 		orders.setPaymentMode(placeOrderRequest.paymentMode());
 		orders.setPaymentStatus("completed");
 		orders.setDeliveryStatus("arriving by tommorow");
+		orders.setOrderTotal(placeOrderRequest.orderTotal());
 
-		List<OrderItem> orderItems = placeOrderRequest.items().stream().map(item -> {
+		Set<OrderItem> orderItems = placeOrderRequest.items().stream().map(item -> {
 			OrderItem orderItem = mapper.map(item, OrderItem.class);
 			orderItem.setOrderId(orders);
 			return orderItem;
-		}).toList();
+		}).collect(Collectors.toSet());
 
 		orders.setOrderItems(orderItems);
 
@@ -44,6 +49,26 @@ public class OrdersDao {
 		Orders savedOrder = orderRepo.save(orders);
 
 		return savedOrder.getOrderId().toString();
+	}
+
+	public List<Orders> getOrderDetails(String username, Integer orderId) {
+
+		if (orderId == null) {
+			List<Orders> orders = orderRepo.findByUsername(username);
+
+			if (orders.isEmpty())
+				throw new OrderException("no orders found", HttpStatus.NOT_FOUND);
+
+			return orders;
+		}
+
+		Orders order = orderRepo.findByUsernameAndOrderId(username, orderId).orElseThrow(
+				() -> new OrderException("order with order id: %d not found".formatted(orderId), HttpStatus.NOT_FOUND));
+		Set<OrderItem> orderItems = order.getOrderItems();
+		order.setOrderItems(orderItems);
+
+		return List.of(order);
+
 	}
 
 }

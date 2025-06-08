@@ -1,7 +1,7 @@
 package com.atozmart.order.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -15,9 +15,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
+@ToString(exclude = { "orderItems" })
+@EqualsAndHashCode(exclude = { "orderItems" })
 public class Orders {
 
 	@Id
@@ -27,10 +31,11 @@ public class Orders {
 	private String paymentMode;
 	private String paymentStatus;
 	private String deliveryStatus;
-	
-	@OneToMany( mappedBy = "orderId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<OrderItem> orderItems; 
-	
+	private Double orderTotal;
+
+	@OneToMany(mappedBy = "orderId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Set<OrderItem> orderItems;
+
 	@CreationTimestamp
 	@Column(updatable = false)
 	private LocalDateTime createdAt;
@@ -38,6 +43,5 @@ public class Orders {
 	@UpdateTimestamp
 	@Column(insertable = false)
 	private LocalDateTime updatedAt;
-	
-	
+
 }

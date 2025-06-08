@@ -1,47 +1,39 @@
 server:
-  port: 8085
-  
+  port: 8084
+
 spring:
   application:
-    name: profile-service
+    name: order-service
   profiles:
     active: default
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:
-    url: jdbc:mysql://localhost:3306/profiledb
+    url: jdbc:mysql://localhost:3306/orderdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: root
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
   sql:
     init:
-      mode: NEVER
+      mode: never
   cloud:
-    function: 
-      defination: registerNewUser
     stream:
-      bindings:
-        registerNewUser-in-0:
-          destination: in-register-user
-          group: atozmart
-        registerNewUser-out-0:
-          destination: out-register-user #queue
+     bindings:
+       sendEmail-out-0:
+          destination: in-send-email #queue
           group: atozmart
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
-    connection-timeout: 10s
-
+    connection-timeout: 10s  
+      
 eureka:
   instance:
     prefer-ip-address: true
@@ -50,12 +42,12 @@ eureka:
     register-with-eureka: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
-      
+ 
 # info properties to see info in eureka dashboard     
 info:
   app:
-    name: "profile-service"
-    description: "AtoZ profile application"
+    name: "order-service"
+    description: "AtoZ cart application"
     version: 1.0.0
 
 management:
@@ -84,10 +76,3 @@ management:
 endpoints:
     shutdown:
       enabled: true
-     
-logging:
-  level:
-    com.atozmart.profile: DEBUG
-    com.netflix.discovery.DiscoveryClient: OFF
-
-    
