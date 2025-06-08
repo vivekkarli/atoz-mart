@@ -84,7 +84,7 @@ management:
 endpoints:
     shutdown:
       enabled: true
-     
+   
 logging:
   level:
     com.atozmart.profile: DEBUG
