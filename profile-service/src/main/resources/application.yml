@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: profile-service
-  profiles:
-    active: default
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:

@@ -12,10 +12,9 @@ spring:
   sql:
     init:
       mode: never        
-
 logging:
   level:
-    com.atozmart.order: INFO
     com.netflix.discovery.DiscoveryClient: OFF
+    com.atozmart.wishlist: INFO
   pattern:
     level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"

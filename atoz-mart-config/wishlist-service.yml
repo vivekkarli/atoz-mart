@@ -1,37 +1,28 @@
 server:
-  port: 8084
-
+  port: 8082
+  
 spring:
   application:
-    name: order-service
+    name: wishlist-service
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:
-    url: jdbc:mysql://localhost:3306/orderdb
+    url: jdbc:mysql://localhost:3306/wishlistdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
+    database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
   sql:
     init:
       mode: never
-  cloud:
-    stream:
-     bindings:
-       sendEmail-out-0:
-          destination: in-send-email #queue
-          group: atozmart
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    connection-timeout: 10s  
-      
+
 eureka:
   instance:
     prefer-ip-address: true
@@ -40,12 +31,12 @@ eureka:
     register-with-eureka: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
- 
+      
 # info properties to see info in eureka dashboard     
 info:
   app:
-    name: "order-service"
-    description: "AtoZ cart application"
+    name: "wishlist-service"
+    description: "AtoZ wishlist application"
     version: 1.0.0
 
 management:
@@ -77,5 +68,6 @@ endpoints:
      
 logging:
   level:
-    com.atozmart.order: DEBUG
+    com.atozmart.wishlist: DEBUG
     com.netflix.discovery.DiscoveryClient: OFF
+      

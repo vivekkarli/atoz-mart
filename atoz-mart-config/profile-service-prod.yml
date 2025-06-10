@@ -13,5 +13,8 @@ spring:
     init:
       mode: never        
 logging:
-    pattern:
-      level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
+  pattern:
+    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
+  level:
+    com.atozmart.profile: INFO
+    com.netflix.discovery.DiscoveryClient: OFF
