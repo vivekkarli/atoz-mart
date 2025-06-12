@@ -71,3 +71,7 @@ logging:
   level:
     com.netflix.discovery.DiscoveryClient: OFF
     com.atozmart.notification: DEBUG
+
+secret:
+  app:
+    mail: '{cipher}c3c225cb815ac3bc9e2179db22acd4b107c5485506e1e09fc53c4d7d23500ce50b206250a4e78961315aa0df387a8e27'
