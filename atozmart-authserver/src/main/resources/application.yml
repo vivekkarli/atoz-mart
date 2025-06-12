@@ -4,10 +4,8 @@ server:
 spring:
   application:
     name: atozmart-authserver
-  profiles:
-    active: default
   config:
-    import: "optional:configserver:http://localhost:8071"
+    import: "optional:configserver:http://localhost:8070"
   datasource:
     url: jdbc:mysql://localhost:3306/atozmart_authserver_db
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,8 +14,15 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+    defer-datasource-initialization: false
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: never
   cloud:
     function:
       defination: emailVerificationMailConfirmation
@@ -32,8 +37,6 @@ spring:
        registerNewUser-out-0:
           destination: in-register-user #queue
           group: atozmart
-          
-          
   rabbitmq:
     host: localhost
     port: 5672
@@ -88,8 +91,6 @@ logging:
   level:
     com.netflix.discovery.DiscoveryClient: OFF
     com.atozmart.authserver: DEBUG
-  pattern:
-    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
     
 jwt:
   secret-key: "dcb5c3ceffb04b1c390eeeba1896f56cc13c3cb5215fc49c4dea65979dbbf609"

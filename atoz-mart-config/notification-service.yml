@@ -1,1 +1,77 @@
+server:
+  port: 8083
 
+spring:
+  application:
+    name: notification-service
+  config:
+    import: "optional:configserver:http://localhost:8071"
+  cloud:
+    function: 
+      defination: sendEmail
+    stream:
+      bindings:
+        sendEmail-in-0:
+          destination: in-send-email
+          group: atozmart
+        sendEmail-out-0:
+          destination: out-send-email #queue
+          group: atozmart
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
+    connection-timeout: 10s
+    
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+                 
+endpoints:
+  shutdown:
+    enabled: true
+      
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "atozmart-notification-service"
+    description: "AtoZ mart notification service"
+    version: 1.0.0
+    
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+    com.atozmart.notification: DEBUG
+
+secret:
+  app:
+    mail: '{cipher}c3c225cb815ac3bc9e2179db22acd4b107c5485506e1e09fc53c4d7d23500ce50b206250a4e78961315aa0df387a8e27'

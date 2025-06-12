@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.atozmart.commons</groupId>
 		<artifactId>atozmart-common-utils</artifactId>
-		<version>0.0.1</version>
+		<version>1.0.0</version>
 		<relativePath>../common-utils/pom.xml</relativePath> <!-- lookup parent
 		from repository -->
 	</parent>

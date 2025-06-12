@@ -4,6 +4,7 @@ spring:
       on-profile: prod
   jpa:
     show-sql: false
+    defer-datasource-initialization: true # to execute data.sql after hibernate initialized
     hibernate:
       ddl-auto: update
     properties:
@@ -11,11 +12,10 @@ spring:
         format_sql: false
   sql:
     init:
-      mode: never        
-
+      mode: always # to execute data.sql        
 logging:
   level:
-    com.atozmart.order: INFO
     com.netflix.discovery.DiscoveryClient: OFF
+    com.atozmart.authserver: INFO
   pattern:
     level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"

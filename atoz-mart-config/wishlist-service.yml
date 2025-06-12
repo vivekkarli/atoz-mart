@@ -1,21 +1,19 @@
-
 server:
-  port: 8080
+  port: 8082
   
 spring:
   application:
-    name: catalog-service
+    name: wishlist-service
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:
-    url: jdbc:mysql://localhost:3306/catalogdb
+    url: jdbc:mysql://localhost:3306/wishlistdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
-    defer-datasource-initialization: false
     hibernate:
       ddl-auto: update
     properties:
@@ -23,7 +21,7 @@ spring:
         format_sql: true
   sql:
     init:
-      mode: never # to load items data
+      mode: never
 
 eureka:
   instance:
@@ -33,7 +31,14 @@ eureka:
     register-with-eureka: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
-    
+      
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "wishlist-service"
+    description: "AtoZ wishlist application"
+    version: 1.0.0
+
 management:
   endpoints:
     web:
@@ -52,23 +57,17 @@ management:
       enabled: true
   info:
     env:
-      enabled: true   
+      enabled: true
   metrics:
     tags:
       application: ${spring.application.name}
-      
+           
 endpoints:
-  shutdown:
-    enabled: true
-
-# info properties to see info in eureka dashboard     
-info:
-  app:
-    name: "catalog-service"
-    description: "AtoZ catalog application"
-    version: 1.0.0
-    
+    shutdown:
+      enabled: true
+     
 logging:
   level:
-    com.atozmart.catalog: DEBUG
+    com.atozmart.wishlist: DEBUG
     com.netflix.discovery.DiscoveryClient: OFF
+      

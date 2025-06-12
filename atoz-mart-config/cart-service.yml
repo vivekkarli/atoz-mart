@@ -1,1 +1,73 @@
+server:
+  port: 8081
 
+spring:
+  application:
+    name: cart-service
+  config:
+    import: "optional:configserver:http://localhost:8071"
+  datasource:
+    url: jdbc:mysql://localhost:3306/cartdb
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    defer-datasource-initialization: true # to execute data.sql after hibernate is initialized
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always # to load data.sql file
+    
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+ 
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "cart-service"
+    description: "AtoZ cart application"
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+           
+endpoints:
+    shutdown:
+      enabled: true
+     
+logging:
+  level:
+    com.atozmart.cart: DEBUG
+    com.netflix.discovery.DiscoveryClient: OFF

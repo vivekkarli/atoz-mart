@@ -14,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -22,10 +23,11 @@ import lombok.ToString;
 @Entity
 @ToString(exclude = { "orderItems" })
 @EqualsAndHashCode(exclude = { "orderItems" })
+@SequenceGenerator(name = "orders_seq", sequenceName = "orders_seq", initialValue = 10000000, allocationSize = 1)
 public class Orders {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_seq")
 	private Integer orderId;
 	private String username;
 	private String paymentMode;

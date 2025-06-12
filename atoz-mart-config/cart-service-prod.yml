@@ -2,3 +2,20 @@ spring:
   config:
     activate:
       on-profile: prod
+  jpa:
+    show-sql: false
+    defer-datasource-initialization: true # to execute data.sql after hibernate is initialized
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: false
+  sql:
+    init:
+      mode: always # to load data.sql file        
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+    com.atozmart.cart: INFO
+  pattern:
+    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"

@@ -23,8 +23,8 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: cart-service
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://cartdb:3306/cartdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       OTEL_SERVICE_NAME: cart-service
@@ -57,8 +57,8 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://catalogdb:3306/catalogdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: catalog-service
@@ -92,8 +92,8 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://wishlistdb:3306/wishlistdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: wishlist-service
@@ -128,8 +128,8 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: notification-service
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
+      SPRING_PROFILES_ACTIVE: prod
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       OTEL_SERVICE_NAME: notification-service
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
@@ -138,7 +138,6 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
       SPRING_RABBITMQ_HOST: rabbitmq
-      SECRET_APP_MAIL: "akhk tuxc ntpx wyal"
 
   order:
     image: "vivekkarli/order:v1"
@@ -164,27 +163,61 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: order-service
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://orderdb:3306/orderdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
-      OTEL_SERVICE_NAME: cart-service
+      OTEL_SERVICE_NAME: order-service
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
       OTEL_LOGS_EXPORTER: none
       OTEL_METRICS_EXPORTER: none
       OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
-      ATOZMART_ADMIN_USER: "order_service"
-      ATOZMART_ADMIN_PWD: "1234"
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  profile:
+    image: "vivekkarli/profile:v1"
+    container_name: "profile-service"
+    healthcheck:
+      test: "curl --fail --silent localhost:8085/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      profiledb:
+        condition: service_healthy
+      configserver:
+        condition: service_healthy
+      eurekaserver:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+    environment:
+      SPRING_APPLICATION_NAME: profile-service
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: "jdbc:mysql://profiledb:3306/profiledb"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
+      OTEL_SERVICE_NAME: profile-service
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo:4318"
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
+      OTEL_TRACES_EXPORTER: otlp
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
       SPRING_RABBITMQ_HOST: rabbitmq
       
   configserver:
     image: "vivekkarli/configserver:v1"
     container_name: "atozmart-configserver"
     ports:
-      - 8071:8071
+      - 8070:8070
     healthcheck:
-      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -195,6 +228,8 @@ services:
           memory: 700m
     networks:
       - atozmart
+    environment:
+      SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: 'main'
       
   eurekaserver:
     image: "vivekkarli/eurekaserver:v1"
@@ -217,7 +252,7 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
       
   gatewayserver:
     image: "vivekkarli/gatewayserver:v1"
@@ -245,6 +280,10 @@ services:
         condition: service_healthy
       notification:
         condition: service_healthy
+      profile:
+        condition: service_healthy
+      order:
+        condition: service_healthy
       #authserver:
         #condition: service_healthy
     deploy:
@@ -254,7 +293,7 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak-authserver:8080/realms/master/protocol/openid-connect/certs"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: atozmart-gatewayserver
@@ -284,7 +323,7 @@ services:
     networks:
       - atozmart
     environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_USERNAME: "keycloak_admin"
       KC_BOOTSTRAP_ADMIN_PASSWORD: "admin"
     command: "start-dev"
 
@@ -314,8 +353,8 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: atozmart-authserver
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8070"
+      SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://atozmart-authserver-db:3306/atozmart_authserver_db"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       OTEL_SERVICE_NAME: atozmart-authserver
@@ -428,6 +467,23 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: orderdb
+    networks:
+      - atozmart
+
+  profiledb:
+    image: mysql:latest
+    container_name: profiledb
+    ports:
+      - 3312:3306
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: profiledb
     networks:
       - atozmart
 

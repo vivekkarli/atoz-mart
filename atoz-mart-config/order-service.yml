@@ -4,20 +4,21 @@ server:
 spring:
   application:
     name: order-service
-  profiles:
-    active: default
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:
     url: jdbc:mysql://localhost:3306/orderdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
   sql:
     init:
       mode: never
@@ -31,7 +32,7 @@ spring:
     host: localhost
     port: 5672
     username: guest
-    password: guest
+    password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
     connection-timeout: 10s  
       
 eureka:
@@ -76,3 +77,13 @@ management:
 endpoints:
     shutdown:
       enabled: true
+
+logging:
+  level:
+    com.atozmart.order: DEBUG
+    com.netflix.discovery.DiscoveryClient: OFF
+
+atozmart:
+  admin:
+    user: 'order_service'
+    pwd: '{cipher}44fcb05d8d5c8678f69583b3ad82944939acfe4287f80cf5282e087f21d7704e'

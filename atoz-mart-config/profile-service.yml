@@ -4,15 +4,13 @@ server:
 spring:
   application:
     name: profile-service
-  profiles:
-    active: default
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:
     url: jdbc:mysql://localhost:3306/profiledb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
@@ -39,7 +37,7 @@ spring:
     host: localhost
     port: 5672
     username: guest
-    password: guest
+    password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
     connection-timeout: 10s
 
 eureka:

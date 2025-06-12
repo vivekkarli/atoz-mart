@@ -4,10 +4,8 @@ server:
 spring:
   application:
     name: order-service
-  profiles:
-    active: default
   config:
-    import: "optional:configserver:http://localhost:8071"
+    import: "optional:configserver:http://localhost:8070"
   datasource:
     url: jdbc:mysql://localhost:3306/orderdb
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -81,5 +79,3 @@ logging:
   level:
     com.atozmart.order: DEBUG
     com.netflix.discovery.DiscoveryClient: OFF
-  pattern:
-    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"

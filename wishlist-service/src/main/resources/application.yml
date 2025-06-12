@@ -4,10 +4,8 @@ server:
 spring:
   application:
     name: wishlist-service
-  profiles:
-    active: default
   config:
-    import: "optional:configserver:http://localhost:8071"
+    import: "optional:configserver:http://localhost:8070"
   datasource:
     url: jdbc:mysql://localhost:3306/wishlistdb
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -17,10 +15,13 @@ spring:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true    
   sql:
     init:
-      mode: always
+      mode: never
 
 eureka:
   instance:
@@ -67,8 +68,6 @@ endpoints:
      
 logging:
   level:
-    com.atozmart.cart: DEBUG
+    com.atozmart.wishlist: DEBUG
     com.netflix.discovery.DiscoveryClient: OFF
-  pattern:
-    level: "%5p [${spring.application.name}, %X{trace_id}, %X{span_id}]"
       

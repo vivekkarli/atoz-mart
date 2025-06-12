@@ -1,1 +1,99 @@
+server:
+  port: 8074
 
+spring:
+  application:
+    name: atozmart-authserver
+  config:
+    import: "optional:configserver:http://localhost:8071"
+  datasource:
+    url: jdbc:mysql://localhost:3306/atozmart_authserver_db
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    defer-datasource-initialization: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: never
+  cloud:
+    function:
+      defination: emailVerificationMailConfirmation
+    stream:
+     bindings:
+       emailVerificationMailConfirmation-in-0:
+         destination: out-send-email #queue
+         group: atozmart
+       sendEmail-out-0:
+          destination: in-send-email #queue
+          group: atozmart
+       registerNewUser-out-0:
+          destination: in-register-user #queue
+          group: atozmart
+          
+          
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
+    connection-timeout: 10s 
+  
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+        
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  info:
+    env:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+             
+endpoints:
+  shutdown:
+    enabled: true
+      
+# info properties to see info in eureka dashboard     
+info:
+  app:
+    name: "atozmart-authserver"
+    description: "AtoZ mart auth server"
+    version: 1.0.0
+    
+logging:
+  level:
+    com.netflix.discovery.DiscoveryClient: OFF
+    com.atozmart.authserver: DEBUG
+    
+jwt:
+  secret-key: "dcb5c3ceffb04b1c390eeeba1896f56cc13c3cb5215fc49c4dea65979dbbf609"
+  expiration-time: 3600000
