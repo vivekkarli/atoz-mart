@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: atozmart-authserver
-  profiles:
-    active: default
   config:
     import: "optional:configserver:http://localhost:8071"
   datasource:
