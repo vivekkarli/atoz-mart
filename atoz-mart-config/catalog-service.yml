@@ -15,6 +15,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+    defer-datasource-initialization: true # to execute data.sql after hibernate is initialized
     hibernate:
       ddl-auto: update
     properties:

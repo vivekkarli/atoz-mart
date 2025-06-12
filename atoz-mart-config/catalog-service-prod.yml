@@ -4,6 +4,7 @@ spring:
       on-profile: prod
   jpa:
     show-sql: false
+    defer-datasource-initialization: true # to execute data.sql after hibernate is initialized
     hibernate:
       ddl-auto: update
     properties:
