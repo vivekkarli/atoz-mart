@@ -1,3 +1,5 @@
+delete from item;
+
 insert into item (id, name, price) values 
 (1, 'tital watch', 20000.00),
 (2, 'adidas shoes', 20892.20),

@@ -82,3 +82,8 @@ logging:
   level:
     com.atozmart.order: DEBUG
     com.netflix.discovery.DiscoveryClient: OFF
+
+atozmart:
+  admin:
+    user: 'order_service'
+    pwd: '{cipher}44fcb05d8d5c8678f69583b3ad82944939acfe4287f80cf5282e087f21d7704e'

@@ -15,7 +15,7 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
-    defer-datasource-initialization: true # to execute data.sql after hibernate is initialized
+    defer-datasource-initialization: false
     hibernate:
       ddl-auto: update
     properties:
@@ -23,7 +23,7 @@ spring:
         format_sql: true
   sql:
     init:
-      mode: always # to load items data
+      mode: never # to load items data
 
 eureka:
   instance:

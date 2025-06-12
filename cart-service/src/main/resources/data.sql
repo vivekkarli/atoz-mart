@@ -1,4 +1,4 @@
-
+delete from coupon;
 
 insert into coupon 
 (coupon_code, discount)

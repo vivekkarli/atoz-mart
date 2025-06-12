@@ -16,11 +16,15 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+    defer-datasource-initialization: false
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
+  sql:
+    init:
+      mode: never
   cloud:
     function:
       defination: emailVerificationMailConfirmation

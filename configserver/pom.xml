@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.atozmart.commons</groupId>
 		<artifactId>atozmart-common-utils</artifactId>
-		<version>0.0.1</version>
+		<version>1.0.0</version>
 		<relativePath>../common-utils/pom.xml</relativePath> <!-- lookup parent
 		from repository -->
 	</parent>
@@ -29,11 +29,17 @@
 		<url />
 	</scm>
 	<properties>
+
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 
 		<dependency>
@@ -45,7 +51,26 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<build>
 		<plugins>
@@ -56,7 +81,7 @@
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
-				<version>${jib-maven-plugin.version}</version>
+				<version>3.4.2</version>
 				<configuration>
 					<to>
 						<image>vivekkarli/configserver:v1</image>
