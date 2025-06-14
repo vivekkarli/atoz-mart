@@ -59,10 +59,6 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-           
-endpoints:
-    shutdown:
-      enabled: true
      
 logging:
   level:

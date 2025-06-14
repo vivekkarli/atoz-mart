@@ -10,12 +10,12 @@ public class AuthServerUtil {
 			<body>
 			hi %s,
 			please verify your email!
-			<a href=http://localhost:8072/atozmart/authserver/verify-email?code=%s>Confirm Email</a>"
+			<a href=http://localhost:8072/atozmart/authserver/confirm-email?code=%s>Confirm Email</a>"
 			</body>
 			</html>
 			""";
 
-	public static String getVerifyEmailContent(String username, String code) {
+	public static String getConfirmEmailContent(String username, String code) {
 		return VERIFY_EMAIL_CONTENT.formatted(username, code);
 	}
 	

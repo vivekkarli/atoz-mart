@@ -11,6 +11,7 @@ import com.atozmart.authserver.dto.AuthorizeResponse;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
+import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.service.AuthServerService;
 import com.atozmart.authserver.service.NotificationService;
 
@@ -28,7 +29,7 @@ public class AuthServerController {
 	private final NotificationService notificationService;
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody LoginForm loginForm) {
+	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginForm loginForm) throws InterruptedException {
 		return authServerService.login(loginForm);
 	}
 
@@ -37,15 +38,11 @@ public class AuthServerController {
 		return authServerService.signUp(signUpForm);
 	}
 
-	@GetMapping("/verify-email")
-	public ResponseEntity<String> verifyEmail(@RequestParam String code) {
-		return notificationService.verifyEmail(code);
+	@GetMapping("/confirm-email")
+	public ResponseEntity<String> confirmEmail(@RequestParam String code) {
+		return notificationService.confirmEmail(code);
 	}
 
-	@GetMapping("/authorize")
-	public ResponseEntity<AuthorizeResponse> authorize(@RequestParam(name = "token") String accesstoken) {
-		log.info("accesstoken: {}", accesstoken);
-		return authServerService.authorizeToken(accesstoken);
-	}
+	
 
 }

@@ -20,7 +20,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE - 10) // Run after authentication but before routing
+@Order(Ordered.LOWEST_PRECEDENCE - 10) // to run after authentication but before routing
 public class UsernameHeaderFilter implements GlobalFilter {
 
 	@Override
