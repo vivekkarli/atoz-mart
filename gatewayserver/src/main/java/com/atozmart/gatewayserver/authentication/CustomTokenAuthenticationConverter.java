@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 
+import com.atozmart.gatewayserver.configuration.AtozmartAdminDetails;
 import com.atozmart.gatewayserver.configuration.KeyCloakRoleConverter;
 import com.atozmart.gatewayserver.dto.AuthorizeResponse;
 
@@ -29,19 +31,24 @@ import reactor.core.publisher.Mono;
 public class CustomTokenAuthenticationConverter implements ServerAuthenticationConverter {
 
 	private final WebClient webClient;
-	
+
 	private final ReactiveJwtDecoder jwtDecoder;
-	
+
 	private final JwtAuthenticationConverter jwtAuthenticationConverter;
 
-	@Value("${atozmart.auth.authorize-endpoint}")
-	private String atozmartAuthorizeUrl;
+	private final String atozmartAuthorizeUrl;
 
-	public CustomTokenAuthenticationConverter(WebClient.Builder webClientBuilder, ReactiveJwtDecoder jwtDecoder) {
+	private final AtozmartAdminDetails atozmartAdminDetails;
+
+	public CustomTokenAuthenticationConverter(WebClient.Builder webClientBuilder, ReactiveJwtDecoder jwtDecoder,
+			@Value("${atozmart.auth.authorize-endpoint}") String atozmartAuthorizeUrl,
+			AtozmartAdminDetails atozmartAdminDetails) {
 		this.webClient = webClientBuilder.build();
 		this.jwtDecoder = jwtDecoder;
 		this.jwtAuthenticationConverter = new JwtAuthenticationConverter();
 		this.jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeyCloakRoleConverter());
+		this.atozmartAuthorizeUrl = atozmartAuthorizeUrl;
+		this.atozmartAdminDetails = atozmartAdminDetails;
 	}
 
 	@Override
@@ -79,13 +86,17 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 				});
 	}
 
-	// Validate atozmartAuthServer token by calling /authorize endpoint
+	// Validate atozmartAuthServer token by calling /authorize end point
 	private Mono<Authentication> validateAtozmartToken(String token) {
-		  return webClient.get().uri(atozmartAuthorizeUrl + "?token=" + token)
+		return webClient.get().uri(atozmartAuthorizeUrl + "?token=" + token)
+				.headers(headers -> headers
+						.setBasicAuth(atozmartAdminDetails.getUsername(), atozmartAdminDetails.getPassword()))
 				.retrieve()
-				.onStatus( s -> s.is4xxClientError() , response -> Mono.error(new OAuth2AuthenticationException("Invalid atozmart token")))
-				.toEntity(AuthorizeResponse.class)
-				.flatMap(responseEntity -> {
+				.onStatus(HttpStatusCode::is4xxClientError,
+						response -> Mono.error(new OAuth2AuthenticationException("Invalid atozmart token")))
+				.onStatus(HttpStatusCode::is5xxServerError,
+						response -> Mono.error(new OAuth2AuthenticationException("internal server error at atozmart")))
+				.toEntity(AuthorizeResponse.class).flatMap(responseEntity -> {
 					AuthorizeResponse response = responseEntity.getBody();
 					if (response.valid()) {
 						log.info("AtozmartAuthorizeResponse: {}", response);
@@ -95,18 +106,16 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 					} else {
 						return Mono.error(new OAuth2AuthenticationException("Invalid atozmart token"));
 					}
-				})
-				.onErrorMap(e -> new OAuth2AuthenticationException("Error calling atozmartAuthServer: " + e.getMessage()));
+				}).onErrorMap(
+						e -> new OAuth2AuthenticationException("Error calling atozmartAuthServer: " + e.getMessage()));
 	}
 
 	private List<GrantedAuthority> extractedAuthoritiesFrom(List<String> roles) {
 		if (roles.isEmpty())
 			return Collections.emptyList();
-		
-		return roles.stream()
-				.map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
+
+		return roles.stream().map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role)
+				.map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
 	}
 

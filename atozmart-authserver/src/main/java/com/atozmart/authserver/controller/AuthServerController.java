@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.atozmart.authserver.dto.AuthorizeResponse;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
@@ -16,9 +15,7 @@ import com.atozmart.authserver.service.NotificationService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthServerController {
@@ -28,7 +25,7 @@ public class AuthServerController {
 	private final NotificationService notificationService;
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody LoginForm loginForm) {
+	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginForm loginForm) {
 		return authServerService.login(loginForm);
 	}
 
@@ -37,15 +34,9 @@ public class AuthServerController {
 		return authServerService.signUp(signUpForm);
 	}
 
-	@GetMapping("/verify-email")
-	public ResponseEntity<String> verifyEmail(@RequestParam String code) {
-		return notificationService.verifyEmail(code);
-	}
-
-	@GetMapping("/authorize")
-	public ResponseEntity<AuthorizeResponse> authorize(@RequestParam(name = "token") String accesstoken) {
-		log.info("accesstoken: {}", accesstoken);
-		return authServerService.authorizeToken(accesstoken);
+	@GetMapping("/confirm-email")
+	public ResponseEntity<String> confirmEmail(@RequestParam String code) {
+		return notificationService.confirmEmail(code);
 	}
 
 }

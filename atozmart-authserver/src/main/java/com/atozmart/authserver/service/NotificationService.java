@@ -23,10 +23,10 @@ public class NotificationService {
 	
 	private final StreamBridge streamBridge;
 	
-	public void sendEmailVerificationMail(AppUser appUser) {
+	public void sendEmailConfirmationMail(AppUser appUser) {
 		// step-1 generate random code
 		String code = UUID.randomUUID().toString();
-		String body = AuthServerUtil.getVerifyEmailContent(appUser.getUsername(), code);
+		String body = AuthServerUtil.getConfirmEmailContent(appUser.getUsername(), code);
 		
 		// step-2 update table
 		EmailVerification emailVerification = new EmailVerification();
@@ -42,8 +42,8 @@ public class NotificationService {
 		
 	}
 	
-	public ResponseEntity<String> verifyEmail(String code) {
-		notificationDao.verifyEmail(code);
+	public ResponseEntity<String> confirmEmail(String code) {
+		notificationDao.confirmEmail(code);
 		return new ResponseEntity<>("email verified successfully",HttpStatus.ACCEPTED);
 	}
 

@@ -5,7 +5,7 @@ spring:
   application:
     name: atozmart-authserver
   config:
-    import: "optional:configserver:http://localhost:8071"
+    import: "optional:configserver:http://localhost:8070"
   datasource:
     url: jdbc:mysql://localhost:3306/atozmart_authserver_db
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -95,5 +95,5 @@ logging:
     com.atozmart.authserver: DEBUG
     
 jwt:
-  secret-key: "dcb5c3ceffb04b1c390eeeba1896f56cc13c3cb5215fc49c4dea65979dbbf609"
+  secret-key: '{cipher}a52844ea5744f5139f3a32584c8650d291c438c9fec15adb2afe571e3a501db05312c1e51710a18da99b88121c9e77024c0ea99f9d96270171668dca68117fdd4d137ba42a009e59acc344edd54b36d162472a0c360c64e72f1d4c42d5f87a31'
   expiration-time: 3600000

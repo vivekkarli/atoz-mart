@@ -10,7 +10,6 @@ spring:
     url: jdbc:mysql://localhost:3306/catalogdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
@@ -52,10 +51,7 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-      
-endpoints:
-  shutdown:
-    enabled: true
+
 
 # info properties to see info in eureka dashboard     
 info:

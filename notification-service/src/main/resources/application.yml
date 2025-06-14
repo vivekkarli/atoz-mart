@@ -21,7 +21,6 @@ spring:
     host: localhost
     port: 5672
     username: guest
-    password: guest
     connection-timeout: 10s
     
 eureka:
@@ -55,10 +54,6 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-                 
-endpoints:
-  shutdown:
-    enabled: true
       
 # info properties to see info in eureka dashboard     
 info:

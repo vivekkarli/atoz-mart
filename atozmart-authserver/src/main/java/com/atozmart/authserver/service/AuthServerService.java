@@ -85,7 +85,7 @@ public class AuthServerService {
 		profileService.createProfile(signUpForm);
 
 		// send email verification mail, async process
-		notificationService.sendEmailVerificationMail(appUser);
+		notificationService.sendEmailConfirmationMail(appUser);
 
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
 	}

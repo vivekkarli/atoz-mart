@@ -10,7 +10,6 @@ spring:
     url: jdbc:mysql://localhost:3306/atozmart_authserver_db
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
@@ -41,7 +40,6 @@ spring:
     host: localhost
     port: 5672
     username: guest
-    password: guest
     connection-timeout: 10s 
   
 eureka:
@@ -75,10 +73,6 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-             
-endpoints:
-  shutdown:
-    enabled: true
       
 # info properties to see info in eureka dashboard     
 info:
@@ -93,5 +87,4 @@ logging:
     com.atozmart.authserver: DEBUG
     
 jwt:
-  secret-key: "dcb5c3ceffb04b1c390eeeba1896f56cc13c3cb5215fc49c4dea65979dbbf609"
-  expiration-time: 3600000
+  expiration-time: 3600000 # 1 hr

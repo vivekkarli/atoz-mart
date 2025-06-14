@@ -37,9 +37,12 @@ public class SecurityConfig {
 
 		http.authorizeExchange(exchanges -> exchanges
 
+				// management endpoints
+				.pathMatchers("/actuator/**").hasRole("ADMIN") // gateway actuator end points
+				.pathMatchers("/atozmart/*/actuator/**").hasRole("ADMIN") // individual microservices
+				
 				// gateway endpoints
 				.pathMatchers("/test").permitAll()
-				// .pathMatchers("/actuator/**").permitAll()
 				
 				// atozmart-authserver endpoints
 				.pathMatchers("/atozmart/authserver/**").permitAll()

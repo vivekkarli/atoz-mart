@@ -1,79 +1,144 @@
 server:
-  port: 8072
+   port: 8072
 
 spring:
-  application:
-    name: atozmart-gatewayserver
-  config:
-    import: "optional:configserver:http://localhost:8071"
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: false # disable default routes
-          lower-case-service-id: true
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: "http://localhost:8073/realms/master/protocol/openid-connect/certs"
-  main:
-    allow-bean-definition-overriding: true
-  
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-        
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    gateway:
-      enabled: true
-    shutdown:
-      enabled: true
-    health:
-      probes:
-        enabled: true
-  health:
-    readiness-state:
-      enabled: true
-    liveness-state:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-                  
-endpoints:
-  gateway:
-    enabled: true
-  shutdown:
-    enabled: true
-      
-# info properties to see info in eureka dashboard     
-info:
-  app:
-    name: "atozmart-gatewayserver"
-    description: "AtoZ mart gateway server"
-    version: 1.0.0
-    
-logging:
-  level:
-    com.netflix.discovery.DiscoveryClient: OFF
-    com.atozmart.gatewayserver: DEBUG
+   application:
+      name: atozmart-gatewayserver
+   config:
+      import: 'optional:configserver:http://localhost:8070'
+   security:
+      oauth2:
+         resourceserver:
+            jwt:
+               jwk-set-uri: http://localhost:8073/realms/master/protocol/openid-connect/certs
+   cloud:
+      gateway:
+         server:
+            webflux:
+               httpclient:
+                  connect-timeout: 1000
+                  response-timeout: 5s
+               discovery:
+                  locator:
+                     enabled: false # disable default routes
+                     lower-case-service-id: true
+               routes:
+               -  id: authserver-path-rewrite
+                  uri: lb://ATOZMART-AUTHSERVER
+                  predicates:
+                  - Path=/atozmart/authserver/**
+                  filters:
+                  -  name: RewritePath
+                     args:
+                        regexp: atozmart/authserver/(?<segment>.*)
+                        replacement: /${segment}
+                  -  name: CircuitBreaker
+                     args:
+                        name: authserver
+                        fallbackUri: forward:/fallback/authserver
 
+               -  id: catalog-path-rewrite
+                  uri: lb://CATALOG-SERVICE
+                  predicates:
+                  - Path=/atozmart/catalog/**
+                  filters:
+                  - RewritePath=atozmart/catalog/(?<segment>.*), /${segment}
+
+               -  id: cart-path-rewrite
+                  uri: lb://CART-SERVICE
+                  predicates:
+                  - Path=/atozmart/cart/**
+                  filters:
+                  - RewritePath=atozmart/cart/(?<segment>.*), /${segment}
+
+               -  id: wishlist-path-rewrite
+                  uri: lb://WISHLIST-SERVICE
+                  predicates:
+                  - Path=/atozmart/wishlist/**
+                  filters:
+                  - RewritePath=atozmart/wishlist/(?<segment>.*), /${segment}
+
+               -  id: order-path-rewrite
+                  uri: lb://ORDER-SERVICE
+                  predicates:
+                  - Path=/atozmart/order/**
+                  filters:
+                  - RewritePath=atozmart/order/(?<segment>.*), /${segment}
+
+               -  id: profile-path-rewrite
+                  uri: lb://PROFILE-SERVICE
+                  predicates:
+                  - Path=/atozmart/profile/**
+                  filters:
+                  - RewritePath=atozmart/profile/(?<segment>.*), /${segment}
+
+   main:
+      allow-bean-definition-overriding: true
+
+resilience4j:
+   timelimiter:
+      instances:
+         authserver:
+            timeoutDuration: 2s
+   circuitbreaker:
+      instances:
+         authserver:
+            slidingWindowSize: 6
+            slidingWindowType: COUNT_BASED
+            failureRateThreshold: 50 # 50%
+            waitDurationInOpenState: 10000 #10s
+            permittedNumberOfCallsInHalfOpenState: 3
+            registerHealthIndicator: true
+
+eureka:
+   instance:
+      prefer-ip-address: true
+   client:
+      fetch-registry: true
+      register-with-eureka: true
+      serviceUrl:
+         defaultZone: http://localhost:8761/eureka
+
+management:
+   endpoints:
+      web:
+         exposure:
+            include: '*'
+   endpoint:
+      gateway:
+         access: unrestricted
+      shutdown:
+         access: unrestricted
+      health:
+         probes:
+            enabled: true
+   health:
+      readiness-state:
+         enabled: true
+      liveness-state:
+         enabled: true
+   info:
+      env:
+         enabled: true
+   metrics:
+      tags:
+         application: ${spring.application.name}
+
+# info properties to see info in eureka dashboard
+info:
+   app:
+      name: atozmart-gatewayserver
+      description: AtoZ mart gateway server
+      version: 1.0.0
+logging:
+   level:
+      com.netflix.discovery.DiscoveryClient: OFF
+      com.atozmart.gatewayserver: DEBUG
 
 atozmart:
-  auth:
-    authorize-endpoint: http://localhost:8074/authorize
-    issuer: atozmart-authserver
+   auth:
+      authorize-endpoint: http://localhost:8074/admin/authorize
+      issuer: atozmart-authserver
+   admin:
+      username: atozmart_gatewayserver
+      password: '{cipher}f7fd357458eac5aa39259f7116ad361e18505176f6fac32af91d0a505c3852a2'

@@ -10,7 +10,6 @@ spring:
     url: jdbc:mysql://localhost:3306/cartdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
@@ -59,10 +58,6 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-           
-endpoints:
-    shutdown:
-      enabled: true
      
 logging:
   level:

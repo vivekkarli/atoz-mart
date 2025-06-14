@@ -1,81 +1,79 @@
 server:
-  port: 8084
+   port: 8084
 
 spring:
-  application:
-    name: order-service
-  config:
-    import: "optional:configserver:http://localhost:8070"
-  datasource:
-    url: jdbc:mysql://localhost:3306/orderdb
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-  sql:
-    init:
-      mode: never
-  cloud:
-    stream:
-     bindings:
-       sendEmail-out-0:
-          destination: in-send-email #queue
-          group: atozmart
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    connection-timeout: 10s  
-      
+   application:
+      name: order-service
+   config:
+      import: optional:configserver:http://localhost:8070
+   datasource:
+      url: jdbc:mysql://localhost:3306/orderdb
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+   jpa:
+      database-platform: org.hibernate.dialect.MySQLDialect
+      show-sql: true
+      hibernate:
+         ddl-auto: update
+   sql:
+      init:
+         mode: never
+   cloud:
+      stream:
+         bindings:
+            sendEmail-out-0:
+               destination: in-send-email #queue
+               group: atozmart
+   rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      connection-timeout: 10s
+
+atozmart:
+   admin:
+      user: order_service
+
 eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
- 
-# info properties to see info in eureka dashboard     
+   instance:
+      prefer-ip-address: true
+   client:
+      fetch-registry: true
+      register-with-eureka: true
+      serviceUrl:
+         defaultZone: http://localhost:8761/eureka
+
+# info properties to see info in eureka dashboard
 info:
-  app:
-    name: "order-service"
-    description: "AtoZ cart application"
-    version: 1.0.0
+   app:
+      name: order-service
+      description: AtoZ cart application
+      version: 1.0.0
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
-    health:
-      probes:
-        enabled: true
-  health:
-    readiness-state:
-      enabled: true
-    liveness-state:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-           
-endpoints:
-    shutdown:
-      enabled: true
-     
+   endpoints:
+      web:
+         exposure:
+            include: '*'
+   endpoint:
+      shutdown:
+         enabled: true
+      health:
+         probes:
+            enabled: true
+   health:
+      readiness-state:
+         enabled: true
+      liveness-state:
+         enabled: true
+   info:
+      env:
+         enabled: true
+   metrics:
+      tags:
+         application: ${spring.application.name}
+
 logging:
-  level:
-    com.atozmart.order: DEBUG
-    com.netflix.discovery.DiscoveryClient: OFF
+   level:
+      com.atozmart.order: DEBUG
+      com.netflix.discovery.DiscoveryClient: OFF

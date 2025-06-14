@@ -24,7 +24,7 @@ public class NotificationDao {
 	private final EmailVerificationRepository emailVerificationRepo;
 
 	@Transactional
-	public void verifyEmail(String code) {
+	public void confirmEmail(String code) {
 
 		Optional<EmailVerification> emailVerifyOpt = emailVerificationRepo.findById(code);
 
