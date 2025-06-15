@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -21,6 +22,7 @@ import lombok.ToString;
 
 @Data
 @Entity
+@DynamicUpdate
 @ToString(exclude = { "orderItems" })
 @EqualsAndHashCode(exclude = { "orderItems" })
 @SequenceGenerator(name = "orders_seq", sequenceName = "orders_seq", initialValue = 10000000, allocationSize = 1)
@@ -33,6 +35,7 @@ public class Orders {
 	private String paymentMode;
 	private String paymentStatus;
 	private String deliveryStatus;
+	private String orderStatus;
 	private Double orderTotal;
 
 	@OneToMany(mappedBy = "orderId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

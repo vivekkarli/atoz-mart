@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.atozmart.order.dto.PlaceOrderRequest;
 import com.atozmart.order.entity.OrderItem;
@@ -25,14 +26,15 @@ public class OrdersDao {
 	private OrdersRepository orderRepo;
 
 	private ModelMapper mapper;
-	
-	public String placeOrder(String username, PlaceOrderRequest placeOrderRequest) {
+
+	public String placeOrder(String username, PlaceOrderRequest placeOrderRequest) throws OrderException {
 
 		Orders orders = new Orders();
 		orders.setUsername(username);
 		orders.setPaymentMode(placeOrderRequest.paymentMode());
 		orders.setPaymentStatus("completed");
 		orders.setDeliveryStatus("arriving by tommorow");
+		orders.setOrderStatus("accepted");
 		orders.setOrderTotal(placeOrderRequest.orderTotal());
 
 		Set<OrderItem> orderItems = placeOrderRequest.items().stream().map(item -> {
@@ -51,7 +53,7 @@ public class OrdersDao {
 		return savedOrder.getOrderId().toString();
 	}
 
-	public List<Orders> getOrderDetails(String username, Integer orderId) {
+	public List<Orders> getOrderDetails(String username, Integer orderId) throws OrderException {
 
 		if (orderId == null) {
 			List<Orders> orders = orderRepo.findByUsername(username);
@@ -69,6 +71,13 @@ public class OrdersDao {
 
 		return List.of(order);
 
+	}
+
+	@Transactional
+	public void changeOrderStatus(String username, Integer orderId, String orderStatus) throws OrderException {
+		Orders order = orderRepo.findByUsernameAndOrderId(username, orderId).orElseThrow(
+				() -> new OrderException("order with order id: %d not found".formatted(orderId), HttpStatus.NOT_FOUND));
+		order.setOrderStatus(orderStatus);
 	}
 
 }

@@ -10,6 +10,7 @@ public class ViewOrdersDto {
 	private Integer orderId;
 	private String paymentStatus;
 	private String deliveryStatus;
+	private String orderStatus;
 	private Double orderTotal;
 	
 	private List<OrderItemsDto> orderItems;

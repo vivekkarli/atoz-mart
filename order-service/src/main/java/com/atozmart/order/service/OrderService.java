@@ -70,6 +70,7 @@ public class OrderService {
 				viewOrdersDto.setOrderId(order.getOrderId());
 				viewOrdersDto.setDeliveryStatus(order.getDeliveryStatus());
 				viewOrdersDto.setPaymentStatus(order.getPaymentStatus());
+				viewOrdersDto.setOrderStatus(order.getOrderStatus());
 				viewOrdersDto.setOrderTotal(order.getOrderTotal());
 
 				viewOrdersDtos.add(viewOrdersDto);
@@ -82,6 +83,10 @@ public class OrderService {
 
 		return viewOrdersDtos;
 
+	}
+
+	public void cancelOrder(String username, Integer orderId) {
+		ordersDao.changeOrderStatus(username, orderId, "cancelled by customer");
 	}
 
 }
