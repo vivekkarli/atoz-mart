@@ -27,7 +27,7 @@ public class CartDao {
 	public void addOrUpdateItemInCart(ItemDto itemDto, String username) {
 
 		// check if item already exists
-		Optional<Cart> existingItemOpt = cartRepo.findByUsernameAndItemName(username, itemDto.getItemName());
+		Optional<Cart> existingItemOpt = cartRepo.findByUsernameAndItemId(username, itemDto.itemId());
 
 		existingItemOpt.ifPresentOrElse(existingItem ->
 		// if exists, increment quantity, update to new price
@@ -38,25 +38,28 @@ public class CartDao {
 	}
 
 	@Transactional
-	public void deleteItems(String username, String itemName) {
-		if (itemName == null || itemName.isBlank()) {
+	public void deleteItems(String username, String itemId) {
+		if (itemId == null || itemId.isBlank()) {
 			// delete all by username
 			cartRepo.deleteByUsername(username);
 			return;
 		}
 
 		// delete by username and itemname
-		cartRepo.deleteByUsernameAndItemName(username, itemName);
+		cartRepo.deleteByUsernameAndItemId(username, itemId);
 
 	}
 
 	private void addNewItemToCart(ItemDto itemDto, String username) {
-		Cart newItem = new Cart();
-		newItem.setUsername(username);
-		modelMapper.map(itemDto, newItem);
-		log.debug("new item: {}", newItem);
+		Cart newcart = new Cart();
+		newcart.setUsername(username);
+		newcart.setItemId(itemDto.itemId());
+		newcart.setItemName(itemDto.itemName());
+		newcart.setQuantity(itemDto.quantity());
+		newcart.setUnitPrice(itemDto.unitPrice());
+		log.debug("newcart: {}", newcart);
 
-		cartRepo.save(newItem);
+		cartRepo.save(newcart);
 	}
 
 	private void updateItemInCart(ItemDto newItem, Cart existingItem) {
@@ -65,8 +68,8 @@ public class CartDao {
 		Cart updatedItem = new Cart();
 		modelMapper.map(existingItem, updatedItem);
 		// updatedItem.setQuantity(existingItem.getQuantity() + newItem.getQuantity());
-		updatedItem.setQuantity(newItem.getQuantity());
-		updatedItem.setUnitPrice(newItem.getUnitPrice());
+		updatedItem.setQuantity(newItem.quantity());
+		updatedItem.setUnitPrice(newItem.unitPrice());
 		log.debug("updated item: {}", updatedItem);
 
 		cartRepo.save(updatedItem);

@@ -46,6 +46,7 @@
 		<jjwt-impl.version>0.12.6</jjwt-impl.version>
 		<jjwt-jackson.version>0.12.6</jjwt-jackson.version>
 		<jib-maven-plugin.version>3.4.2</jib-maven-plugin.version>
+		<org.mapstruct.version>1.6.3</org.mapstruct.version>
 	</properties>
 
 	<dependencies>
@@ -55,7 +56,7 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -97,6 +98,12 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+
+			<dependency>
+				<groupId>org.mapstruct</groupId>
+				<artifactId>mapstruct</artifactId>
+				<version>${org.mapstruct.version}</version>
+			</dependency>
 		</dependencies>
 
 	</dependencyManagement>
@@ -111,6 +118,11 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${org.mapstruct.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

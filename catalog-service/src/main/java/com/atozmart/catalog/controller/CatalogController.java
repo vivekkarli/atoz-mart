@@ -1,12 +1,15 @@
 package com.atozmart.catalog.controller;
 
+import java.util.Set;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.atozmart.catalog.dto.PageDto;
+import com.atozmart.catalog.dto.SearchFilters;
 import com.atozmart.catalog.dto.ViewItemsDto;
 import com.atozmart.catalog.exception.CatalogException;
 import com.atozmart.catalog.service.CatalogService;
@@ -20,24 +23,31 @@ public class CatalogController {
 	private CatalogService catalogService;
 
 	@GetMapping(value = "/items/all", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ViewItemsDto> viewAllItems()
-			throws CatalogException {
+	public ResponseEntity<ViewItemsDto> viewAllItems() throws CatalogException {
 		return ResponseEntity.ok().body(catalogService.getItems());
 	}
 
 	@GetMapping(value = "/items", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ViewItemsDto> viewItems(@RequestParam(name = "page", defaultValue = "0") int pageNo,
+	public ResponseEntity<ViewItemsDto> viewItems(
+			@RequestParam(required = false) String category,
+			@RequestParam(required = false) Double fromPriceRange, 
+			@RequestParam(required = false) Double toPriceRange,
+			@RequestParam(required = false) String name, 
+			@RequestParam(name = "page", defaultValue = "0") int pageNo,
 			@RequestParam(defaultValue = "10") int size,
 			@RequestParam(name = "sort-by", defaultValue = "name") String sortBy,
 			@RequestParam(name = "direction", defaultValue = "asc") String sortDirection,
 			@RequestParam(name = "lastPage", defaultValue = "false") boolean isLastPage) throws CatalogException {
 
-		return ResponseEntity.ok().body(catalogService.getItems(pageNo, size, sortBy, sortDirection, isLastPage));
+		SearchFilters searchFilters = new SearchFilters(category, fromPriceRange, toPriceRange, name);
+		PageDto pageDto = new PageDto(pageNo, size, sortBy, sortDirection, isLastPage);
+
+		return ResponseEntity.ok().body(catalogService.getItems(searchFilters, pageDto));
 	}
-	
-	@PostMapping("/items")
-	public String postmapping() {
-		return "accessed catalog post endpoint";
+
+	@GetMapping("/categories")
+	public ResponseEntity<Set<String>> getAllCategories() {
+		return ResponseEntity.ok().body(catalogService.getAllCategories());
 	}
 
 }

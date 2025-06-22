@@ -12,7 +12,7 @@ public record PlaceOrderRequest(double orderAmount,
 
 		String paymentMode,
 		
-		List<OrderItemsDto> items
+		List<OrderItemDto> items
 
 ) {
 

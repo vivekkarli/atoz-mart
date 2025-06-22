@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import com.atozmart.commons.exception.dto.GlobalErrorResponse;
 
@@ -26,12 +27,19 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(new GlobalErrorResponse(strBuilder.toString(), null), HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<GlobalErrorResponse> handleMethodArgumentNotValidException(
-			MethodArgumentNotValidException ex) {
+	@ExceptionHandler({ MethodArgumentNotValidException.class, HandlerMethodValidationException.class })
+	public ResponseEntity<GlobalErrorResponse> handleMethodArgumentNotValidException(Exception ex) {
 
 		StringBuilder strBuilder = new StringBuilder();
-		ex.getBindingResult().getAllErrors().forEach(error -> strBuilder.append(error.getDefaultMessage() + ", "));
+
+		if (ex instanceof MethodArgumentNotValidException manvEx) {
+			manvEx.getBindingResult().getAllErrors()
+					.forEach(error -> strBuilder.append(error.getDefaultMessage() + ", "));
+		}
+
+		if (ex instanceof HandlerMethodValidationException hmvEx) {
+			hmvEx.getAllErrors().forEach(error -> strBuilder.append(error.getDefaultMessage() + ", "));
+		}
 
 		return new ResponseEntity<>(new GlobalErrorResponse(strBuilder.toString(), null), HttpStatus.BAD_REQUEST);
 	}

@@ -1,65 +1,68 @@
 server:
-  port: 8081
+   port: 8081
 
 spring:
-  application:
-    name: cart-service
-  config:
-    import: "optional:configserver:http://localhost:8070"
-  datasource:
-    url: jdbc:mysql://localhost:3306/cartdb
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-  jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
-    show-sql: true
-    defer-datasource-initialization: true # to execute data.sql after hibernate is initialized
-    hibernate:
-      ddl-auto: update
-  sql:
-    init:
-      mode: always
-    
+   application:
+      name: cart-service
+   config:
+      import: 'optional:configserver:http://localhost:8070'
+   datasource:
+      url: jdbc:mysql://localhost:3306/cartdb
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+   jpa:
+      database-platform: org.hibernate.dialect.MySQLDialect
+      show-sql: true
+      defer-datasource-initialization: true # to execute data.sql after hibernate is initialized
+      hibernate:
+         ddl-auto: update
+      properties:
+         hibernate:
+            format_sql: true
+   sql:
+      init:
+         mode: always
+
 eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
- 
-# info properties to see info in eureka dashboard     
+   instance:
+      prefer-ip-address: true
+   client:
+      fetch-registry: true
+      register-with-eureka: true
+      serviceUrl:
+         defaultZone: http://localhost:8761/eureka
+
+# info properties to see info in eureka dashboard
 info:
-  app:
-    name: "cart-service"
-    description: "AtoZ cart application"
-    version: 1.0.0
+   app:
+      name: cart-service
+      description: AtoZ cart application
+      version: 1.0.0
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
-    health:
-      probes:
-        enabled: true
-  health:
-    readiness-state:
-      enabled: true
-    liveness-state:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-     
+   endpoints:
+      web:
+         exposure:
+            include: '*'
+   endpoint:
+      shutdown:
+         enabled: true
+      health:
+         probes:
+            enabled: true
+   health:
+      readiness-state:
+         enabled: true
+      liveness-state:
+         enabled: true
+   info:
+      env:
+         enabled: true
+   metrics:
+      tags:
+         application: ${spring.application.name}
+
 logging:
-  level:
-    com.atozmart.cart: DEBUG
-    com.netflix.discovery.DiscoveryClient: OFF
+   level:
+      com.atozmart.cart: DEBUG
+      com.netflix.discovery.DiscoveryClient: OFF

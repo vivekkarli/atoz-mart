@@ -48,9 +48,9 @@ public class CartController {
 
 	@DeleteMapping("/items")
 	public ResponseEntity<Void> removeItemsFromCart(@RequestHeader("X-Username") String username,
-			@RequestParam(required = false) String itemName) {
+			@RequestParam(required = false) String itemId) {
 		log.info("X-Username: {}", username);
-		cartService.removeItemsFromCart(username, itemName);
+		cartService.removeItemsFromCart(username, itemId);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -67,6 +67,7 @@ public class CartController {
 	public ResponseEntity<CheckOutResponse> proceedToPayment(@RequestHeader("X-Username") String username,
 			@RequestHeader(name = "X-User-Email", required = false) String email,
 			@RequestBody @Valid CheckOutRequest checkOutRequest) throws CartException {
+		log.info("X-Username: {}", username);
 		String orderId = cartService.proceedToPayment(username, email, checkOutRequest);
 		return new ResponseEntity<>(new CheckOutResponse(orderId, "order placed successfully"), HttpStatus.CREATED);
 	}

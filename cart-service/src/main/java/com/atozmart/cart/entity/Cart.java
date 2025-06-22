@@ -25,6 +25,8 @@ public class Cart {
 	private Integer id;
 
 	private String username;
+	
+	private String itemId;
 
 	private String itemName;
 

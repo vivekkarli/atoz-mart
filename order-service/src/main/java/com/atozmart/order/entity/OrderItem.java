@@ -7,6 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -17,11 +19,16 @@ import lombok.Data;
 public class OrderItem {
 
 	@Id
-	private String item;
-
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
 	@ManyToOne
 	@JoinColumn(name = "order_id", nullable = false)
 	private Orders orderId;
+	
+	private String itemId;
+	
+	private String itemName;
 
 	private double unitPrice;
 
@@ -39,10 +46,11 @@ public class OrderItem {
 
 	@Override
 	public String toString() {
-		return "OrderItem [item=" + item + ", orderId=" + orderId.getOrderId() + ", unitPrice=" + unitPrice + ", quantity="
-				+ quantity + ", effectivePrice=" + effectivePrice + ", createdAt=" + createdAt + ", updatedAt="
-				+ updatedAt + "]";
+		return "OrderItem [itemId=" + itemId + ", itemName=" + itemName + ", orderId=" + orderId.getOrderId() + ", unitPrice="
+				+ unitPrice + ", quantity=" + quantity + ", effectivePrice=" + effectivePrice + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + "]";
 	}
+
 	
 	
 

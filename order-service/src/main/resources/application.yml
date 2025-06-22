@@ -5,7 +5,7 @@ spring:
    application:
       name: order-service
    config:
-      import: optional:configserver:http://localhost:8070
+      import: 'optional:configserver:http://localhost:8070'
    datasource:
       url: jdbc:mysql://localhost:3306/orderdb
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -13,6 +13,9 @@ spring:
    jpa:
       database-platform: org.hibernate.dialect.MySQLDialect
       show-sql: true
+      properties:
+         hibernate:
+            format_sql: true
       hibernate:
          ddl-auto: update
    sql:
@@ -32,7 +35,7 @@ spring:
 
 atozmart:
    admin:
-      user: order_service
+      username: order_service
 
 eureka:
    instance:

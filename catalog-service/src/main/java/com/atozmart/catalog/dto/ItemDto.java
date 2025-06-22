@@ -1,12 +1,15 @@
 package com.atozmart.catalog.dto;
 
-import lombok.Data;
+public record ItemDto(
+		
+		String id,
 
-@Data
-public class ItemDto {
-	
-	private String name;
-	
-	private String price;
+		String name,
+
+		double unitPrice,
+		
+		String details,
+
+		String category) {
 
 }

@@ -2,17 +2,10 @@ package com.atozmart.order.dto;
 
 import java.util.List;
 
-import lombok.Data;
+public record ViewOrdersDto(
 
-@Data
-public class ViewOrdersDto {
-	
-	private Integer orderId;
-	private String paymentStatus;
-	private String deliveryStatus;
-	private String orderStatus;
-	private Double orderTotal;
-	
-	private List<OrderItemsDto> orderItems;
+		Integer orderId, String paymentStatus, String deliveryStatus, String orderStatus, Double orderTotal,
+
+		List<OrderItemDto> orderItems) {
 
 }

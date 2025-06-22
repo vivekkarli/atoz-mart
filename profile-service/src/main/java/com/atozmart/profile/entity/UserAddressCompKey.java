@@ -1,5 +1,7 @@
 package com.atozmart.profile.entity;
 
+import com.atozmart.profile.util.AddressTypeEnum;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

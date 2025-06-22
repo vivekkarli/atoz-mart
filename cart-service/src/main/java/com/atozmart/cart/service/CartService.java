@@ -1,9 +1,10 @@
 package com.atozmart.cart.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,6 @@ import com.atozmart.cart.exception.CartException;
 import com.atozmart.commons.exception.dto.DownStreamException;
 
 import feign.FeignException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,8 +36,6 @@ public class CartService {
 
 	private final OrderFeignClient orderFeignClient;
 
-	private final ModelMapper mapper;
-
 	public ViewCartResponse getCartDetails(String username) throws CartException {
 
 		List<Cart> cartDetailLst = cartDao.getCartDetails(username);
@@ -45,21 +43,24 @@ public class CartService {
 		if (cartDetailLst.isEmpty())
 			throw new CartException("cart is empty", HttpStatus.NOT_FOUND);
 
-		ViewCartResponse response = new ViewCartResponse();
 		List<ItemDto> items = new ArrayList<>();
 
 		cartDetailLst.forEach(cartDetail -> {
-			ItemDto item = new ItemDto();
-			mapper.map(cartDetail, item);
-			item.setEffectivePrice(cartDetail.getQuantity() * cartDetail.getUnitPrice());
+			BigDecimal effectivePrice = BigDecimal.valueOf(cartDetail.getQuantity() * cartDetail.getUnitPrice());
+			double roundedEffectivePrice = effectivePrice.setScale(2, RoundingMode.CEILING).doubleValue();
+			
+			ItemDto item = new ItemDto(cartDetail.getItemId(), cartDetail.getItemName(), cartDetail.getUnitPrice(),
+					cartDetail.getQuantity(), roundedEffectivePrice);
 			items.add(item);
 		});
 
-		response.setItems(items);
-		Double orderAmount = items.stream().map(ItemDto::getEffectivePrice).reduce(Double::sum).orElse(0.0);
-		response.setOrderAmount(orderAmount);
+		BigDecimal orderAmount = items.stream().map(ItemDto::effectivePrice).map(BigDecimal::valueOf)
+				.reduce(BigDecimal::add).orElse(BigDecimal.valueOf(0));
 
-		return response;
+		double roundedOrderAmt = orderAmount.setScale(2, RoundingMode.CEILING).doubleValue();
+		log.info("orderAmount: {}, roundedOrderAmt: {}", orderAmount, roundedOrderAmt);
+
+		return new ViewCartResponse(items, roundedOrderAmt);
 
 	}
 
@@ -67,11 +68,10 @@ public class CartService {
 		cartDao.addOrUpdateItemInCart(itemDto, username);
 	}
 
-	public void removeItemsFromCart(String username, String item) throws CartException {
-		cartDao.deleteItems(username, item);
+	public void removeItemsFromCart(String username, String itemId) throws CartException {
+		cartDao.deleteItems(username, itemId);
 	}
 
-	@Transactional
 	public String proceedToPayment(String username, String email, CheckOutRequest checkOutRequest)
 			throws CartException {
 
@@ -81,13 +81,13 @@ public class CartService {
 
 		// validate orderAmount
 		ViewCartResponse cartDetails = getCartDetails(username);
-		if (checkOutRequest.orderAmount() != cartDetails.getOrderAmount())
+		if (checkOutRequest.orderAmount() != cartDetails.orderAmount())
 			throw new CartException("order amount mismatch", HttpStatus.BAD_REQUEST);
 
 		// validate orderSavings
 		double discountPercentage = checkOutRequest.couponCode() == null || checkOutRequest.couponCode().isBlank() ? 0
 				: couponDao.getCouponDiscount(checkOutRequest.couponCode());
-		
+
 		double discountAmount = checkOutRequest.orderAmount() * (discountPercentage / 100);
 		if (discountAmount != checkOutRequest.orderSavings())
 			throw new CartException("order savings mismatch", HttpStatus.BAD_REQUEST);
@@ -114,17 +114,13 @@ public class CartService {
 	private String placeOrder(String username, String email, CheckOutRequest checkOutRequest,
 			ViewCartResponse cartDetails) throws CartException {
 
-		PlaceOrderRequest placeOrderRequest = new PlaceOrderRequest();
-		placeOrderRequest.setOrderAmount(checkOutRequest.orderAmount());
-		placeOrderRequest.setCouponCode(checkOutRequest.couponCode());
-		placeOrderRequest.setOrderSavings(checkOutRequest.orderSavings());
-		placeOrderRequest.setOrderTotal(checkOutRequest.orderTotal());
-		placeOrderRequest.setPaymentMode(checkOutRequest.paymentMode());
+		List<OrderItemsDto> orderItems = new ArrayList<>();
+		cartDetails.items().forEach(item -> orderItems.add(new OrderItemsDto(item.itemId(), item.itemName(),
+				item.unitPrice(), item.quantity(), item.effectivePrice())));
 
-		List<OrderItemsDto> orderItems = cartDetails.getItems().stream()
-				.map(item -> mapper.map(item, OrderItemsDto.class)).toList();
-
-		placeOrderRequest.setItems(orderItems);
+		PlaceOrderRequest placeOrderRequest = new PlaceOrderRequest(checkOutRequest.orderAmount(),
+				checkOutRequest.couponCode(), checkOutRequest.orderSavings(), checkOutRequest.orderTotal(),
+				checkOutRequest.paymentMode(), orderItems);
 
 		log.debug("placeOrderRequest: {}", placeOrderRequest);
 

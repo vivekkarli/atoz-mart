@@ -2,20 +2,18 @@ package com.atozmart.cart.dto.order;
 
 import java.util.List;
 
-import lombok.Data;
+public record PlaceOrderRequest(double orderAmount,
 
-@Data
-public class PlaceOrderRequest {
-	private double orderAmount;
+		String couponCode,
 
-	private String couponCode;
+		double orderSavings,
 
-	private double orderSavings;
+		double orderTotal,
 
-	private double orderTotal;
+		String paymentMode,
+		
+		List<OrderItemsDto> items
 
-	private String paymentMode;
-
-	private List<OrderItemsDto> items;
+) {
 
 }

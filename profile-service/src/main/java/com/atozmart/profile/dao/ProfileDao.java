@@ -8,13 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.atozmart.profile.entity.AddressTypeEnum;
 import com.atozmart.profile.entity.UserAddress;
 import com.atozmart.profile.entity.UserAddressCompKey;
 import com.atozmart.profile.entity.UserProfile;
 import com.atozmart.profile.exception.ProfileException;
 import com.atozmart.profile.repository.UserAddressRepository;
 import com.atozmart.profile.repository.UserProfileRepository;
+import com.atozmart.profile.util.AddressTypeEnum;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

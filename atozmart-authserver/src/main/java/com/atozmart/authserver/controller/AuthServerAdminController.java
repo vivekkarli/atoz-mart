@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.atozmart.authserver.dto.AuthorizeResponse;
-import com.atozmart.authserver.dto.profile.BasicDetails;
+import com.atozmart.authserver.dto.profile.BasicDetailsDto;
 import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.service.AuthServerService;
 import com.atozmart.authserver.service.ProfileService;
@@ -43,9 +43,9 @@ public class AuthServerAdminController {
 	// PUT instead of PATCH, since open feign doesn't support PATCH out of the box
 	@PutMapping("/profile")
 	public ResponseEntity<Void> updateBasicDetails(@RequestHeader("X-Username") String username,
-			@RequestBody BasicDetails basicDetails) {
+			@RequestBody BasicDetailsDto basicDetailsDto) {
 		log.info("X-Username: {}", username);
-		profileService.updateBasicDetails(username, basicDetails);
+		profileService.updateBasicDetails(username, basicDetailsDto);
 		return ResponseEntity.ok().build();
 	}
 	

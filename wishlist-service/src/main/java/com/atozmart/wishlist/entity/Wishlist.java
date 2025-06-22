@@ -15,7 +15,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(name = "unx_username_itemname", columnNames = { "username", "itemName" }))
+@Table(uniqueConstraints = @UniqueConstraint(name = "unx_username_itemid", columnNames = { "username", "itemId" }))
 public class Wishlist {
 
 	@Id
@@ -23,10 +23,12 @@ public class Wishlist {
 	private Integer id;
 
 	private String username;
+	
+	private String itemId;
 
 	private String itemName;
 
-	private double price;
+	private double unitPrice;
 
 	@CreationTimestamp
 	@Column(updatable = false)

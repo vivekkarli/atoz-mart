@@ -1,15 +1,15 @@
 package com.atozmart.cart.dto.order;
 
-import lombok.Data;
+public record OrderItemsDto(
 
-@Data
-public class OrderItemsDto {
-	private String item;
+		String itemId,
 
-	private double unitPrice;
+		String itemName,
 
-	private int quantity;
+		double unitPrice,
 
-	private double effectivePrice;
+		int quantity,
+
+		double effectivePrice) {
 
 }

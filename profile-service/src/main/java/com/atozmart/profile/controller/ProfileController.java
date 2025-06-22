@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.atozmart.profile.dto.ProfileDetails;
+import com.atozmart.profile.dto.ProfileDetailsDto;
 import com.atozmart.profile.exception.ProfileException;
 import com.atozmart.profile.service.ProfileDetailsValidator;
 import com.atozmart.profile.service.ProfileService;
@@ -32,26 +32,26 @@ public class ProfileController {
 	private final ProfileService profileService;
 
 	@GetMapping
-	public ResponseEntity<ProfileDetails> getProfileDetails(@RequestHeader("X-Username") String username) {
+	public ResponseEntity<ProfileDetailsDto> getProfileDetails(@RequestHeader("X-Username") String username) {
 		log.info("X-Username: {}", username);
 		return ResponseEntity.ok(profileService.getProfileDetails(username));
 	}
 
 	@PostMapping
 	public ResponseEntity<Void> addNewProfile(@RequestHeader("X-Username") String username,
-			@Valid @RequestBody ProfileDetails profileDetails) {
+			@Valid @RequestBody ProfileDetailsDto profileDetailsDto) {
 		log.info("X-Username: {}", username);
-		profileDetailsValidator.validateProfileDetails(profileDetails);
-		profileService.addNewProfile(username, profileDetails);
+		profileDetailsValidator.validateProfileDetails(profileDetailsDto);
+		profileService.addNewProfile(username, profileDetailsDto);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@PatchMapping
 	public ResponseEntity<Void> editProfileDetails(@RequestHeader("X-Username") String username,
-			@Valid @RequestBody ProfileDetails profileDetails) throws ProfileException {
+			@Valid @RequestBody ProfileDetailsDto profileDetailsDto) throws ProfileException {
 		log.info("X-Username: {}", username);
-		profileDetailsValidator.validateProfileDetails(profileDetails);
-		profileService.editProfileDetails(username, profileDetails);
+		profileDetailsValidator.validateProfileDetails(profileDetailsDto);
+		profileService.editProfileDetails(username, profileDetailsDto);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

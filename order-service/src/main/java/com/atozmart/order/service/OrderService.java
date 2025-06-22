@@ -3,22 +3,17 @@ package com.atozmart.order.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.atozmart.commons.exception.dto.DownStreamException;
 import com.atozmart.order.dao.OrdersDao;
-import com.atozmart.order.dto.MailContentDto;
+import com.atozmart.order.dto.OrderItemDto;
 import com.atozmart.order.dto.PlaceOrderRequest;
-import com.atozmart.order.dto.PlaceOrderResponce;
+import com.atozmart.order.dto.PlaceOrderResponse;
 import com.atozmart.order.dto.ViewOrdersDto;
 import com.atozmart.order.entity.Orders;
 import com.atozmart.order.exception.OrderException;
+import com.atozmart.order.util.OrdersMapper;
 
-import feign.FeignException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,32 +24,14 @@ public class OrderService {
 
 	private final OrdersDao ordersDao;
 
-	private final StreamBridge streamBridge;
+	private final OrderServiceHelper orderServiceHelper;
 
-	private final ModelMapper mapper;
-
-	private final AuthServerFeignClient authServerFeignClient;
-
-	@Transactional
-	public PlaceOrderResponce placeOrder(String username, String email, PlaceOrderRequest placeOrderRequest)
+	public PlaceOrderResponse placeOrder(String username, String email, PlaceOrderRequest placeOrderRequest)
 			throws OrderException {
 		String orderId = ordersDao.placeOrder(username, placeOrderRequest);
-		sendEmailNotification(username, email, orderId);
-		return new PlaceOrderResponce(orderId, "success");
-	}
-
-	private void sendEmailNotification(String username, String email, String orderId) {
-		try {
-			if (email == null)
-				email = authServerFeignClient.getEmail(username).getBody();
-		} catch (FeignException e) {
-			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));
-		}
-
-		// send email notification
-		MailContentDto mailContentDto = new MailContentDto(email, null, "order is placed with order id: " + orderId,
-				null);
-		streamBridge.send("sendEmail-out-0", mailContentDto);
+		orderServiceHelper.decrementStock(placeOrderRequest.items());
+		orderServiceHelper.sendEmailNotification(username, email, orderId);
+		return new PlaceOrderResponse(orderId, "success");
 	}
 
 	public List<ViewOrdersDto> getOrderDetails(String username, Integer orderId) {
@@ -66,19 +43,19 @@ public class OrderService {
 
 		orderDetails.forEach(order -> {
 			if (orderId == null) {
-				ViewOrdersDto viewOrdersDto = new ViewOrdersDto();
-				viewOrdersDto.setOrderId(order.getOrderId());
-				viewOrdersDto.setDeliveryStatus(order.getDeliveryStatus());
-				viewOrdersDto.setPaymentStatus(order.getPaymentStatus());
-				viewOrdersDto.setOrderStatus(order.getOrderStatus());
-				viewOrdersDto.setOrderTotal(order.getOrderTotal());
+				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
+						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), null);
 
 				viewOrdersDtos.add(viewOrdersDto);
-				return;
-			}
+			} else {
+				List<OrderItemDto> orderItemDtos = 
+						OrdersMapper.INSTANCE.orderItemsToOrderItemsDto(new ArrayList<>(order.getOrderItems()));
 
-			ViewOrdersDto viewOrdersDto = mapper.map(order, ViewOrdersDto.class);
-			viewOrdersDtos.add(viewOrdersDto);
+				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
+						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), orderItemDtos);
+
+				viewOrdersDtos.add(viewOrdersDto);
+			}
 		});
 
 		return viewOrdersDtos;
@@ -86,7 +63,16 @@ public class OrderService {
 	}
 
 	public void cancelOrder(String username, Integer orderId) {
-		ordersDao.changeOrderStatus(username, orderId, "cancelled by customer");
+		Orders cancelledOrder = ordersDao.changeOrderStatus(username, orderId, "cancelled by customer");
+
+		List<OrderItemDto> orderItemDtos = new ArrayList<>();
+
+		cancelledOrder.getOrderItems()
+				.forEach(orderItem -> orderItemDtos.add(new OrderItemDto(orderItem.getItemId(), orderItem.getItemName(),
+						orderItem.getUnitPrice(), orderItem.getQuantity(), orderItem.getEffectivePrice())));
+
+		orderServiceHelper.restoreStockAsync(orderItemDtos);
+
 	}
 
 }

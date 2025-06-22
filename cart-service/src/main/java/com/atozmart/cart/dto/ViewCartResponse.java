@@ -2,13 +2,10 @@ package com.atozmart.cart.dto;
 
 import java.util.List;
 
-import lombok.Data;
+public record ViewCartResponse(
 
-@Data
-public class ViewCartResponse {
+		List<ItemDto> items,
 
-	private List<ItemDto> items;
-	
-	private double orderAmount;
-	
+		double orderAmount) {
+
 }

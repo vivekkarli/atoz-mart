@@ -1,12 +1,10 @@
 package com.atozmart.wishlist.dto;
 
-import lombok.Data;
+public record WishlistDto(
+		
+		String itemId,
 
-@Data
-public class WishlistDto {
+		String itemName,
 
-	private String itemName;
-
-	private String price;
-	
+		double unitPrice) {
 }

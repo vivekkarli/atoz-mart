@@ -6,13 +6,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-
-import com.atozmart.profile.configuration.GeneralConfig;
-import com.atozmart.profile.dto.AddressDetails;
-import com.atozmart.profile.dto.BasicDetails;
-import com.atozmart.profile.dto.ProfileDetails;
-import com.atozmart.profile.entity.AddressTypeEnum;
+import com.atozmart.profile.dto.AddressDetailsDto;
+import com.atozmart.profile.dto.BasicDetailsDto;
+import com.atozmart.profile.dto.ProfileDetailsDto;
 import com.atozmart.profile.entity.UserAddress;
 import com.atozmart.profile.entity.UserProfile;
 
@@ -25,25 +21,30 @@ public class ProfileMapper {
 		throw new IllegalAccessError();
 	}
 
-	private static final ModelMapper MODEL_MAPPER = new GeneralConfig().modelMapper();
-
-	public static UserProfile mapToUserProfile(String username, ProfileDetails profileDetails) {
+	public static UserProfile mapToUserProfile(String username, ProfileDetailsDto profileDetailsDto) {
 
 		UserProfile userProfile = new UserProfile();
 		userProfile.setUsername(username);
 
-		Optional.ofNullable(profileDetails.getBasicDetails()).ifPresent(basicDetails -> {
-			userProfile.setFirstName(basicDetails.getFirstName());
-			userProfile.setLastName(basicDetails.getLastName());
-			userProfile.setMail(basicDetails.getMail());
-			userProfile.setMobileNo(basicDetails.getMobileNo());
+		Optional.ofNullable(profileDetailsDto.basicDetailsDto()).ifPresent(basicDetails -> {
+			userProfile.setFirstName(basicDetails.firstName());
+			userProfile.setLastName(basicDetails.lastName());
+			userProfile.setMail(basicDetails.mail());
+			userProfile.setMobileNo(basicDetails.mobileNo());
 		});
 
-		Optional.ofNullable(profileDetails.getAddressDetails()).ifPresentOrElse(profileAddresses -> {
+		Optional.ofNullable(profileDetailsDto.addressDetailsDto()).ifPresentOrElse(profileAddresses -> {
 			Set<UserAddress> userAddresses = profileAddresses.stream().map(address -> {
-				UserAddress userAddress = MODEL_MAPPER.map(address, UserAddress.class);
+				UserAddress userAddress = new UserAddress();
 				userAddress.setUsername(username);
-				userAddress.setAddressType(AddressTypeEnum.fromString(address.getAddressType()));
+				userAddress.setAddressType(AddressTypeEnum.fromString(address.addressType()));
+				userAddress.setAddressDesc(address.addressDesc());
+				userAddress.setDefaultAddress(address.defaultAddress());
+				userAddress.setAddLine1(address.addLine1());
+				userAddress.setAddLine2(address.addLine2());
+				userAddress.setAddLine3(address.addLine3());
+				userAddress.setPincode(address.pincode());
+				userAddress.setCountry(address.country());
 				return userAddress;
 			}).collect(Collectors.toSet());
 			log.debug("userAddresses: {}", userAddresses);
@@ -55,23 +56,23 @@ public class ProfileMapper {
 		return userProfile;
 	}
 
-	public static ProfileDetails mapToProfileDetails(UserProfile userProfile) {
+	public static ProfileDetailsDto mapToProfileDetails(UserProfile userProfile) {
 
 		Set<UserAddress> userAddresses = userProfile.getAddresses();
 		log.debug("userAddress: {}", userAddresses);
 
-		List<AddressDetails> addressDetails = userAddresses.stream().map(userAddress -> {
-			AddressDetails addressDetailsTemp = MODEL_MAPPER.map(userAddress, AddressDetails.class);
-			addressDetailsTemp.setAddressType(userAddress.getAddressType().getAddressType());
-			return addressDetailsTemp;
-		}).toList();
+		List<AddressDetailsDto> addressDetailsDto = userAddresses.stream().map(userAddress ->
 
-		BasicDetails basicDetails = MODEL_MAPPER.map(userProfile, BasicDetails.class);
+		new AddressDetailsDto(userAddress.getAddressType().getAddressType(), userAddress.getAddressDesc(),
+				userAddress.isDefaultAddress(), userAddress.getAddLine1(), userAddress.getAddLine2(),
+				userAddress.getAddLine3(), userAddress.getPincode(), userAddress.getCountry())
 
-		ProfileDetails profileDetails = new ProfileDetails();
-		profileDetails.setBasicDetails(basicDetails);
-		profileDetails.setAddressDetails(addressDetails);
-		return profileDetails;
+		).toList();
+
+		BasicDetailsDto basicDetailsDto = new BasicDetailsDto(userProfile.getUsername(), userProfile.getFirstName(),
+				userProfile.getLastName(), userProfile.getMail(), userProfile.getMobileNo());
+
+		return new ProfileDetailsDto(basicDetailsDto, addressDetailsDto);
 	}
 
 }

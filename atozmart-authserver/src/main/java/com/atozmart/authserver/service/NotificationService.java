@@ -14,20 +14,22 @@ import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.entity.EmailVerification;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
-	
+
 	private final NotificationDao notificationDao;
-	
+
 	private final StreamBridge streamBridge;
-	
+
 	public void sendEmailConfirmationMail(AppUser appUser) {
 		// step-1 generate random code
 		String code = UUID.randomUUID().toString();
 		String body = AuthServerUtil.getConfirmEmailContent(appUser.getUsername(), code);
-		
+
 		// step-2 update table
 		EmailVerification emailVerification = new EmailVerification();
 		emailVerification.setCode(code);
@@ -35,16 +37,21 @@ public class NotificationService {
 		emailVerification.setEmail(appUser.getMail());
 		emailVerification.setNotificationSent(false);
 		notificationDao.updateEmailVerificationTable(emailVerification);
-		
+
 		// step-3 call notification service
 		MailContentDto mailContentDto = new MailContentDto(appUser.getMail(), null, body, null);
-		streamBridge.send("sendEmail-out-0", mailContentDto);
-		
+
+		try {
+			streamBridge.send("sendEmail-out-0", mailContentDto);
+		} catch (Exception ex) {
+			log.debug("couldn't send email confirmation mail, {}", ex.getMessage());
+		}
+
 	}
-	
+
 	public ResponseEntity<String> confirmEmail(String code) {
 		notificationDao.confirmEmail(code);
-		return new ResponseEntity<>("email verified successfully",HttpStatus.ACCEPTED);
+		return new ResponseEntity<>("email verified successfully", HttpStatus.ACCEPTED);
 	}
 
 }

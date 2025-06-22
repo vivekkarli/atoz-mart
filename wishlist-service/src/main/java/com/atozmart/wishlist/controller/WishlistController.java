@@ -38,7 +38,7 @@ public class WishlistController {
 	@GetMapping("/items")
 	public ResponseEntity<List<WishlistDto>> viewItems(@RequestHeader("X-Username") String username)
 			throws WishlistException {
-		log.info("X-Username: {}",username);
+		log.info("X-Username: {}", username);
 		log.info("showing items from wishlist");
 		List<WishlistDto> wishlistDtos = wishlistService.viewItems(username);
 		return ResponseEntity.ok(wishlistDtos);
@@ -46,8 +46,9 @@ public class WishlistController {
 	}
 
 	@DeleteMapping("/items")
-	public ResponseEntity<Void> removeItem(@RequestHeader("X-Username") String username, @RequestParam(required = false) String itemName) {
-		wishlistService.deleteItems(username, itemName);
+	public ResponseEntity<Void> removeItem(@RequestHeader("X-Username") String username,
+			@RequestParam(required = false) String itemId) {
+		wishlistService.deleteItems(username, itemId);
 		return ResponseEntity.noContent().build();
 
 	}

@@ -48,7 +48,7 @@ public class SecurityConfig {
 				.pathMatchers("/atozmart/authserver/**").permitAll()
 
 				// catalog-service endpoints
-				.pathMatchers(HttpMethod.DELETE, "/atozmart/catalog/**").hasRole("ADMIN")
+				.pathMatchers("/atozmart/catalog/admin/**").hasRole("ADMIN")
 
 				// cart-service endpoints
 				.pathMatchers("/atozmart/cart/**").permitAll()

@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dto.SignUpForm;
-import com.atozmart.authserver.dto.profile.BasicDetails;
-import com.atozmart.authserver.dto.profile.ProfileDetails;
+import com.atozmart.authserver.dto.profile.BasicDetailsDto;
+import com.atozmart.authserver.dto.profile.ProfileDetailsDto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
@@ -22,24 +24,22 @@ public class ProfileService {
 
 	public void createProfile(SignUpForm signUpForm) {
 
-		BasicDetails basicDetails = new BasicDetails();
-		basicDetails.setUsername(signUpForm.username());
-		basicDetails.setFirstName(signUpForm.firstName());
-		basicDetails.setLastName(signUpForm.lastName());
-		basicDetails.setMail(signUpForm.mail());
-		basicDetails.setMobileNo(signUpForm.mobileNo());
+		BasicDetailsDto basicDetailsDto = new BasicDetailsDto(signUpForm.username(), signUpForm.firstName(),
+				signUpForm.lastName(), signUpForm.mail(), signUpForm.mobileNo());
 
-		ProfileDetails profileDetails = new ProfileDetails();
-		profileDetails.setBasicDetails(basicDetails);
-		profileDetails.setAddressDetails(Collections.emptyList());
+		ProfileDetailsDto profileDetailsDto = new ProfileDetailsDto(basicDetailsDto, Collections.emptyList());
 
-		streamBridge.send("registerNewUser-out-0", profileDetails);
+		try {
+			streamBridge.send("registerNewUser-out-0", profileDetailsDto);
+		} catch (Exception ex) {
+			log.debug("couldn't register new user, {}", ex.getMessage());
+		}
 
 	}
 
-	public void updateBasicDetails(String username, BasicDetails basicDetails) {
-		
-		appUserDao.updateBasicDetails(username, basicDetails);
+	public void updateBasicDetails(String username, BasicDetailsDto basicDetailsDto) {
+
+		appUserDao.updateBasicDetails(username, basicDetailsDto);
 
 	}
 

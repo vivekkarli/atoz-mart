@@ -14,14 +14,14 @@ public interface CartRepository extends JpaRepository<Cart, Integer> {
 
 	List<Cart> findByUsername(String username);
 	
-	Optional<Cart> findByUsernameAndItemName(String username, String itemName);
+	Optional<Cart> findByUsernameAndItemId(String username, String itemId);
 
 	@Modifying
 	@Query("delete from Cart c where c.username = :username")
 	void deleteByUsername(@Param(value = "username") String username);
 
 	@Modifying
-	@Query("delete from Cart c where c.username = :username and c.itemName = :itemName")
-	void deleteByUsernameAndItemName(@Param("username") String username, @Param("itemName") String itemName);
+	@Query("delete from Cart c where c.username = :username and c.itemId = :itemId")
+	void deleteByUsernameAndItemId(@Param("username") String username, @Param("itemId") String itemId);
 
 }

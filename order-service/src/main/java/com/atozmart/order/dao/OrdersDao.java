@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class OrdersDao {
 
-	private OrdersRepository orderRepo;
+	private final OrdersRepository orderRepo;
 
-	private ModelMapper mapper;
-
+	@Transactional
 	public String placeOrder(String username, PlaceOrderRequest placeOrderRequest) throws OrderException {
 
 		Orders orders = new Orders();
@@ -36,9 +34,17 @@ public class OrdersDao {
 		orders.setDeliveryStatus("arriving by tommorow");
 		orders.setOrderStatus("accepted");
 		orders.setOrderTotal(placeOrderRequest.orderTotal());
+		
+		
+		//List<OrderItem> orderItems = OrdersMapper.INSTANCE.orderItemsDtoToViewOrderItems(placeOrderRequest.items());
 
 		Set<OrderItem> orderItems = placeOrderRequest.items().stream().map(item -> {
-			OrderItem orderItem = mapper.map(item, OrderItem.class);
+			OrderItem orderItem = new OrderItem();
+			orderItem.setItemId(item.itemId());
+			orderItem.setItemName(item.itemName());
+			orderItem.setQuantity(item.quantity());
+			orderItem.setUnitPrice(item.unitPrice());
+			orderItem.setEffectivePrice(item.effectivePrice());
 			orderItem.setOrderId(orders);
 			return orderItem;
 		}).collect(Collectors.toSet());
@@ -74,10 +80,11 @@ public class OrdersDao {
 	}
 
 	@Transactional
-	public void changeOrderStatus(String username, Integer orderId, String orderStatus) throws OrderException {
+	public Orders changeOrderStatus(String username, Integer orderId, String orderStatus) throws OrderException {
 		Orders order = orderRepo.findByUsernameAndOrderId(username, orderId).orElseThrow(
 				() -> new OrderException("order with order id: %d not found".formatted(orderId), HttpStatus.NOT_FOUND));
 		order.setOrderStatus(orderStatus);
+		return order;
 	}
 
 }

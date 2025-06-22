@@ -5,7 +5,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import com.atozmart.authserver.dto.profile.BasicDetails;
+import com.atozmart.authserver.dto.profile.BasicDetailsDto;
 import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.repository.AppUserRepository;
@@ -29,11 +29,11 @@ public class AppUserDao implements UserDetailsService {
 		appUserRepository.save(appUser);
 	}
 
-	public void updateBasicDetails(String username, BasicDetails basicDetails) {
+	public void updateBasicDetails(String username, BasicDetailsDto basicDetailsDto) {
 		
 		AppUser appUser = loadUserByUsername(username);
-		appUser.setMail(basicDetails.getMail());
-		appUser.setMobileNo(basicDetails.getMobileNo());
+		appUser.setMail(basicDetailsDto.mail());
+		appUser.setMobileNo(basicDetailsDto.mobileNo());
 
 	}
 
