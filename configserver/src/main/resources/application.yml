@@ -2,23 +2,12 @@ spring:
    application:
       name: atozmart-configserver
    profiles:
-      active: git
+      active: native, default
    cloud:
       config:
          server:
-            git:
-               uri: https://github.com/vivekkarli/atoz-mart
-               search-paths: atoz-mart-config
-               default-label: main
-               force-pull: true
-               clone-on-start: true
-               timeout: 5
-
-encrypt:
-   key: 264f450c-d078-45ca-87d9-52244e83dd49
-
-server:
-   port: 8070
+            native:
+              search-locations: "file:///C://my-projects//atoz-mart//atoz-mart-config"
 
 management:
    endpoints:

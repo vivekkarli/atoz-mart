@@ -5,7 +5,7 @@ spring:
    application:
       name: atozmart-gatewayserver
    config:
-      import: 'optional:configserver:http://localhost:8070'
+      import: 'optional:configserver:http://localhost:8080'
    security:
       oauth2:
          resourceserver:
