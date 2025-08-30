@@ -30,21 +30,22 @@ public class OrderController {
 	public ResponseEntity<PlaceOrderResponse> placeOrder(@RequestHeader("X-Username") String username,
 			@RequestHeader(name = "X-User-Email", required = false) String email,
 			@RequestBody @Valid PlaceOrderRequest placeOrderRequest) {
-		return new ResponseEntity<>(orderService.placeOrder(username, email, placeOrderRequest), HttpStatus.CREATED);
+		return new ResponseEntity<>(orderService.placeOrder(placeOrderRequest, username, email), HttpStatus.CREATED);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<ViewOrdersDto>> getOrderDetails(@RequestHeader("X-Username") String username,
 			@RequestParam(required = false) Integer orderId) {
 		
-		List<ViewOrdersDto> orderDetails = orderService.getOrderDetails(username, orderId);
+		List<ViewOrdersDto> orderDetails = orderService.getOrderDetails(orderId, username);
 		return ResponseEntity.ok(orderDetails);
 	}
 	
 	@PatchMapping("/cancelOrder")
 	public ResponseEntity<String> cancelOrder(@RequestHeader("X-Username") String username,
+			@RequestHeader(name = "X-User-Email", required = false) String email,
 			@RequestParam Integer orderId){
-		orderService.cancelOrder(username, orderId);
+		orderService.cancelOrder(orderId, username, email);
 		return ResponseEntity.ok("order with order id: %s cancelled successfully".formatted(orderId));
 	}
 

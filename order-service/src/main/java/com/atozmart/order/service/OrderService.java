@@ -12,6 +12,7 @@ import com.atozmart.order.dto.PlaceOrderResponse;
 import com.atozmart.order.dto.ViewOrdersDto;
 import com.atozmart.order.entity.Orders;
 import com.atozmart.order.exception.OrderException;
+import com.atozmart.order.util.OrderConstants;
 import com.atozmart.order.util.OrdersMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -26,43 +27,28 @@ public class OrderService {
 
 	private final OrderServiceHelper orderServiceHelper;
 
-	public PlaceOrderResponse placeOrder(String username, String email, PlaceOrderRequest placeOrderRequest)
+	public PlaceOrderResponse placeOrder(PlaceOrderRequest placeOrderRequest, String username, String email)
 			throws OrderException {
+
 		String orderId = ordersDao.placeOrder(username, placeOrderRequest);
-		orderServiceHelper.decrementStock(placeOrderRequest.items());
-		orderServiceHelper.sendEmailNotification(username, email, orderId);
+
+		orderServiceHelper.decrementStockAsync(placeOrderRequest.items());
+		orderServiceHelper.sendEmailNotificationAsync(username, email,
+				OrderConstants.getOrderPlacedMailContent(orderId));
+
 		return new PlaceOrderResponse(orderId, "success");
 	}
 
-	public List<ViewOrdersDto> getOrderDetails(String username, Integer orderId) {
+	public List<ViewOrdersDto> getOrderDetails(Integer orderId, String username) {
 
-		List<Orders> orderDetails = ordersDao.getOrderDetails(username, orderId);
-		log.info("orderDetails: {}", orderDetails);
+		List<Orders> orders = ordersDao.getOrderDetails(username, orderId);
+		log.info("orderDetails: {}", orders);
 
-		List<ViewOrdersDto> viewOrdersDtos = new ArrayList<>();
-
-		orderDetails.forEach(order -> {
-			if (orderId == null) {
-				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
-						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), null);
-
-				viewOrdersDtos.add(viewOrdersDto);
-			} else {
-				List<OrderItemDto> orderItemDtos = 
-						OrdersMapper.INSTANCE.orderItemsToOrderItemsDto(new ArrayList<>(order.getOrderItems()));
-
-				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
-						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), orderItemDtos);
-
-				viewOrdersDtos.add(viewOrdersDto);
-			}
-		});
-
-		return viewOrdersDtos;
+		return mapToViewOrdersDto(orderId, orders);
 
 	}
 
-	public void cancelOrder(String username, Integer orderId) {
+	public void cancelOrder(Integer orderId, String username, String email) {
 		Orders cancelledOrder = ordersDao.changeOrderStatus(username, orderId, "cancelled by customer");
 
 		List<OrderItemDto> orderItemDtos = new ArrayList<>();
@@ -72,7 +58,33 @@ public class OrderService {
 						orderItem.getUnitPrice(), orderItem.getQuantity(), orderItem.getEffectivePrice())));
 
 		orderServiceHelper.restoreStockAsync(orderItemDtos);
+		orderServiceHelper.sendEmailNotificationAsync(username, email,
+				OrderConstants.getOrderCancelMailContent(orderId, cancelledOrder.getOrderTotal()));
 
+	}
+
+	private List<ViewOrdersDto> mapToViewOrdersDto(Integer orderId, List<Orders> orders) {
+
+		List<ViewOrdersDto> viewOrdersDtos = new ArrayList<>();
+
+		orders.forEach(order -> {
+			if (orderId == null) {
+				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
+						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), null);
+
+				viewOrdersDtos.add(viewOrdersDto);
+			} else {
+				List<OrderItemDto> orderItemDtos = OrdersMapper.INSTANCE
+						.orderItemsToOrderItemsDto(new ArrayList<>(order.getOrderItems()));
+
+				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
+						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), orderItemDtos);
+
+				viewOrdersDtos.add(viewOrdersDto);
+			}
+		});
+
+		return viewOrdersDtos;
 	}
 
 }

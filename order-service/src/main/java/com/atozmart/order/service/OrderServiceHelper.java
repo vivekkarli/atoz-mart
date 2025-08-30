@@ -30,8 +30,26 @@ public class OrderServiceHelper {
 
 	private final CatalogFeignClient catalogFeignClient;
 
-	public void decrementStock(List<OrderItemDto> items) {
+	@Async("virtualThreadAsyncExecutor")
+	public void decrementStockAsync(List<OrderItemDto> items) {
+		log.info("Thread: {}", Thread.currentThread());
+		log.info("decrementStock Async process started");
+		decrementStock(items);
+	}
 
+	@Async("virtualThreadAsyncExecutor")
+	public void restoreStockAsync(List<OrderItemDto> items) {
+		log.info("restoreStock Async process started");
+		restoreStock(items);
+	}
+
+	@Async("virtualThreadAsyncExecutor")
+	public void sendEmailNotificationAsync(String username, String email, String msg) {
+		log.info("sendEmailNotification Async process started");
+		sendEmailNotification(username, email, msg);
+	}
+
+	public void decrementStock(List<OrderItemDto> items) {
 		List<SingleStockUpdateDto> singleStockUpdates = new ArrayList<>();
 		items.forEach(item -> singleStockUpdates.add(new SingleStockUpdateDto(item.itemId(), null, item.quantity())));
 		StockUpdateDto stockUpdateDto = new StockUpdateDto(singleStockUpdates);
@@ -56,21 +74,14 @@ public class OrderServiceHelper {
 		}
 	}
 
-	@Async
-	public void restoreStockAsync(List<OrderItemDto> items) {
-		log.info("restore Stock Async process started");
-		restoreStock(items);
-	}
-
-	public void sendEmailNotification(String username, String email, String orderId) {
+	public void sendEmailNotification(String username, String email, String msg) {
 		try {
 			if (email == null)
 				email = authServerFeignClient.getEmail(username).getBody();
 			log.info("extracted email: {}", email);
 
 			// send email notification
-			MailContentDto mailContentDto = new MailContentDto(email, null, "order is placed with order id: " + orderId,
-					null);
+			MailContentDto mailContentDto = new MailContentDto(email, null, msg, null);
 			streamBridge.send("sendEmail-out-0", mailContentDto);
 		} catch (FeignException e) {
 			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));

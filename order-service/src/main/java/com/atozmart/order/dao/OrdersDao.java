@@ -13,6 +13,7 @@ import com.atozmart.order.entity.OrderItem;
 import com.atozmart.order.entity.Orders;
 import com.atozmart.order.exception.OrderException;
 import com.atozmart.order.repository.OrdersRepository;
+import com.atozmart.order.util.OrderConstants;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,9 @@ public class OrdersDao {
 		orders.setDeliveryStatus("arriving by tommorow");
 		orders.setOrderStatus("accepted");
 		orders.setOrderTotal(placeOrderRequest.orderTotal());
-		
-		
-		//List<OrderItem> orderItems = OrdersMapper.INSTANCE.orderItemsDtoToViewOrderItems(placeOrderRequest.items());
+
+		// List<OrderItem> orderItems =
+		// OrdersMapper.INSTANCE.orderItemsDtoToViewOrderItems(placeOrderRequest.items());
 
 		Set<OrderItem> orderItems = placeOrderRequest.items().stream().map(item -> {
 			OrderItem orderItem = new OrderItem();
@@ -65,24 +66,30 @@ public class OrdersDao {
 			List<Orders> orders = orderRepo.findByUsername(username);
 
 			if (orders.isEmpty())
-				throw new OrderException("no orders found", HttpStatus.NOT_FOUND);
+				throw new OrderException(OrderConstants.ORDER_NOT_FOUND, HttpStatus.NOT_FOUND);
 
 			return orders;
 		}
 
-		Orders order = orderRepo.findByUsernameAndOrderId(username, orderId).orElseThrow(
-				() -> new OrderException("order with order id: %d not found".formatted(orderId), HttpStatus.NOT_FOUND));
-		Set<OrderItem> orderItems = order.getOrderItems();
-		order.setOrderItems(orderItems);
+		Orders orders = orderRepo.findByUsernameAndOrderId(username, orderId).orElseThrow(
+				() -> new OrderException(OrderConstants.ORDER_ID_NOT_FOUND.formatted(orderId), HttpStatus.NOT_FOUND));
+		Set<OrderItem> orderItems = orders.getOrderItems();
+		orders.setOrderItems(orderItems);
 
-		return List.of(order);
+		return List.of(orders);
 
 	}
 
 	@Transactional
 	public Orders changeOrderStatus(String username, Integer orderId, String orderStatus) throws OrderException {
 		Orders order = orderRepo.findByUsernameAndOrderId(username, orderId).orElseThrow(
-				() -> new OrderException("order with order id: %d not found".formatted(orderId), HttpStatus.NOT_FOUND));
+				() -> new OrderException(OrderConstants.ORDER_ID_NOT_FOUND.formatted(orderId), HttpStatus.NOT_FOUND));
+
+		if (order.getOrderStatus().equals(orderStatus)) {
+			throw new OrderException(OrderConstants.ORDER_STATUS_ALREADY_CHANGED.formatted(orderId, orderStatus),
+					HttpStatus.CONFLICT);
+		}
+
 		order.setOrderStatus(orderStatus);
 		return order;
 	}
