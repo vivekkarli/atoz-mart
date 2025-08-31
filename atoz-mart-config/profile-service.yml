@@ -1,89 +1,84 @@
 server:
-  port: 8085
-  
+   port: 8085
+
 spring:
-  application:
-    name: profile-service
-  config:
-    import: "optional:configserver:http://localhost:8071"
-  datasource:
-    url: jdbc:mysql://localhost:3306/profiledb
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    properties:
+   application:
+      name: profile-service
+   config:
+      import: 'optional:configserver:http://localhost:8080'
+   datasource:
+      url: jdbc:mysql://localhost:3306/profiledb
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+   jpa:
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      show-sql: true
       hibernate:
-        format_sql: true
-  sql:
-    init:
-      mode: NEVER
-  cloud:
-    function: 
-      defination: registerNewUser
-    stream:
-      bindings:
-        registerNewUser-in-0:
-          destination: in-register-user
-          group: atozmart
-        registerNewUser-out-0:
-          destination: out-register-user #queue
-          group: atozmart
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
-    connection-timeout: 10s
+         ddl-auto: update
+      properties:
+         hibernate:
+            format_sql: true
+   sql:
+      init:
+         mode: never
+   cloud:
+      stream:
+         bindings:
+            registerNewUser-in-0:
+               destination: register-new-user-topic
+               group: atozmart
+   rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
+      connection-timeout: 10s
 
 eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-      
-# info properties to see info in eureka dashboard     
+   instance:
+      prefer-ip-address: true
+   client:
+      fetch-registry: true
+      register-with-eureka: true
+      serviceUrl:
+         defaultZone: http://localhost:8761/eureka
+
 info:
-  app:
-    name: "profile-service"
-    description: "AtoZ wishlist application"
-    version: 1.0.0
+   app:
+      name: profile-service
+# info properties to see info in eureka dashboard
+      description: AtoZ wishlist application
+      version: 1.0.0
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
-    health:
-      probes:
-        enabled: true
-  health:
-    readiness-state:
-      enabled: true
-    liveness-state:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-           
+   endpoints:
+      web:
+         exposure:
+            include: '*'
+   endpoint:
+      shutdown:
+         enabled: true
+      health:
+         probes:
+            enabled: true
+   health:
+      readiness-state:
+         enabled: true
+      liveness-state:
+         enabled: true
+   info:
+      env:
+         enabled: true
+   metrics:
+      tags:
+         application: ${spring.application.name}
+
 endpoints:
-    shutdown:
+   shutdown:
       enabled: true
-   
+
 logging:
-  level:
-    com.atozmart.profile: DEBUG
-    com.netflix.discovery.DiscoveryClient: OFF
+   level:
+      com.atozmart.profile: DEBUG
+      com.netflix.discovery.DiscoveryClient: OFF

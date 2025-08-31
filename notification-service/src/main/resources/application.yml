@@ -1,68 +1,63 @@
 server:
-  port: 8083
+   port: 8083
 
 spring:
-  application:
-    name: notification-service
-  config:
-    import: "optional:configserver:http://localhost:8080"
-  cloud:
-    function: 
-      defination: sendEmail
-    stream:
-      bindings:
-        sendEmail-in-0:
-          destination: in-send-email
-          group: atozmart
-        sendEmail-out-0:
-          destination: out-send-email #queue
-          group: atozmart
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    connection-timeout: 10s
-    
+   application:
+      name: notification-service
+   config:
+      import: 'optional:configserver:'
+   cloud:
+      stream:
+         bindings:
+            sendEmail-in-0:
+               destination: send-email-topic
+               group: atozmart
+   rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      connection-timeout: 10s
+
 eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-        
+   instance:
+      prefer-ip-address: true
+   client:
+      fetch-registry: true
+      register-with-eureka: true
+      serviceUrl:
+         defaultZone: http://localhost:8761/eureka
+
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
-    health:
-      probes:
-        enabled: true
-  health:
-    readiness-state:
-      enabled: true
-    liveness-state:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-      
-# info properties to see info in eureka dashboard     
+   endpoints:
+      web:
+         exposure:
+            include: '*'
+   endpoint:
+      shutdown:
+         enabled: true
+      health:
+         probes:
+            enabled: true
+   health:
+      readiness-state:
+         enabled: true
+      liveness-state:
+         enabled: true
+   info:
+      env:
+         enabled: true
+   metrics:
+      tags:
+         application: ${spring.application.name}
+
 info:
-  app:
-    name: "atozmart-notification-service"
-    description: "AtoZ mart notification service"
-    version: 1.0.0
-    
+   app:
+      name: atozmart-notification-service
+      description: AtoZ mart notification service
+# info properties to see info in eureka dashboard
+      version: 1.0.0
+
 logging:
-  level:
-    com.netflix.discovery.DiscoveryClient: OFF
-    com.atozmart.notification: DEBUG
+   level:
+      com.netflix.discovery.DiscoveryClient: OFF
+      com.atozmart.notification: DEBUG

@@ -5,7 +5,7 @@ spring:
   application:
     name: order-service
   config:
-    import: "optional:configserver:http://localhost:8071"
+    import: 'optional:configserver:http://localhost:8080'
   datasource:
     url: jdbc:mysql://localhost:3306/orderdb
     driver-class-name: com.mysql.cj.jdbc.Driver

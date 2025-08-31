@@ -1,6 +1,6 @@
 package com.atozmart.profile.configuration;
 
-import java.util.function.Function;
+import java.util.function.Consumer;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,17 +19,16 @@ public class RegisterNewUserConfig {
 	private final ProfileService profileService;
 
 	@Bean
-	public Function<ProfileDetailsDto, String> registerNewUser() {
+	public Consumer<ProfileDetailsDto> registerNewUser() {
 		return profileDetails -> {
 			log.info("registering new user");
+			log.info("profileDetails: {}", profileDetails);
 			try {
 				profileService.addNewProfile(profileDetails.basicDetailsDto().username(), profileDetails);
 			} catch (Exception e) {
 				log.error("failed: registering new user: {}", e.getMessage());
-				return "registering new user failed";
 			}
 
-			return "registered new user successfully";
 		};
 
 	}

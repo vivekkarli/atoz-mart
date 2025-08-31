@@ -1,99 +1,94 @@
 server:
-  port: 8074
+   port: 8074
 
 spring:
-  application:
-    name: atozmart-authserver
-  config:
-    import: "optional:configserver:http://localhost:8070"
-  datasource:
-    url: jdbc:mysql://localhost:3306/atozmart_authserver_db
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
-  jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    show-sql: true
-    defer-datasource-initialization: false
-    hibernate:
-      ddl-auto: update
-    properties:
+   application:
+      name: atozmart-authserver
+   config:
+      import: 'optional:configserver:http://localhost:8080'
+   datasource:
+      url: jdbc:mysql://localhost:3306/atozmart_authserver_db
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: root
+      password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+   jpa:
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      show-sql: true
+      defer-datasource-initialization: false
       hibernate:
-        format_sql: true
-  sql:
-    init:
-      mode: never
-  cloud:
-    function:
-      defination: emailVerificationMailConfirmation
-    stream:
-     bindings:
-       emailVerificationMailConfirmation-in-0:
-         destination: out-send-email #queue
-         group: atozmart
-       sendEmail-out-0:
-          destination: in-send-email #queue
-          group: atozmart
-       registerNewUser-out-0:
-          destination: in-register-user #queue
-          group: atozmart
-          
-          
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
-    connection-timeout: 10s 
-  
+         ddl-auto: update
+      properties:
+         hibernate:
+            format_sql: true
+   sql:
+      init:
+         mode: never
+   cloud:
+      stream:
+         bindings:
+            sendEmail-out-0:
+               destination: send-email-topic #queue
+               group: atozmart
+            registerNewUser-out-0:
+               destination: register-new-user-topic #queue
+               group: atozmart
+
+
+   rabbitmq:
+      host: localhost
+      port: 5672
+      username: guest
+      password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
+      connection-timeout: 10s
+
 eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-        
+   instance:
+      prefer-ip-address: true
+   client:
+      fetch-registry: true
+      register-with-eureka: true
+      serviceUrl:
+         defaultZone: http://localhost:8761/eureka
+
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-  endpoint:
-    shutdown:
-      enabled: true
-    health:
-      probes:
-        enabled: true
-  health:
-    readiness-state:
-      enabled: true
-    liveness-state:
-      enabled: true
-  info:
-    env:
-      enabled: true
-  metrics:
-    tags:
-      application: ${spring.application.name}
-             
+   endpoints:
+      web:
+         exposure:
+            include: '*'
+   endpoint:
+      shutdown:
+         enabled: true
+      health:
+         probes:
+            enabled: true
+   health:
+      readiness-state:
+         enabled: true
+      liveness-state:
+         enabled: true
+   info:
+      env:
+         enabled: true
+   metrics:
+      tags:
+         application: ${spring.application.name}
+
 endpoints:
-  shutdown:
-    enabled: true
-      
-# info properties to see info in eureka dashboard     
+   shutdown:
+      enabled: true
+
 info:
-  app:
-    name: "atozmart-authserver"
-    description: "AtoZ mart auth server"
-    version: 1.0.0
-    
+   app:
+      name: atozmart-authserver
+      description: AtoZ mart auth server
+      version: 1.0.0
 logging:
-  level:
-    com.netflix.discovery.DiscoveryClient: OFF
-    com.atozmart.authserver: DEBUG
-    
+
+   level:
+# info properties to see info in eureka dashboard
+      com.netflix.discovery.DiscoveryClient: OFF
+      com.atozmart.authserver: DEBUG
+
 jwt:
-  secret-key: '{cipher}a52844ea5744f5139f3a32584c8650d291c438c9fec15adb2afe571e3a501db05312c1e51710a18da99b88121c9e77024c0ea99f9d96270171668dca68117fdd4d137ba42a009e59acc344edd54b36d162472a0c360c64e72f1d4c42d5f87a31'
-  expiration-time: 3600000
+   secret-key: '{cipher}a52844ea5744f5139f3a32584c8650d291c438c9fec15adb2afe571e3a501db05312c1e51710a18da99b88121c9e77024c0ea99f9d96270171668dca68117fdd4d137ba42a009e59acc344edd54b36d162472a0c360c64e72f1d4c42d5f87a31'
+   expiration-time: 3600000

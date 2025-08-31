@@ -2,12 +2,14 @@ package com.atozmart.authserver.dto.profile;
 
 import java.util.List;
 
-import jakarta.validation.Valid;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record ProfileDetailsDto(
 
-		@Valid BasicDetailsDto basicDetailsDto,
+		@JsonProperty("basicDetails")
+		BasicDetailsDto basicDetailsDto,
 
-		@Valid List<AddressDetailsDto> addressDetailsDto) {
+		@JsonProperty("addressDetails")
+		List<AddressDetailsDto> addressDetailsDto) {
 
 }

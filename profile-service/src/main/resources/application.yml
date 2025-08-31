@@ -5,7 +5,7 @@ spring:
    application:
       name: profile-service
    config:
-      import: "optional:configserver:http://localhost:8080"
+      import: 'optional:configserver:'
    datasource:
       url: jdbc:mysql://localhost:3306/profiledb
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,15 +22,10 @@ spring:
       init:
          mode: NEVER
    cloud:
-      function:
-         defination: registerNewUser
       stream:
          bindings:
             registerNewUser-in-0:
-               destination: in-register-user
-               group: atozmart
-            registerNewUser-out-0:
-               destination: out-register-user #queue
+               destination: register-new-user-topic
                group: atozmart
    rabbitmq:
       host: localhost
