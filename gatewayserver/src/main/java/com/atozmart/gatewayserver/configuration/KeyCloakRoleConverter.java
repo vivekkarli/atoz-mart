@@ -30,7 +30,7 @@ public class KeyCloakRoleConverter implements Converter<Jwt, Collection<GrantedA
 		log.info("keyCloakUserRoles: {}",keyCloakUserRoles);
 		if (!keyCloakUserRoles.isEmpty()) {
 			return keyCloakUserRoles.stream()
-					.map(roleName -> roleName.startsWith("ROLE_") ? roleName.toUpperCase() : "ROLE_" + roleName.toUpperCase())
+					.map(roleName -> roleName.startsWith("ROLE_") ? roleName : "ROLE_" + roleName)
 					.map(SimpleGrantedAuthority::new)
 					.collect(Collectors.toList());
 		}

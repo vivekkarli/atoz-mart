@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import com.atozmart.authserver.dto.AuthorizeResponse;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
+import com.atozmart.authserver.entity.AppRole;
 import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.exception.AuthServerException;
 
@@ -73,9 +75,9 @@ public class AuthServerService {
 		appUser.setPassword(passwordEncoder.encode(signUpForm.password()));
 		appUser.setMail(signUpForm.mail());
 		appUser.setMobileNo(signUpForm.mobileNo());
-		appUser.setRoles("ROLE_USER");
 		appUser.setEmailVerified(false);
 		appUser.setMobileNoVerified(false);
+		appUser.setRoles(Set.of(new AppRole("user", null)));
 
 		log.debug("new appUser: {}", appUser);
 
