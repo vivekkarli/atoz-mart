@@ -5,7 +5,7 @@ spring:
    application:
       name: atozmart-gatewayserver
    config:
-      import: 'optional:configserver:http://localhost:8080'
+      import: 'optional:configserver:'
    security:
       oauth2:
          resourceserver:
@@ -42,35 +42,70 @@ spring:
                   predicates:
                   - Path=/atozmart/catalog/**
                   filters:
-                  - RewritePath=atozmart/catalog/(?<segment>.*), /${segment}
+                  -  name: RewritePath
+                     args:
+                        regexp: atozmart/catalog/(?<segment>.*)
+                        replacement: /${segment}
+                  -  name: CircuitBreaker
+                     args:
+                        name: catalog-service
+                        fallbackUri: forward:/fallback/catalog-service
 
                -  id: cart-path-rewrite
                   uri: lb://CART-SERVICE
                   predicates:
                   - Path=/atozmart/cart/**
                   filters:
-                  - RewritePath=atozmart/cart/(?<segment>.*), /${segment}
+                  -  name: RewritePath
+                     args:
+                        regexp: atozmart/cart/(?<segment>.*)
+                        replacement: /${segment}
+                  -  name: CircuitBreaker
+                     args:
+                        name: cart-service
+                        fallbackUri: forward:/fallback/cart-service
 
                -  id: wishlist-path-rewrite
                   uri: lb://WISHLIST-SERVICE
                   predicates:
                   - Path=/atozmart/wishlist/**
                   filters:
-                  - RewritePath=atozmart/wishlist/(?<segment>.*), /${segment}
+                  -  name: RewritePath
+                     args:
+                        regexp: atozmart/wishlist/(?<segment>.*)
+                        replacement: /${segment}
+                  -  name: CircuitBreaker
+                     args:
+                        name: wishlist-service
+                        fallbackUri: forward:/fallback/wishlist-service
 
                -  id: order-path-rewrite
                   uri: lb://ORDER-SERVICE
                   predicates:
                   - Path=/atozmart/order/**
                   filters:
-                  - RewritePath=atozmart/order/(?<segment>.*), /${segment}
+                  -  name: RewritePath
+                     args:
+                        regexp: atozmart/order/(?<segment>.*)
+                        replacement: /${segment}
+                  -  name: CircuitBreaker
+                     args:
+                        name: order-service
+                        fallbackUri: forward:/fallback/order-service
 
                -  id: profile-path-rewrite
                   uri: lb://PROFILE-SERVICE
                   predicates:
                   - Path=/atozmart/profile/**
                   filters:
-                  - RewritePath=atozmart/profile/(?<segment>.*), /${segment}
+                  -  name: RewritePath
+                     args:
+                        regexp: atozmart/profile/(?<segment>.*)
+                        replacement: /${segment}
+                  -  name: CircuitBreaker
+                     args:
+                        name: profile-service
+                        fallbackUri: forward:/fallback/profile-service
 
    main:
       allow-bean-definition-overriding: true
@@ -81,15 +116,28 @@ resilience4j:
          authserver:
             timeoutDuration: 2s
    circuitbreaker:
-      instances:
-         authserver:
-            slidingWindowSize: 6
+      configs:
+         default:
+            slidingWindowSize: 4
             slidingWindowType: COUNT_BASED
             failureRateThreshold: 50 # 50%
             waitDurationInOpenState: 10000 #10s
             permittedNumberOfCallsInHalfOpenState: 3
             registerHealthIndicator: true
-
+      instances:
+         authserver:
+            slidingWindowSize: 8
+         order-service:
+            slidingWindowSize: 6
+         catalog-service:
+            slidingWindowSize: 6
+         wishlist-service:
+            slidingWindowSize: 6
+         profile-service:
+            slidingWindowSize: 6
+         cart-service:
+            slidingWindowSize: 6
+            
 eureka:
    instance:
       prefer-ip-address: true

@@ -17,9 +17,13 @@ import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 
 import com.atozmart.gatewayserver.authentication.CustomTokenAuthenticationConverter;
+import com.atozmart.gatewayserver.util.GatewayConstants;
 
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
+
+import static com.atozmart.gatewayserver.util.GatewayConstants.ROLE_ADMIN;
+import static com.atozmart.gatewayserver.util.GatewayConstants.ROLE_USER;
 
 @EnableWebFluxSecurity
 @Configuration
@@ -27,40 +31,40 @@ import reactor.core.publisher.Mono;
 public class SecurityConfig {
 
 	private final CustomTokenAuthenticationConverter customTokenAuthenticationConverter;
-	
+
 	@Bean
 	public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
 
 		// Create the AuthenticationWebFilter with a ReactiveAuthenticationManager
-        AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(reactiveAuthenticationManager());
-        authenticationWebFilter.setServerAuthenticationConverter(customTokenAuthenticationConverter);
+		AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(reactiveAuthenticationManager());
+		authenticationWebFilter.setServerAuthenticationConverter(customTokenAuthenticationConverter);
 
 		http.authorizeExchange(exchanges -> exchanges
 
 				// management endpoints
-				.pathMatchers("/actuator/**").hasRole("ADMIN") // gateway actuator end points
-				.pathMatchers("/atozmart/*/actuator/**").hasRole("ADMIN") // individual microservices
-				
+				.pathMatchers("/actuator/**").hasRole(ROLE_ADMIN) // gateway actuator end points
+				.pathMatchers("/atozmart/*/actuator/**").hasRole(ROLE_ADMIN) // individual microservices
+
 				// gateway endpoints
-				.pathMatchers("/test").permitAll()
-				
+				.pathMatchers("/test").permitAll().pathMatchers("/fallback/**").denyAll()
+
 				// atozmart-authserver endpoints
 				.pathMatchers("/atozmart/authserver/**").permitAll()
 
 				// catalog-service endpoints
-				.pathMatchers("/atozmart/catalog/admin/**").hasRole("ADMIN")
+				.pathMatchers("/atozmart/catalog/admin/**").hasRole(GatewayConstants.ROLE_ADMIN)
 
 				// cart-service endpoints
 				.pathMatchers("/atozmart/cart/**").permitAll()
 
 				// wishlist-service endpoints
-				.pathMatchers("/atozmart/wishlist/**").hasAnyRole("USER", "ADMIN")
-				
+				.pathMatchers("/atozmart/wishlist/**").hasAnyRole(ROLE_USER, ROLE_ADMIN)
+
 				// order-service endpoints
-				.pathMatchers("/atozmart/order/**").hasAnyRole("USER", "ADMIN")
-				
+				.pathMatchers("/atozmart/order/**").hasAnyRole(ROLE_USER, ROLE_ADMIN)
+
 				// order-service endpoints
-				.pathMatchers("/atozmart/profile/**").hasAnyRole("USER", "ADMIN")
+				.pathMatchers("/atozmart/profile/**").hasAnyRole(ROLE_USER, ROLE_ADMIN)
 
 				.anyExchange().permitAll());
 
@@ -72,25 +76,25 @@ public class SecurityConfig {
 	}
 
 	@Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        
-        corsConfiguration.addAllowedOrigin("http://localhost:5173");
-        corsConfiguration.addAllowedMethod(HttpMethod.GET);
-        corsConfiguration.addAllowedMethod(HttpMethod.POST);
-        corsConfiguration.addAllowedMethod(HttpMethod.PUT);
-        corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
-        corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
-        corsConfiguration.addAllowedHeader("Authorization");
-        corsConfiguration.addAllowedHeader("Content-Type");
-        corsConfiguration.addExposedHeader("X-Access-Token");
-        corsConfiguration.setAllowCredentials(true); // Allow cookies/credentials
-        corsConfiguration.setMaxAge(3600L); // Cache preflight response for 1 hour
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfiguration); // Apply to all paths
-        return source;
-    }
+		corsConfiguration.addAllowedOrigin("http://localhost:5173");
+		corsConfiguration.addAllowedMethod(HttpMethod.GET);
+		corsConfiguration.addAllowedMethod(HttpMethod.POST);
+		corsConfiguration.addAllowedMethod(HttpMethod.PUT);
+		corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
+		corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
+		corsConfiguration.addAllowedHeader("Authorization");
+		corsConfiguration.addAllowedHeader("Content-Type");
+		corsConfiguration.addExposedHeader("X-Access-Token");
+		corsConfiguration.setAllowCredentials(true); // Allow cookies/credentials
+		corsConfiguration.setMaxAge(3600L); // Cache preflight response for 1 hour
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", corsConfiguration); // Apply to all paths
+		return source;
+	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {

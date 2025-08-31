@@ -23,4 +23,34 @@ public class GatewayController {
 				"authserver not responding, please try again after some time", LocalDateTime.now()));
 	}
 
+	@RequestMapping("/fallback/order-service")
+	public ResponseEntity<FallBackResponse> orderServiceFallback() {
+		return ResponseEntity.status(503).body(new FallBackResponse(
+				"order service not responding, please try again after some time", LocalDateTime.now()));
+	}
+
+	@RequestMapping("/fallback/catalog-service")
+	public ResponseEntity<FallBackResponse> catalogServiceFallback() {
+		return ResponseEntity.status(503).body(new FallBackResponse(
+				"catalog service not responding, please try again after some time", LocalDateTime.now()));
+	}
+
+	@RequestMapping("/fallback/profile-service")
+	public ResponseEntity<FallBackResponse> profileServiceFallback() {
+		return ResponseEntity.status(503).body(new FallBackResponse(
+				"profile service not responding, please try again after some time", LocalDateTime.now()));
+	}
+
+	@RequestMapping("/fallback/wishlist-service")
+	public ResponseEntity<FallBackResponse> wishlistServiceFallback() {
+		return ResponseEntity.status(503).body(new FallBackResponse(
+				"wishlist service not responding, please try again after some time", LocalDateTime.now()));
+	}
+
+	@RequestMapping("/fallback/cart-service")
+	public ResponseEntity<FallBackResponse> cartServiceFallback() {
+		return ResponseEntity.status(503).body(new FallBackResponse(
+				"cart service not responding, please try again after some time", LocalDateTime.now()));
+	}
+
 }

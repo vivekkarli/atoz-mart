@@ -81,7 +81,7 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 					Mono<? extends Authentication> authentication = Mono.just(jwtAuthenticationConverter.convert(jwt));
 					return authentication.cast(Authentication.class);
 				}).onErrorMap(e -> {
-					log.info("exception: {}", e.getMessage());
+					log.info("validateKeycloakToken exception: {}", e.getMessage());
 					return new OAuth2AuthenticationException("Invalid Keycloak token: " + e.getMessage());
 				});
 	}
@@ -106,8 +106,10 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 					} else {
 						return Mono.error(new OAuth2AuthenticationException("Invalid atozmart token"));
 					}
-				}).onErrorMap(
-						e -> new OAuth2AuthenticationException("Error calling atozmartAuthServer: " + e.getMessage()));
+				}).onErrorMap(e -> {
+					log.info("validateAtozmartToken exception: {}", e.getMessage());
+					return new OAuth2AuthenticationException("Error calling atozmartAuthServer: " + e.getMessage());
+				});
 	}
 
 	private List<GrantedAuthority> extractedAuthoritiesFrom(List<String> roles) {
