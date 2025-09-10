@@ -10,7 +10,7 @@ spring:
       url: jdbc:mysql://localhost:3306/atozmart_authserver_db
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
-      password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+      password: '{cipher}AYBA08tZGoILTQ4cUJApsDdOE1Tt0xzgW+JqDPHR13JT6qX9ZyzRf56eAr/54tn715XKtGhu55j7E1oSY1SE08fL3uCvMYm9hKuHcWQhYooBI3sxr2lKs6edzS3NZXBsWMjIIo4HnmPIGPeh7Wsk+oYi6ZQHz6HS25dJ5jQlysElZmo4aUlOhbERp8PkRuyEjKjg4cnCHO71M7MTDDI//w8MZ9ZX3FEIpcdTHae78BsjQB7+GZpkVN9OOSEz91nwP8uYTSIBeoJIl9vsp9cIdIUQGHkMB/uKenX6k2Gwa4RBz6PSDrY4N3ofj2+s64YuHdxEhOwojx6f4/5FoyMIsfeK2FklZOZfmgRxL/PZCCtwc8P0AODme49Y+BZZppDwbnkDUCSmf2HYfEJvbbjXtelBmDrQ6g8E+tHksML/Llrvvj1nnIiBZzBUuZ2HRy/yAwlpxVm9DGnaS+fpf9U+P3g5AdcJ9jbT5nRjM3Ba5C51DkLg1g0TVWk5eojTo90460lR85NvGDwExlViH2StefYj93nMxkxPEFjiXSmCGTJKfg=='
    jpa:
       database-platform: org.hibernate.dialect.MySQL8Dialect
       show-sql: true
@@ -38,7 +38,7 @@ spring:
       host: localhost
       port: 5672
       username: guest
-      password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
+      password: '{cipher}AYBIbhhszkqPBSgndqUSSE8L5dy9GhQUfQmahLbMsghwjxLc23iwdgBIICQ5whj4tIXPgLndRZqcXUzdVrOJOTQdTZryfiMbKdimfZRPvY0lXUnH+d2UIRiM/D41FNG4MR5Ors7nM5WaZB7aDstQuix6+g/cWQE6P12L8pf1c5j0XTsp6aXE289KslRwyz06lR7qZdUAAB8jw84kZEh6pl9XwP7DDhQDVdvJ+ZskWQmsczbD46UV6q1ST83A088DCLmi0LACu9bkPIdUOnySC0+gBZoDq445oitdc35M26anW5bLZHd43kLWWF1AuUKc0aVDWxZ9i3zTUI8bNve4s71qM76I75m38SUhMHWVZAtFTjUBwzybVXNf/SpNJqV1Ob+m03VxOCBoU0Ztm7mxMY7j4lIo8Q3/hIS0PlOepVKuEUWCiln780OyuZUVbF/ymIXWRcNai7T+Zp6/5IT/E9PY8Yl67/id7FCBznyR0PvGjoJtVNSg8qj6xnDqhvZeZ301lC12pQ0GYIX9LBghb7Cot6IYcLjs+h59WKIXjqYoHA=='
       connection-timeout: 10s
 
 eureka:
@@ -90,5 +90,5 @@ logging:
       com.atozmart.authserver: DEBUG
 
 jwt:
-   secret-key: '{cipher}a52844ea5744f5139f3a32584c8650d291c438c9fec15adb2afe571e3a501db05312c1e51710a18da99b88121c9e77024c0ea99f9d96270171668dca68117fdd4d137ba42a009e59acc344edd54b36d162472a0c360c64e72f1d4c42d5f87a31'
+   secret-key: '{cipher}AYBOxHVNd5pG/kJQs7ZS882/zpSl0+6xTxBunpdVOav9oCPAgaZXCn5ZqiyefZdYIN/dHPtUx6AYlL5TKwoJw5bst6mOz5QEEFnpiie+0d6kfS7NUD9390HmVpOzoceJSahAgtZNg3UiTrI83ufj/y5JKkx4OSDFjK/L1jOYejsi2lwtPP8vUcAfrKOCyQ2ENzQkJ46dh0vSM1LntTGBR+bPPGNVDHtkDTnOBgLmAxC7rjRCbROGyXJb3Lqix6z8APQooU9jvZvoGrpzcDbfvXX8KbvAGPDmQ1JpefOvnAid/yeLq2hk1jBtb3GwSLB4i/RTFZ6mxwGyvrOYzkr3Zun4q1b94nsC3e1og1tFF6E97WY/ZXKfil0xMRK0ojSOhQEqjzoRcO350Vc7K7XvT74voKFRZqZqfvyF2VrTc0Js3QcUzrYFS/nitMaCtClfQ3xFrXqCMzKheG4pDWR7B7evHgM6xg/qHuO9ZgPFBxPiNLHmlm09jiuM8/Vsr2+zTiUGxD8TyD0rVZKUG6qU0Wf5fie+HEeJP4hLEfjbI2qrOLbV2l0iXKTi2wCiM//A3TGvfXwY7UJALP9gfGS2ZoLG3CgUHlNNRkmvfHI7FxaFFZmosf021g2kW5EAnkn+4o0='
    expiration-time: 3600000

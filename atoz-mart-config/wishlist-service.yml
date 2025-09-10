@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://localhost:3306/wishlistdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+    password: '{cipher}AYB5iDoje+PWbLkSGnEVeehxgiDYE4jRrJt9D1TbThkpKjOHmPeBtFCSqfA4EMQcbWhIKesmGLa+DaCa5OtccgW1t7DVGsfKCrD5EdreJKJg53Mxn96qhdm3xCmCv7Cr3cdZsC4uPHqbsymo9DkhQPqmmy+OrRY+Jwe52EyzoE/zwozbedkIdboQY9etvOSrOO3LBftVyQy1CWR4+5F7WDnB7954xif1RJGx1LMMyEtV0hEtex/e4KG8SBluNCTYipgnWq9y7hDNyxiaS/b+NqhYnZQ7FRCrZ1PYyaTr7T3v0BkZljCKZu4gr0/TKHDcJ9yNLVmIhUZlrqO5ctfUxIQTsf1vp29l0DbkpcLCd7P9M6BL72tzoNiao1Vn6uFjfKd3uw4k0e811QNq22fQSIkeXfrjKPb/nyX3R5vx52u07v1QWWLFLeR+E25mItNbd1nZxc0nkXpxm1Ppr6MDN8JUEiKmQ/iUqCKgMsLaB+QpgYaFir7LDXIHb8auYN7ezsmV6X8MTgr5PNiC+KiXAyCBQEvlhsV1BEtOsV8L8wou5g=='
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     show-sql: true

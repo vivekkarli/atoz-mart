@@ -114,7 +114,7 @@ resilience4j:
    timelimiter:
       instances:
          authserver:
-            timeoutDuration: 2s
+            timeoutDuration: 5s
    circuitbreaker:
       configs:
          default:
@@ -189,4 +189,4 @@ atozmart:
       issuer: atozmart-authserver
    admin:
       username: atozmart_gatewayserver
-      password: '{cipher}f7fd357458eac5aa39259f7116ad361e18505176f6fac32af91d0a505c3852a2'
+      password: '{cipher}AYCMe9QHTSTP+SrBGu8Hg7z6tZrl6y0XFzDqSLLT5NgeKXLp+0bSN4v8Vd+gX9aWWjQ3gP4wiU8drGlVUXf0mEgaesunumW3xq3ZXP/dtxFsRjzxibGtFeK44Q5NTc3cCzCnv//ualI+nIAyG7SVVmh+Ww9SYka1NHWI15/3v9/FSfEZrUzRSh83oQ4+MBMtlAeXjGYfEUVXv1+cbfY5dmpJCVfpujeGY2YsWcgPtOFqghHOEdi6giR6kMjTUVhiHxbdUA8GYC6QiKMMejEosatXgHHZ2sjdQEA0ul98F7Imb4qeYzAH44MguGont10FTY+Ul3XLPmc1OjpxRzWP6WlK2bsdLagbkqReFoOZD/Saax2uR4sPrsR05KWaxBWmhFzh0tRrjqAO1lX97X2NqKtsXyDI7DegNHzMKGcUR5CrDS+8k99REo0CSkyAT6Sg/08pImXS1HkmFwKk6oxJb7i3oys6iWlc0LMW7JhHfb3pEu9AyX6y3jCdXHZoXAcIS55CkS3k/anHIiXjY8KH4dAwyz4pE6LUHYQZKfAL2xDhVw=='

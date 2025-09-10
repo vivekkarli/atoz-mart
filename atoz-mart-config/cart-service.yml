@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://localhost:3306/cartdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+    password: '{cipher}AYBA08tZGoILTQ4cUJApsDdOE1Tt0xzgW+JqDPHR13JT6qX9ZyzRf56eAr/54tn715XKtGhu55j7E1oSY1SE08fL3uCvMYm9hKuHcWQhYooBI3sxr2lKs6edzS3NZXBsWMjIIo4HnmPIGPeh7Wsk+oYi6ZQHz6HS25dJ5jQlysElZmo4aUlOhbERp8PkRuyEjKjg4cnCHO71M7MTDDI//w8MZ9ZX3FEIpcdTHae78BsjQB7+GZpkVN9OOSEz91nwP8uYTSIBeoJIl9vsp9cIdIUQGHkMB/uKenX6k2Gwa4RBz6PSDrY4N3ofj2+s64YuHdxEhOwojx6f4/5FoyMIsfeK2FklZOZfmgRxL/PZCCtwc8P0AODme49Y+BZZppDwbnkDUCSmf2HYfEJvbbjXtelBmDrQ6g8E+tHksML/Llrvvj1nnIiBZzBUuZ2HRy/yAwlpxVm9DGnaS+fpf9U+P3g5AdcJ9jbT5nRjM3Ba5C51DkLg1g0TVWk5eojTo90460lR85NvGDwExlViH2StefYj93nMxkxPEFjiXSmCGTJKfg=='
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true

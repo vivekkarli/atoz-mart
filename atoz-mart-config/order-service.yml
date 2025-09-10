@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://localhost:3306/orderdb
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+    password: '{cipher}AYBjfkahcFFxQMZE2nyNumdKFj5/EM/g8UzIEpAxOecT/IAm9j78y9qJmYKBaczbpM5YTKacMlI3oVKcRVmidVaOAWKc8DbOs9XYCw2Wc7B9QmwkiCzxl74xp3FfuM5/9pb4PonMQNCWjO9jg5Alca+pJG3muG0//VbJIdFxSg1oiynxzyD+KGZKlTHE4roDRnLBWfg76QLmfLHDZAeHhtk70xTirGo5L2Fj0JzeNt8peKLcx3BCxpEuAMdmjCsRp2DByWMwywUqp+dA1Rtes7Bcjesb0lNo8yzdMEWMfXknQ02+1rPivIBW8wMH98E7/cac0x35fO4mZgo16p85jdT8EL5Jep7a8VBqt72nEbmIm+2nCTTp1PlbY/PO/+5QPzfOVTwo8QyJ5DObwlXHie6xfEHfoEmIf8cQ1jBl/40x/v/atsvS+oG7D+z/VrQk15RBB+fsHwBWb3CnlOg3f2QIbVh9rW4Y1Cor1LgZXNK3eBSn0tr7Q5vkCBR8JbQiL43/N1mWUKwLrbRJ2eONovoIkCFxFsNCsdN1o4K2Se0dcA=='
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
@@ -32,7 +32,7 @@ spring:
     host: localhost
     port: 5672
     username: guest
-    password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
+    password: '{cipher}AYAe01ULdYKBWTVGdK3UUbTmUVpMkg6o8SuhF6sC8yTkHcGnWc6/1iKny1H7k8uUHaLx6ebgk7ErAMF6Jq3EoHx5LXrS2Jr1cIMYh00TuPV9khmp6c0wOOMnDkGcCxIuipeKDxS3Xw+XUL/687bQMZU0GOXMmen+a0YcUNsZVHh0Au9xoH9whoNM9ixepHdK+VTW2zWxe6Uk0uyYNPKHlzBeRQaS+flc3FF6VSj8dvVrZVvjcHll5znHDI2ZHbYGvrXkpXoCRRvKOUmPU4tccJl4EsQwZQmCL4Yl0V00lIgdMio60NHJUq9m0mhi+V1o6EduXtlZt33/M2HGsewt+96fcvglxFNwWZbgslgOFSpRKX42SgkRZkHAsLEY3eGnfEPbN9Pf3vkfrVVclPJBVavcPj+9GlfftiYhySpk/eNfnhWQbN2/p5EaZHjkeQWsZKtnQFA6uZvXFXvxs79eZEjodoVDneJwVj3H/RzhLiwijWOtbBTnLZdNoGRd4oqZUsVFcEbhhmRcPRA9XguVf61Txq8YRCJfGGGO63K3WgqN4g=='
     connection-timeout: 10s  
       
 eureka:
@@ -86,4 +86,4 @@ logging:
 atozmart:
   admin:
     user: 'order_service'
-    password: '{cipher}44fcb05d8d5c8678f69583b3ad82944939acfe4287f80cf5282e087f21d7704e'
+    password: '{cipher}AYDcGYxW65ioO1RGl440DOBRnJgqfRohyrOUQYXnHz6T4t/KSOyUc8LOWZa+KZPQxQ/OdxyHb8wy3HhfMf0uhp9dkPDhpHzEzCKti7FEkfpWj4LGIwHtsniauwlvH6rXPZQtR+q2rnq3NM1cFk28tfy27Q+jTGbyfHYJpPwBKLVT0FssdgnK356hBrOdZES2lQDn8KqOOL9IVXW8MgEjUrCwYV4D5Yd2/62WWdCM7zPCd8ptb5PIV7dfwgagP/f7k5XVPCr0qB7e+5UyW8PqyMmVpCczE6E+oTkvRR81Of/oQu0E2WcfZiAocbVmtqUYXUBOYjJKZhj83r8MFt4efu+UNi4aUeu43KhwG7QnJjWS+o0V2VivZ6+S8dD/2O3uhejdOOdpm8IDFzQJTAc3PQNvbZpS2aN0TSiwwCqEGeAMW3KldyKGehRDSC1vWB1Ql2Z0lQ1RdW2ntZKgotUPMqB1YRYw0idBRAhxTyvnkzuq6ydDXItMiv+LjgpcizJbdzkANlRzFrHgXcRInfODdEQTdhyCk1PTASqrq7zDYyk1zg=='

@@ -10,7 +10,7 @@ spring:
       url: jdbc:mysql://localhost:3306/profiledb
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
-      password: '{cipher}8e253ff13876d14d4309c7a1cb6e0cec80a5d2a50926baacf70b4916e20da3cb'
+      password: '{cipher}AYDaKaoH9RnvOjZpV5LCE/BFNaYzX/ojuFyZsSgpF/iomfC0RyWRYYkY8GK11i5/B5etIpgaXonkEbp9GiZXRjj+YnVdVs21++NCCWsWnNNvXLb+SWhGHl7O0Id4DuPE26pmp8atc1mY933b6s09PIZi1g4zXcO/z+kxnm6owwt7rscQmt1gtobde+UtlrQOcWyGXev/GwlhxH8z6ZfDyVPdfNMdtDruBoquK/SR+9xqBA9wKhm1zHReMeOE5UCzzxexv52hKf00qLpGnZheX3Ir53TtUeYmTtzQXmiIqVXNiu627w/15PrO1yDFraZ9nPI25anWggaddPDQUez5qtYXrhh4E/lnSeGhfymClwiiWS79d1XIMjJEvFUXpLXRGhRcc0ogwvY5CL7W5dpeOoH/IAMJEWmScIQBwyW7lI5kasthZY7qWBnz0+cnqR2F1QU+mR9nMXy192v3420IKY7YtZCx/i8Dq4cjlktlujsDP7qglIIBlFb2UMQp3IEBTj40vqqVV16dwadFb0XWYoSBD1eFHTbYkUleQStnS6C4zQ=='
    jpa:
       database-platform: org.hibernate.dialect.MySQL8Dialect
       show-sql: true
@@ -32,7 +32,7 @@ spring:
       host: localhost
       port: 5672
       username: guest
-      password: '{cipher}9cd284a8f2898d63a2bc9749631f357e9cfd1818d176a7007fcb079d94bd2502'
+      password: '{cipher}AYAta5h4fJKI2e7hQpNdQMnD84CmgYSYC5eyJMUcsTglJCeCmpDpHEVQxLU14FM1LOiIp/iaZvZsk5df0QwZALGzssGcoBhCntFJ813lX09SQBV9ospDFmbpzRwIu1mSpcf+xfMzH9PhWzvAqBWjmly+1GvP79EZtgIRjbRFFiRYG4DzqlCoRke10Ry1u6018cYJnDjT7YroU7ITzeJWAVkS1JFBKwFSh7P81IyEHFkHyZpeYL1X/9gOgQ/GkT2eDT2/CKKQq3CnZCI7sKGwXbbmdfvdbCZFKFfoJT3ExIL5zqJ2PDiEbz3w1whsBDKaPnh0MkYBk6JgbUHMtZQAR+fGq7Hy7JRFZkqUz7SCnXI5PbSCmqBIcOSJP9h8diTbved2NsFz1sr4beNoUkip4nxA79AwTrIsiRnUY0y4LnAwuUDuIOtUwp0EU8tuPWu1KqV3MYuyIRxikbJaiUS05xE5gTenTWKC8XGJ3aCtyqo3cLWRTE2xS0ss1m+XpgLKoS0Iuj3zC9OcN4m1RET8Ms5TnqJbLqV6XMqwSLVhHzSteA=='
       connection-timeout: 10s
 
 eureka:

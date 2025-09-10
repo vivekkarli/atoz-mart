@@ -6,6 +6,7 @@ spring:
        on-profile: prod
    cloud:
       config:
+         uri: http://localhost:8888
          server:
             git:
                uri: https://github.com/vivekkarli/atoz-mart
