@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dto.AuthorizeResponse;
+import com.atozmart.authserver.dto.ChangePasswordRequest;
+import com.atozmart.authserver.dto.ChangePasswordResponse;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
@@ -38,7 +40,7 @@ public class AuthServerService {
 	private final AppUserDao appUserDao;
 
 	private final NotificationService notificationService;
-	
+
 	private final ProfileService profileService;
 
 	private final JwtService jwtService;
@@ -82,12 +84,12 @@ public class AuthServerService {
 		log.debug("new appUser: {}", appUser);
 
 		appUserDao.signUp(appUser);
-		
+
 		// create new profile, async process
 		profileService.createProfile(signUpForm);
 
 		// send email verification mail, async process
-		notificationService.sendEmailConfirmationMail(appUser);
+		notificationService.sendEmailConfirmationMail(appUser.getUsername(), appUser.getMail());
 
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
 	}
@@ -122,6 +124,11 @@ public class AuthServerService {
 
 	public String getEmail(String username) throws UsernameNotFoundException {
 		return appUserDao.loadUserByUsername(username).getMail();
+	}
+
+	public ChangePasswordResponse changePassword(String username, ChangePasswordRequest request) {
+		appUserDao.updatePassword(username, request.oldPassword(), request.newPassword());
+		return new ChangePasswordResponse("password updated successfully");
 	}
 
 }

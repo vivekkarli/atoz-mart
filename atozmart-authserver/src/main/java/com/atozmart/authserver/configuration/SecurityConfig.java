@@ -7,7 +7,6 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -20,6 +19,8 @@ import lombok.AllArgsConstructor;
 public class SecurityConfig {
 	
 	private final AppUserDao appUserDao;
+	
+	private final PasswordEncoder passwordEncoder;
 
 	@Bean
 	public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -34,14 +35,9 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
 	public AuthenticationManager authenticationManager() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider(appUserDao);
-		provider.setPasswordEncoder(passwordEncoder());
+		provider.setPasswordEncoder(passwordEncoder);
 
 		return new ProviderManager(provider);
 	}

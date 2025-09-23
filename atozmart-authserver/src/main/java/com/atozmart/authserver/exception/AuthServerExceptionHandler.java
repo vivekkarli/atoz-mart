@@ -24,7 +24,7 @@ public class AuthServerExceptionHandler {
 
 	@ExceptionHandler(AuthServerException.class)
 	public ResponseEntity<GlobalErrorResponse> handlerAuthServerException(AuthServerException ex) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new GlobalErrorResponse(ex.getMessage(), null));
+		return ResponseEntity.status(ex.getHttpStatus()).body(new GlobalErrorResponse(ex.getMessage(), null));
 	}
 
 }
