@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dto.AuthorizeResponse;
 import com.atozmart.authserver.dto.ChangePasswordRequest;
-import com.atozmart.authserver.dto.ChangePasswordResponse;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
@@ -126,9 +125,13 @@ public class AuthServerService {
 		return appUserDao.loadUserByUsername(username).getMail();
 	}
 
-	public ChangePasswordResponse changePassword(String username, ChangePasswordRequest request) {
-		appUserDao.updatePassword(username, request.oldPassword(), request.newPassword());
-		return new ChangePasswordResponse("password updated successfully");
+	public void changePassword(String username, ChangePasswordRequest request) {
+		AppUser appUser = appUserDao.loadUserByUsername(username);
+		if (!passwordEncoder.matches(request.oldPassword(), appUser.getPassword())) {
+			throw new AuthServerException("Incorrect old password", HttpStatus.UNAUTHORIZED);
+		}
+		appUser.setPassword(passwordEncoder.encode(request.newPassword()));
+		appUserDao.updateUser(appUser);
 	}
 
 }

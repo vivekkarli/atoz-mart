@@ -15,8 +15,8 @@ import com.atozmart.authserver.dto.ForgotPasswordRequest;
 import com.atozmart.authserver.dto.ForgotPasswordResponse;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
-import com.atozmart.authserver.dto.ResetPasswordResponse;
 import com.atozmart.authserver.dto.ResetPasswordRequest;
+import com.atozmart.authserver.dto.ResetPasswordResponse;
 import com.atozmart.authserver.dto.SignUpForm;
 import com.atozmart.authserver.service.AuthServerService;
 import com.atozmart.authserver.service.NotificationService;
@@ -49,18 +49,23 @@ public class AuthServerController {
 
 	@PostMapping("/forgot-password")
 	public ResponseEntity<ForgotPasswordResponse> forgotPassword(@RequestBody ForgotPasswordRequest request) {
-		return ResponseEntity.ok(notificationService.sendPasswordResetMail(request));
+		notificationService.handleForgotPassword(request);
+		return ResponseEntity.ok(new ForgotPasswordResponse("password reset link sent to your mail"));
 	}
 
 	@PostMapping("/reset-password")
-	public ResponseEntity<ResetPasswordResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-		return new ResponseEntity<>(notificationService.resetPassword(request), HttpStatus.ACCEPTED);
+	public ResponseEntity<ResetPasswordResponse> resetPassword(@RequestParam(name = "token") String encodedToken,
+			@Valid @RequestBody ResetPasswordRequest request) {
+		notificationService.resetPassword(encodedToken, request);
+		return new ResponseEntity<>(new ResetPasswordResponse("password reset successfull"), HttpStatus.ACCEPTED);
+
 	}
 
 	@PostMapping("/change-password")
 	public ResponseEntity<ChangePasswordResponse> changePassword(@RequestHeader("X-Username") String username,
 			@Valid @RequestBody ChangePasswordRequest request) {
-		return new ResponseEntity<>(authServerService.changePassword(username, request), HttpStatus.ACCEPTED);
+		authServerService.changePassword(username, request);
+		return new ResponseEntity<>(new ChangePasswordResponse("password updated successfully"), HttpStatus.ACCEPTED);
 	}
 
 }

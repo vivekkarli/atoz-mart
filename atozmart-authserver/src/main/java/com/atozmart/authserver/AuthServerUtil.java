@@ -10,7 +10,7 @@ public class AuthServerUtil {
 			<body>
 			hi %s,
 			please verify your email!
-			<a href=http://localhost:8072/atozmart/authserver/confirm-email?token=%s>Confirm Email</a>"
+			<a href=https://localhost:8072/atozmart/authserver/confirm-email?token=%s>Confirm Email</a>"
 			</body>
 			</html>
 			""";
@@ -20,7 +20,7 @@ public class AuthServerUtil {
 			<body>
 			hi %s,
 			use this link to reset your password!
-			<a href=http://front-end-dns/reset-password?token=%s>reset password</a>"
+			<a href= %s>reset password</a>"
 			</body>
 			</html>
 			""";
@@ -29,8 +29,8 @@ public class AuthServerUtil {
 		return VERIFY_EMAIL_CONTENT.formatted(username, code);
 	}
 	
-	public static String getPasswordResetEmailContent(String username, String code) {
-		return PASSWORD_RESET_CONTENT.formatted(username, code);
+	public static String getPasswordResetEmailContent(String username, String resetLink) {
+		return PASSWORD_RESET_CONTENT.formatted(username, resetLink);
 	}
 	
 	

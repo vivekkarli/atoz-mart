@@ -1,26 +1,31 @@
 package com.atozmart.authserver.service;
 
+import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.UUID;
 
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.atozmart.authserver.AuthServerUtil;
+import com.atozmart.authserver.configuration.AtozMartConfig;
+import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dao.NotificationDao;
 import com.atozmart.authserver.dto.ForgotPasswordRequest;
-import com.atozmart.authserver.dto.ForgotPasswordResponse;
 import com.atozmart.authserver.dto.MailContentDto;
-import com.atozmart.authserver.dto.ResetPasswordResponse;
 import com.atozmart.authserver.dto.ResetPasswordRequest;
 import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.entity.EmailVerification;
 import com.atozmart.authserver.entity.PasswordResetToken;
 import com.atozmart.authserver.exception.AuthServerException;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +36,13 @@ public class NotificationService {
 
 	private final NotificationDao notificationDao;
 
+	private final AppUserDao appUserDao;
+
 	private final StreamBridge streamBridge;
+
+	private final AtozMartConfig atozMartConfig;
+
+	private final PasswordEncoder passwordEncoder;
 
 	public void sendEmailConfirmationMail(String username, String email) {
 		// step-1 generate random code
@@ -60,52 +71,85 @@ public class NotificationService {
 		return new ResponseEntity<>("email verified successfully", HttpStatus.ACCEPTED);
 	}
 
-	public ResetPasswordResponse resetPassword(ResetPasswordRequest request) {
-		notificationDao.resetPassword(request.token(), request.newPassword());
-		return new ResetPasswordResponse("password reset successfull");
-	}
-
-	public ForgotPasswordResponse sendPasswordResetMail(ForgotPasswordRequest request) {
+	@Transactional
+	public void handleForgotPassword(ForgotPasswordRequest request) {
 
 		// check if there is already an un-expired token
 		try {
 			PasswordResetToken passwordResetToken = notificationDao
 					.findPasswordResetTokenByUsername(request.username());
 			if (!passwordResetToken.isExpired()) {
-				// send email
-				String email = getEmail(request.username());
-				String emailBody = AuthServerUtil.getPasswordResetEmailContent(request.username(),
-						passwordResetToken.getToken());
-				sendEmail(email, emailBody);
-				return new ForgotPasswordResponse("password reset link sent to your mail");
+				String encodedToken = getEncodedToken(passwordResetToken.getToken());
+				var resetLink = getResetLink(atozMartConfig.getBaseUrl(), encodedToken);
+				log.info("reset link: {}", resetLink);
+				mailResetLink(request.username(), resetLink.toString());
+				return;
 			}
-
 		} catch (AuthServerException ex) {
 			log.debug("exception finding existing token", ex.getMessage());
 		}
 
-		// generate random token, and set expiry date
 		String token = UUID.randomUUID().toString();
+		storeResetToken(request.username(), token, atozMartConfig.getResetTokenExpiry());
+		var resetLink = getResetLink(atozMartConfig.getBaseUrl(), getEncodedToken(token));
+		log.info("reset link: {}", resetLink);
+		mailResetLink(request.username(), resetLink.toString());
+	}
 
+	@Transactional
+	public void resetPassword(String encodedToken, ResetPasswordRequest request) {
+
+		String token = getDecodedToken(encodedToken);
+		PasswordResetToken passwordResetToken = notificationDao.findPasswordResetTokenByToken(token);
+
+		if (passwordResetToken.isExpired()) {
+			log.info("link expired");
+			notificationDao.deletePasswordResetToken(passwordResetToken);
+			throw new AuthServerException("link expired", HttpStatus.GONE);
+		}
+
+		AppUser appUser = notificationDao.loadUserByUsername(passwordResetToken.getAppUser().getUsername());
+		appUser.setPassword(passwordEncoder.encode(request.newPassword()));
+
+		appUserDao.updateUser(appUser);
+		notificationDao.deletePasswordResetToken(passwordResetToken);
+	}
+
+	private void mailResetLink(String username, String resetLink) {
+		String email = getEmail(username);
+		String emailBody = AuthServerUtil.getPasswordResetEmailContent(username, resetLink);
+		try {
+			sendEmail(email, emailBody);
+		} catch (Exception ex) {
+			log.debug("exception sending password reset mail, {}", ex.getMessage());
+			throw new AuthServerException("couldn't mail reset link at the moment, please try again later",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private String getEncodedToken(String token) {
+		var encodedTokenBytes = Base64.getEncoder().encode(token.getBytes());
+		return new String(encodedTokenBytes);
+	}
+
+	private String getDecodedToken(String encodedToken) {
+		var decodedTokenBytes = Base64.getDecoder().decode(encodedToken.getBytes());
+		return new String(decodedTokenBytes);
+	}
+
+	private URI getResetLink(String baseUrl, String encodedToken) {
+		return UriComponentsBuilder.fromUriString(baseUrl).path("reset-password").queryParam("token", encodedToken)
+				.build().toUri();
+	}
+
+	private void storeResetToken(String username, String token, Long expiry) {
 		PasswordResetToken passwordResetToken = new PasswordResetToken();
 		passwordResetToken.setToken(token);
-
 		AppUser appUser = new AppUser();
-		appUser.setUsername(request.username());
+		appUser.setUsername(username);
 		passwordResetToken.setAppUser(appUser);
-
-		passwordResetToken.setExpiresAt(LocalDateTime.now().plusMinutes(60));
-
-		// persist token into db
-		notificationDao.updatePasswordResetTokenTable(passwordResetToken);
-
-		// send email
-		String email = getEmail(request.username());
-		String emailBody = AuthServerUtil.getPasswordResetEmailContent(request.username(), token);
-		sendEmail(email, emailBody);
-
-		return new ForgotPasswordResponse("password reset link sent to your mail");
-
+		passwordResetToken.setExpiresAt(LocalDateTime.now().plusMinutes(expiry));
+		notificationDao.savePasswordResetToken(passwordResetToken);
 	}
 
 	private void sendEmail(String email, String body) {

@@ -6,10 +6,10 @@ import java.util.function.Function;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.atozmart.authserver.configuration.AtozMartConfig;
 import com.atozmart.authserver.entity.AppUser;
 
 import io.jsonwebtoken.Claims;
@@ -17,35 +17,30 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class JwtService {
 
-	@Value("${jwt.secret-key}")
-	private String secretKey;
-
-	@Value("${jwt.expiration-time}")
-	private long expirationTime;
+	private final AtozMartConfig atozMartConfig;
 
 	public SecretKey getSignInKey() {
-		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+		byte[] keyBytes = Decoders.BASE64.decode(atozMartConfig.getJwtSecretKey());
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
 	public String generateToken(AppUser appUser, Map<String, Object> customClaims) {
 
-		return Jwts.builder()
-				.subject(appUser.getUsername())
-				.claims(customClaims)
-				.issuedAt(new Date(System.currentTimeMillis()))
-				.issuer("atozmart-authserver")
-				.expiration(new Date(System.currentTimeMillis() + expirationTime))
+		return Jwts.builder().subject(appUser.getUsername()).claims(customClaims)
+				.issuedAt(new Date(System.currentTimeMillis())).issuer("atozmart-authserver")
+				.expiration(new Date(System.currentTimeMillis() + atozMartConfig.getJwtTokenExpiry()))
 				.signWith(getSignInKey()).compact();
 
 	}
 
 	public long getExpirationTime() {
-		return expirationTime;
+		return atozMartConfig.getJwtTokenExpiry();
 	}
 
 	public boolean isTokenValid(String token, UserDetails userDetails) {

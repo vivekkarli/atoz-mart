@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.authserver.entity.AppUser;
@@ -28,8 +27,6 @@ public class NotificationDao {
 
 	private final PasswordResetTokenRepository passwordResetTokenRepo;
 
-	private final PasswordEncoder passwordEncoder;
-
 	@Transactional
 	public void confirmEmail(String token) {
 
@@ -48,32 +45,11 @@ public class NotificationDao {
 
 	}
 
-	@Transactional
-	public void resetPassword(String token, String newPassword) {
-
-		PasswordResetToken passwordResetToken = passwordResetTokenRepo.findByToken(token)
-				.orElseThrow(() -> new AuthServerException("invalid password reset link", HttpStatus.BAD_REQUEST));
-
-		if (passwordResetToken.isExpired()) {
-			passwordResetTokenRepo.deleteById(passwordResetToken.getId());
-			throw new AuthServerException("link expired", HttpStatus.GONE);
-		}
-
-		AppUser appUser = appUserRepository.findById(passwordResetToken.getAppUser().getUsername())
-				.orElseThrow(() -> new UsernameNotFoundException("user not found"));
-		appUser.setPassword(passwordEncoder.encode(newPassword));
-
-		appUserRepository.save(appUser);
-
-		passwordResetTokenRepo.deleteById(passwordResetToken.getId());
-
-	}
-
 	public void updateEmailVerificationTable(EmailVerification emailVerification) {
 		emailVerificationRepo.save(emailVerification);
 	}
 
-	public void updatePasswordResetTokenTable(PasswordResetToken passwordResetToken) {
+	public void savePasswordResetToken(PasswordResetToken passwordResetToken) {
 		passwordResetTokenRepo.save(passwordResetToken);
 	}
 
@@ -84,6 +60,15 @@ public class NotificationDao {
 		return passwordResetTokenRepo.findByAppUser(appUser)
 				.orElseThrow(() -> new AuthServerException("token not found", HttpStatus.BAD_REQUEST));
 
+	}
+
+	public PasswordResetToken findPasswordResetTokenByToken(String token) {
+		return passwordResetTokenRepo.findByToken(token).orElseThrow(
+				() -> new AuthServerException("password reset link invalid or expired", HttpStatus.BAD_REQUEST));
+	}
+
+	public void deletePasswordResetToken(PasswordResetToken passwordResetToken) {
+		passwordResetTokenRepo.delete(passwordResetToken);
 	}
 
 	public AppUser loadUserByUsername(String username) throws UsernameNotFoundException {
