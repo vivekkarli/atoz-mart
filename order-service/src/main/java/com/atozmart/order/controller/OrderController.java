@@ -33,7 +33,7 @@ public class OrderController {
 		return new ResponseEntity<>(orderService.placeOrder(placeOrderRequest, username, email), HttpStatus.CREATED);
 	}
 
-	@GetMapping
+	@GetMapping("/orders")
 	public ResponseEntity<List<ViewOrdersDto>> getOrderDetails(@RequestHeader("X-Username") String username,
 			@RequestParam(required = false) Integer orderId) {
 		

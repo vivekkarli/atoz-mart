@@ -70,7 +70,7 @@ public class OrderService {
 		orders.forEach(order -> {
 			if (orderId == null) {
 				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
-						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), null);
+						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), order.getCreatedAt(), null);
 
 				viewOrdersDtos.add(viewOrdersDto);
 			} else {
@@ -78,7 +78,7 @@ public class OrderService {
 						.orderItemsToOrderItemsDto(new ArrayList<>(order.getOrderItems()));
 
 				ViewOrdersDto viewOrdersDto = new ViewOrdersDto(order.getOrderId(), order.getPaymentStatus(),
-						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), orderItemDtos);
+						order.getDeliveryStatus(), order.getOrderStatus(), order.getOrderTotal(), order.getCreatedAt(), orderItemDtos);
 
 				viewOrdersDtos.add(viewOrdersDto);
 			}
