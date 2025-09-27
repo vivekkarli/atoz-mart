@@ -1,15 +1,17 @@
 package com.atozmart.cart.dto.order;
 
+import java.math.BigDecimal;
+
 public record OrderItemsDto(
 
 		String itemId,
 
 		String itemName,
 
-		double unitPrice,
+		BigDecimal unitPrice,
 
 		int quantity,
 
-		double effectivePrice) {
+		BigDecimal effectivePrice) {
 
 }

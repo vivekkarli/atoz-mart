@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.cart.dto.ItemDto;
 import com.atozmart.cart.entity.Cart;
+import com.atozmart.cart.exception.CartException;
 import com.atozmart.cart.repository.CartRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +24,6 @@ public class CartDao {
 
 	private ModelMapper modelMapper;
 
-	@Transactional
 	public void addOrUpdateItemInCart(ItemDto itemDto, String username) {
 
 		// check if item already exists
@@ -37,17 +37,27 @@ public class CartDao {
 
 	}
 
-	@Transactional
+	public void updateItemQuantity(int quantity, String itemId, String username) {
+
+		// check if item already exists
+		Cart cartItem = cartRepo.findByUsernameAndItemId(username, itemId)
+				.orElseThrow(() -> new CartException("item not found", HttpStatus.NOT_FOUND));
+		log.debug("existing item: {}", cartItem);
+
+		cartItem.setQuantity(quantity);
+		log.debug("updated item: {}", cartItem);
+
+		cartRepo.save(cartItem);
+
+	}
+
 	public void deleteItems(String username, String itemId) {
 		if (itemId == null || itemId.isBlank()) {
-			// delete all by username
 			cartRepo.deleteByUsername(username);
 			return;
 		}
 
-		// delete by username and itemname
 		cartRepo.deleteByUsernameAndItemId(username, itemId);
-
 	}
 
 	private void addNewItemToCart(ItemDto itemDto, String username) {
@@ -67,7 +77,6 @@ public class CartDao {
 
 		Cart updatedItem = new Cart();
 		modelMapper.map(existingItem, updatedItem);
-		// updatedItem.setQuantity(existingItem.getQuantity() + newItem.getQuantity());
 		updatedItem.setQuantity(newItem.quantity());
 		updatedItem.setUnitPrice(newItem.unitPrice());
 		log.debug("updated item: {}", updatedItem);

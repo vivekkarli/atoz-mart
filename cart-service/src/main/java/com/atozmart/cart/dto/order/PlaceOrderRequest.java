@@ -1,14 +1,15 @@
 package com.atozmart.cart.dto.order;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-public record PlaceOrderRequest(double orderAmount,
+public record PlaceOrderRequest(BigDecimal orderAmount,
 
 		String couponCode,
 
-		double orderSavings,
+		BigDecimal orderSavings,
 
-		double orderTotal,
+		BigDecimal orderTotal,
 
 		String paymentMode,
 		

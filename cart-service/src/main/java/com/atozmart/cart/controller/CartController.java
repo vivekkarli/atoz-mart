@@ -54,16 +54,16 @@ public class CartController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@PatchMapping("/items")
-	public ResponseEntity<Void> updateItemsInCart(@RequestHeader("X-Username") String username,
+	@PatchMapping("/items/quantity")
+	public ResponseEntity<Void> updateItemQuantity(@RequestHeader("X-Username") String username,
 			@RequestBody @Valid ItemDto item) {
 		log.info("X-Username: {}", username);
-		cartService.addOrUpdateItemInCart(item, username);
+		cartService.updateItemQuantity(item, username);
 		return ResponseEntity.ok().build();
 
 	}
 
-	@PostMapping("/checkout")
+	@PostMapping("/checkout/payment")
 	public ResponseEntity<CheckOutResponse> proceedToPayment(@RequestHeader("X-Username") String username,
 			@RequestHeader(name = "X-User-Email", required = false) String email,
 			@RequestBody @Valid CheckOutRequest checkOutRequest) throws CartException {

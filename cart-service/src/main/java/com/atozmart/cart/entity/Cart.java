@@ -1,8 +1,11 @@
 package com.atozmart.cart.entity;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
@@ -18,6 +21,8 @@ import lombok.Data;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(name = "unx_cart", columnNames = { "username", "itemName", "unitPrice",
 		"quantity" }))
+@DynamicUpdate
+@DynamicInsert
 public class Cart {
 
 	@Id
@@ -30,7 +35,7 @@ public class Cart {
 
 	private String itemName;
 
-	private double unitPrice;
+	private BigDecimal unitPrice;
 
 	private int quantity;
 
@@ -41,5 +46,9 @@ public class Cart {
 	@UpdateTimestamp
 	@Column(insertable = false)
 	private LocalDateTime updatedAt;
+	
+	public BigDecimal getEffectivePrice() {
+		return unitPrice.multiply(BigDecimal.valueOf(quantity));
+	}
 
 }

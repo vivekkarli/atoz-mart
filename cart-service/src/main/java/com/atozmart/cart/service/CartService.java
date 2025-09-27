@@ -46,18 +46,16 @@ public class CartService {
 		List<ItemDto> items = new ArrayList<>();
 
 		cartDetailLst.forEach(cartDetail -> {
-			BigDecimal effectivePrice = BigDecimal.valueOf(cartDetail.getQuantity() * cartDetail.getUnitPrice());
-			double roundedEffectivePrice = effectivePrice.setScale(2, RoundingMode.CEILING).doubleValue();
-			
+			BigDecimal effectivePrice = cartDetail.getEffectivePrice();
+			BigDecimal roundedEffectivePrice = effectivePrice.setScale(2, RoundingMode.DOWN);
+
 			ItemDto item = new ItemDto(cartDetail.getItemId(), cartDetail.getItemName(), cartDetail.getUnitPrice(),
 					cartDetail.getQuantity(), roundedEffectivePrice);
 			items.add(item);
 		});
 
-		BigDecimal orderAmount = items.stream().map(ItemDto::effectivePrice).map(BigDecimal::valueOf)
-				.reduce(BigDecimal::add).orElse(BigDecimal.valueOf(0));
-
-		double roundedOrderAmt = orderAmount.setScale(2, RoundingMode.CEILING).doubleValue();
+		BigDecimal orderAmount = items.stream().map(ItemDto::effectivePrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+		BigDecimal roundedOrderAmt = orderAmount.setScale(2, RoundingMode.DOWN);
 		log.info("orderAmount: {}, roundedOrderAmt: {}", orderAmount, roundedOrderAmt);
 
 		return new ViewCartResponse(items, roundedOrderAmt);
@@ -68,44 +66,48 @@ public class CartService {
 		cartDao.addOrUpdateItemInCart(itemDto, username);
 	}
 
+	public void updateItemQuantity(ItemDto itemDto, String username) {
+		cartDao.updateItemQuantity(itemDto.quantity(), itemDto.itemId(), username);
+	}
+
 	public void removeItemsFromCart(String username, String itemId) throws CartException {
 		cartDao.deleteItems(username, itemId);
 	}
 
 	public String proceedToPayment(String username, String email, CheckOutRequest checkOutRequest)
 			throws CartException {
+		ViewCartResponse cartDetails = getCartDetails(username);
+		validateCheckoutRequest(checkOutRequest, cartDetails);
 
+		// payment // TODO
+
+		String orderId = placeOrder(username, email, checkOutRequest, cartDetails);
+		cartDao.deleteItems(username, null);
+		return orderId;
+	}
+
+	private void validateCheckoutRequest(CheckOutRequest checkOutRequest, ViewCartResponse cartDetails) {
 		if (!checkOutRequest.paymentMode().equals("COD"))
 			throw new CartException("can't place order for %s. only COD is eligible to place order"
 					.formatted(checkOutRequest.paymentMode()), HttpStatus.BAD_REQUEST);
 
 		// validate orderAmount
-		ViewCartResponse cartDetails = getCartDetails(username);
-		if (checkOutRequest.orderAmount() != cartDetails.orderAmount())
+		if (cartDetails.orderAmount().compareTo(checkOutRequest.orderAmount()) != 0) {
 			throw new CartException("order amount mismatch", HttpStatus.BAD_REQUEST);
+		}
 
 		// validate orderSavings
 		double discountPercentage = checkOutRequest.couponCode() == null || checkOutRequest.couponCode().isBlank() ? 0
 				: couponDao.getCouponDiscount(checkOutRequest.couponCode());
-
-		double discountAmount = checkOutRequest.orderAmount() * (discountPercentage / 100);
-		if (discountAmount != checkOutRequest.orderSavings())
+		var discountAmount = checkOutRequest.orderAmount().multiply(BigDecimal.valueOf(discountPercentage / 100))
+				.setScale(2, RoundingMode.HALF_EVEN);
+		if (discountAmount.compareTo(checkOutRequest.orderSavings()) != 0)
 			throw new CartException("order savings mismatch", HttpStatus.BAD_REQUEST);
 
 		// validate orderTotal
-		if (checkOutRequest.orderTotal() != checkOutRequest.orderAmount() - discountAmount)
+		BigDecimal expectedOrderTotal = checkOutRequest.orderAmount().subtract(discountAmount);
+		if (expectedOrderTotal.compareTo(checkOutRequest.orderTotal()) != 0)
 			throw new CartException("order total mismatch", HttpStatus.BAD_REQUEST);
-
-		// payment
-		// TODO
-
-		// place order
-		String orderId = placeOrder(username, email, checkOutRequest, cartDetails);
-
-		// delete items from cart
-		cartDao.deleteItems(username, null);
-
-		return orderId;
 	}
 
 	/**
@@ -132,6 +134,7 @@ public class CartService {
 		} catch (FeignException e) {
 			throw new DownStreamException(e.contentUTF8(), HttpStatus.valueOf(e.status()));
 		}
+
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.atozmart.cart.dto;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.Min;
 
 public record ItemDto(
@@ -8,10 +10,10 @@ public record ItemDto(
 
 		String itemName,
 
-		double unitPrice,
+		BigDecimal unitPrice,
 
 		@Min(1) int quantity,
 
-		double effectivePrice) {
+		BigDecimal effectivePrice) {
 
 }

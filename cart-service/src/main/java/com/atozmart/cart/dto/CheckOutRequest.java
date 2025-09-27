@@ -1,16 +1,18 @@
 package com.atozmart.cart.dto;
 
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.Pattern;
 
 public record CheckOutRequest(
 
-		double orderAmount,
+		BigDecimal orderAmount,
 
 		String couponCode,
 
-		double orderSavings,
+		BigDecimal orderSavings,
 
-		double orderTotal,
+		BigDecimal orderTotal,
 
 		@Pattern(regexp = "COD|UPI", message = "paymentMode should be COD, UPI only") 
 		String paymentMode
