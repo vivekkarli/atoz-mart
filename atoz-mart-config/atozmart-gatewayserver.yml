@@ -1,5 +1,11 @@
 server:
    port: 8072
+   ssl:
+      enabled: false
+      key-store: classpath:atozmart-keystore.p12
+      key-store-password: '{cipher}AYAErC+yd9rviROfRbZnQmswpFZ77pAu94BZ9AgXbnHpvmHyeEcngVCxP2tJbxqeRTZ1d77EOF6PgDUoKhW+aVkwVRzlWfDzMmOOcy6WQKmxZ6OFIxhLuySoc1Dghj3WjsECzmcUgn4IenS4adp5Z0m50QWbYJ44hJgy7SkjKaP85btZrixvbmPZkbe+0NJZW0Ej3HAkRof2yZWrOY24y8HVdI/TwJB26TvwbHERLyFnuGn+Z3evqIFVA86Es/qJiZN1ZP8CjFvAu5iOpZrx3dX/YAIEz9FPm5yUVBOSTNjJKFqOJStIejIeOdfnAPrvf6T7UU+MYkjX0iTvTqkNVDO7NJGqtdiGsAPMnS5pkTAR5+XSpEMZ1PeFD/lqDCfmAvxT8hjrXkLXQjV0xiHag5JVBmFja4124HXlfcnu/GO95vkkLg02At3wMQ95DRaTUMY7G2pbvjp7xbpo6P+lXKRt1eflCTLRQ3QL/FWFDb6cadP+zVp8G5zsj+MJggSAbio0WT3QV+niecM0jcoqQ9X8u+9yt6rUJxcrjKiTMhpY0A=='
+      key-store-type: PKCS12
+      key-alias: atozmart-gatewayserver
 
 spring:
    application:
@@ -181,12 +187,27 @@ logging:
    level:
       com.netflix.discovery.DiscoveryClient: OFF
       com.atozmart.gatewayserver: DEBUG
-atozmart:
 
+atozmart:
    auth:
-# info properties to see info in eureka dashboard
       authorize-endpoint: http://localhost:8074/admin/authorize
       issuer: atozmart-authserver
    admin:
       username: atozmart_gatewayserver
       password: '{cipher}AYCMe9QHTSTP+SrBGu8Hg7z6tZrl6y0XFzDqSLLT5NgeKXLp+0bSN4v8Vd+gX9aWWjQ3gP4wiU8drGlVUXf0mEgaesunumW3xq3ZXP/dtxFsRjzxibGtFeK44Q5NTc3cCzCnv//ualI+nIAyG7SVVmh+Ww9SYka1NHWI15/3v9/FSfEZrUzRSh83oQ4+MBMtlAeXjGYfEUVXv1+cbfY5dmpJCVfpujeGY2YsWcgPtOFqghHOEdi6giR6kMjTUVhiHxbdUA8GYC6QiKMMejEosatXgHHZ2sjdQEA0ul98F7Imb4qeYzAH44MguGont10FTY+Ul3XLPmc1OjpxRzWP6WlK2bsdLagbkqReFoOZD/Saax2uR4sPrsR05KWaxBWmhFzh0tRrjqAO1lX97X2NqKtsXyDI7DegNHzMKGcUR5CrDS+8k99REo0CSkyAT6Sg/08pImXS1HkmFwKk6oxJb7i3oys6iWlc0LMW7JhHfb3pEu9AyX6y3jCdXHZoXAcIS55CkS3k/anHIiXjY8KH4dAwyz4pE6LUHYQZKfAL2xDhVw=='
+   cors:
+      allowed-origins:
+      - http://localhost:3000
+      - http://localhost:5173
+      allowed-headers:
+      - Authorization
+      - Content-Type
+      - Accept
+      exposed-headers:
+      - X-Access-Token
+      allowed-methods:
+      - GET
+      - PUT
+      - PATCH
+      - POST
+      - DELETE

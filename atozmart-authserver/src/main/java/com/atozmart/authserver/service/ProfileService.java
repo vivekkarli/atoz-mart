@@ -3,6 +3,7 @@ package com.atozmart.authserver.service;
 import java.util.Collections;
 
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.atozmart.authserver.dao.AppUserDao;
@@ -35,6 +36,11 @@ public class ProfileService {
 			log.debug("couldn't register new user, {}", ex.getMessage());
 		}
 
+	}
+	
+	@Async
+	public void createProfileAsync(SignUpForm signUpForm){
+		createProfile(signUpForm);
 	}
 
 	public void updateBasicDetails(String username, BasicDetailsDto basicDetailsDto) {

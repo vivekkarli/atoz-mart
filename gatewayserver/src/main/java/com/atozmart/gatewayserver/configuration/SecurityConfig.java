@@ -1,15 +1,15 @@
 package com.atozmart.gatewayserver.configuration;
 
+import static com.atozmart.gatewayserver.util.GatewayConstants.ROLE_ADMIN;
+import static com.atozmart.gatewayserver.util.GatewayConstants.ROLE_USER;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity.CsrfSpec;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -22,15 +22,14 @@ import com.atozmart.gatewayserver.util.GatewayConstants;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 
-import static com.atozmart.gatewayserver.util.GatewayConstants.ROLE_ADMIN;
-import static com.atozmart.gatewayserver.util.GatewayConstants.ROLE_USER;
-
 @EnableWebFluxSecurity
 @Configuration
 @AllArgsConstructor
 public class SecurityConfig {
 
 	private final CustomTokenAuthenticationConverter customTokenAuthenticationConverter;
+	
+	private final AtozmartConfig atozmartConfig;
 
 	@Bean
 	public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
@@ -78,27 +77,16 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-		corsConfiguration.addAllowedOrigin("http://localhost:5173");
-		corsConfiguration.addAllowedMethod(HttpMethod.GET);
-		corsConfiguration.addAllowedMethod(HttpMethod.POST);
-		corsConfiguration.addAllowedMethod(HttpMethod.PUT);
-		corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
-		corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
-		corsConfiguration.addAllowedHeader("Authorization");
-		corsConfiguration.addAllowedHeader("Content-Type");
-		corsConfiguration.addExposedHeader("X-Access-Token");
+		corsConfiguration.setAllowedOrigins(atozmartConfig.cors().allowedOrigins());
+		corsConfiguration.setAllowedMethods(atozmartConfig.cors().allowedMethods());
+		corsConfiguration.setAllowedHeaders(atozmartConfig.cors().allowedHeaders());
+		corsConfiguration.setExposedHeaders(atozmartConfig.cors().exposedHeaders());
 		corsConfiguration.setAllowCredentials(true); // Allow cookies/credentials
 		corsConfiguration.setMaxAge(3600L); // Cache preflight response for 1 hour
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", corsConfiguration); // Apply to all paths
 		return source;
-	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
 	}
 
 	@Bean

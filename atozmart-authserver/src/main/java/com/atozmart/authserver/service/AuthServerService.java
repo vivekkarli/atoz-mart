@@ -61,6 +61,7 @@ public class AuthServerService {
 		Map<String, Object> customClaims = new HashMap<>();
 		customClaims.put("preferred_username", appUser.getUsername());
 		customClaims.put("roles", roles);
+		customClaims.put("email", Boolean.TRUE.equals(appUser.getEmailVerified()) ? appUser.getMail() : null);
 
 		String accessToken = jwtService.generateToken(appUser, customClaims);
 		HttpHeaders httpHeaders = new HttpHeaders();
@@ -85,10 +86,10 @@ public class AuthServerService {
 		appUserDao.signUp(appUser);
 
 		// create new profile, async process
-		profileService.createProfile(signUpForm);
+		profileService.createProfileAsync(signUpForm);
 
 		// send email verification mail, async process
-		notificationService.sendEmailConfirmationMail(appUser.getUsername(), appUser.getMail());
+		notificationService.sendNewMailVerifiyLinkAsync(appUser.getUsername(), appUser.getMail());
 
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
 	}
@@ -113,7 +114,7 @@ public class AuthServerService {
 		response.setValid(true);
 		response.setRoles(roles);
 		response.setUsername(username);
-		response.setEmail(appUser.getMail());
+		response.setEmail(Boolean.TRUE.equals(appUser.getEmailVerified()) ? appUser.getMail() : null);
 		response.setExpiresAt(jwtService.extractExpiration(token));
 		log.debug("AuthorizeResponse: {}", response);
 
@@ -122,7 +123,12 @@ public class AuthServerService {
 	}
 
 	public String getEmail(String username) throws UsernameNotFoundException {
-		return appUserDao.loadUserByUsername(username).getMail();
+		AppUser appUser = appUserDao.loadUserByUsername(username);
+		if (Boolean.FALSE.equals(appUser.getEmailVerified())) {
+			log.info("email not verified by user: {}", username);
+			return null;
+		}
+		return appUser.getMail();
 	}
 
 	public void changePassword(String username, ChangePasswordRequest request) {

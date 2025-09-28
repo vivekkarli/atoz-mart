@@ -669,9 +669,11 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "jDeHtG8qdGcnQm3z5yLEwI0QLbXBEpgH",
       "redirectUris": [
-        "*"
+        "http://localhost:3000/oauth-callback"
       ],
-      "webOrigins": [],
+      "webOrigins": [
+        "+"
+      ],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,

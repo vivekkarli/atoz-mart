@@ -1,3 +1,7 @@
+server:
+   ssl:
+      enabled: true
+
 spring:
   config:
     activate:

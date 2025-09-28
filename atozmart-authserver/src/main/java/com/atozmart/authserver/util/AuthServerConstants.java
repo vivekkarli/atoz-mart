@@ -1,16 +1,16 @@
-package com.atozmart.authserver;
+package com.atozmart.authserver.util;
 
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class AuthServerUtil {
+public class AuthServerConstants {
 
 	public final String VERIFY_EMAIL_CONTENT = """
 			<html>
 			<body>
 			hi %s,
 			please verify your email!
-			<a href=https://localhost:8072/atozmart/authserver/confirm-email?token=%s>Confirm Email</a>"
+			<a href=%s>Confirm Email</a>"
 			</body>
 			</html>
 			""";

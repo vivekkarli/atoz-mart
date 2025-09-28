@@ -12,10 +12,12 @@ public class AtozMartConfig {
 
 	private String baseUrl;
 
-	private Long resetTokenExpiry;
+	private Long pwdResetTokenExpiry;
 
 	private Long jwtTokenExpiry;
-	
+
+	private Long emailVerifyTokenExpiry;
+
 	private String jwtSecretKey;
 
 }

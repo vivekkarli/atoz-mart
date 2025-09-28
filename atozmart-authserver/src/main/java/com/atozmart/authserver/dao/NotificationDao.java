@@ -1,20 +1,17 @@
 package com.atozmart.authserver.dao;
 
-import java.util.Optional;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.atozmart.authserver.entity.AppUser;
-import com.atozmart.authserver.entity.EmailVerification;
+import com.atozmart.authserver.entity.EmailVerificationToken;
 import com.atozmart.authserver.entity.PasswordResetToken;
 import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.repository.AppUserRepository;
-import com.atozmart.authserver.repository.EmailVerificationRepository;
+import com.atozmart.authserver.repository.EmailVerificationTokenRepository;
 import com.atozmart.authserver.repository.PasswordResetTokenRepository;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Repository
@@ -23,30 +20,22 @@ public class NotificationDao {
 
 	private final AppUserRepository appUserRepository;
 
-	private final EmailVerificationRepository emailVerificationRepo;
+	private final EmailVerificationTokenRepository emailVerificationTokenRepo;
 
 	private final PasswordResetTokenRepository passwordResetTokenRepo;
 
-	@Transactional
-	public void confirmEmail(String token) {
-
-		Optional<EmailVerification> emailVerifyOpt = emailVerificationRepo.findById(token);
-
-		EmailVerification emailVerify = emailVerifyOpt
+	public EmailVerificationToken findEmailVerificationTokenByToken(String token) {
+		return emailVerificationTokenRepo.findByToken(token)
 				.orElseThrow(() -> new AuthServerException("invalid email verification link", HttpStatus.BAD_REQUEST));
-
-		AppUser appUser = appUserRepository.findById(emailVerify.getUsername())
-				.orElseThrow(() -> new UsernameNotFoundException("user not found"));
-		appUser.setEmailVerified(true);
-
-		appUserRepository.save(appUser);
-
-		emailVerificationRepo.deleteById(token);
-
 	}
 
-	public void updateEmailVerificationTable(EmailVerification emailVerification) {
-		emailVerificationRepo.save(emailVerification);
+	public PasswordResetToken findPasswordResetTokenByToken(String token) {
+		return passwordResetTokenRepo.findByToken(token).orElseThrow(
+				() -> new AuthServerException("password reset link invalid or expired", HttpStatus.BAD_REQUEST));
+	}
+
+	public void saveEmailVerificationToken(EmailVerificationToken emailVerificationToken) {
+		emailVerificationTokenRepo.save(emailVerificationToken);
 	}
 
 	public void savePasswordResetToken(PasswordResetToken passwordResetToken) {
@@ -62,13 +51,20 @@ public class NotificationDao {
 
 	}
 
-	public PasswordResetToken findPasswordResetTokenByToken(String token) {
-		return passwordResetTokenRepo.findByToken(token).orElseThrow(
-				() -> new AuthServerException("password reset link invalid or expired", HttpStatus.BAD_REQUEST));
+	public EmailVerificationToken findEmailVerificationTokenUsername(String username) {
+		AppUser appUser = new AppUser();
+		appUser.setUsername(username);
+
+		return emailVerificationTokenRepo.findByAppUser(appUser)
+				.orElseThrow(() -> new AuthServerException("token not found", HttpStatus.BAD_REQUEST));
 	}
 
 	public void deletePasswordResetToken(PasswordResetToken passwordResetToken) {
 		passwordResetTokenRepo.delete(passwordResetToken);
+	}
+
+	public void deleteEmailVerificationToken(EmailVerificationToken emailVerificationToken) {
+		emailVerificationTokenRepo.delete(emailVerificationToken);
 	}
 
 	public AppUser loadUserByUsername(String username) throws UsernameNotFoundException {

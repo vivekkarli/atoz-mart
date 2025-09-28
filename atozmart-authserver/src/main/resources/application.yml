@@ -83,6 +83,7 @@ logging:
    
 atozmart:
   base-url: http://localhost:3000
-  reset-token-expiry: 1800 # 30 mins, in seconds
+  pwd-reset-token-expiry: 1800 # 30 mins, in seconds
   jwt-token-expiry: 3600000 # 1 hr, in seconds
   jwt-secret-key: 
+  email-verify-token-expiry: 1800 # 30 mins, in seconds

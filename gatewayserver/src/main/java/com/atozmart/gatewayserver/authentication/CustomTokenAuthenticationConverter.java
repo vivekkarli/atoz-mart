@@ -1,10 +1,10 @@
 package com.atozmart.gatewayserver.authentication;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -18,8 +18,9 @@ import org.springframework.security.web.server.authentication.ServerAuthenticati
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import com.atozmart.gatewayserver.configuration.AtozmartAdminDetails;
+import com.atozmart.gatewayserver.configuration.AtozmartConfig;
 import com.atozmart.gatewayserver.configuration.KeyCloakRoleConverter;
 import com.atozmart.gatewayserver.dto.AuthorizeResponse;
 
@@ -36,19 +37,15 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 
 	private final JwtAuthenticationConverter jwtAuthenticationConverter;
 
-	private final String atozmartAuthorizeUrl;
-
-	private final AtozmartAdminDetails atozmartAdminDetails;
+	private final AtozmartConfig atozmartConfig;
 
 	public CustomTokenAuthenticationConverter(WebClient.Builder webClientBuilder, ReactiveJwtDecoder jwtDecoder,
-			@Value("${atozmart.auth.authorize-endpoint}") String atozmartAuthorizeUrl,
-			AtozmartAdminDetails atozmartAdminDetails) {
+			AtozmartConfig atozmartConfig) {
 		this.webClient = webClientBuilder.build();
 		this.jwtDecoder = jwtDecoder;
 		this.jwtAuthenticationConverter = new JwtAuthenticationConverter();
 		this.jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(new KeyCloakRoleConverter());
-		this.atozmartAuthorizeUrl = atozmartAuthorizeUrl;
-		this.atozmartAdminDetails = atozmartAdminDetails;
+		this.atozmartConfig = atozmartConfig;
 	}
 
 	@Override
@@ -88,9 +85,12 @@ public class CustomTokenAuthenticationConverter implements ServerAuthenticationC
 
 	// Validate atozmartAuthServer token by calling /authorize end point
 	private Mono<Authentication> validateAtozmartToken(String token) {
-		return webClient.get().uri(atozmartAuthorizeUrl + "?token=" + token)
-				.headers(headers -> headers
-						.setBasicAuth(atozmartAdminDetails.getUsername(), atozmartAdminDetails.getPassword()))
+
+		URI authorizeUri = UriComponentsBuilder.fromUriString(atozmartConfig.auth().authorizeEndpoint())
+				.queryParam("token", token).build().toUri();
+
+		return webClient.get().uri(authorizeUri).headers(
+				headers -> headers.setBasicAuth(atozmartConfig.admin().username(), atozmartConfig.admin().password()))
 				.retrieve()
 				.onStatus(HttpStatusCode::is4xxClientError,
 						response -> Mono.error(new OAuth2AuthenticationException("Invalid atozmart token")))
