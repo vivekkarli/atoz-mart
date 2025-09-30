@@ -41,6 +41,12 @@ spring:
       password: '{cipher}AYBIbhhszkqPBSgndqUSSE8L5dy9GhQUfQmahLbMsghwjxLc23iwdgBIICQ5whj4tIXPgLndRZqcXUzdVrOJOTQdTZryfiMbKdimfZRPvY0lXUnH+d2UIRiM/D41FNG4MR5Ors7nM5WaZB7aDstQuix6+g/cWQE6P12L8pf1c5j0XTsp6aXE289KslRwyz06lR7qZdUAAB8jw84kZEh6pl9XwP7DDhQDVdvJ+ZskWQmsczbD46UV6q1ST83A088DCLmi0LACu9bkPIdUOnySC0+gBZoDq445oitdc35M26anW5bLZHd43kLWWF1AuUKc0aVDWxZ9i3zTUI8bNve4s71qM76I75m38SUhMHWVZAtFTjUBwzybVXNf/SpNJqV1Ob+m03VxOCBoU0Ztm7mxMY7j4lIo8Q3/hIS0PlOepVKuEUWCiln780OyuZUVbF/ymIXWRcNai7T+Zp6/5IT/E9PY8Yl67/id7FCBznyR0PvGjoJtVNSg8qj6xnDqhvZeZ301lC12pQ0GYIX9LBghb7Cot6IYcLjs+h59WKIXjqYoHA=='
       connection-timeout: 10s
 
+   cache:
+     type: redis
+   redis:
+     host: localhost
+     port: 6379
+     
 eureka:
    instance:
       prefer-ip-address: true

@@ -1,23 +1,19 @@
 package com.atozmart.authserver.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
-import lombok.Data;
 
 @ConfigurationProperties(prefix = "atozmart")
-@Component
-@Data
-public class AtozMartConfig {
+public record AtozMartConfig(
 
-	private String baseUrl;
+		String baseUrl,
 
-	private Long pwdResetTokenExpiry;
+		Long pwdResetTokenExpiry,
 
-	private Long jwtTokenExpiry;
+		Long jwtTokenExpiry,
 
-	private Long emailVerifyTokenExpiry;
+		Long emailVerifyTokenExpiry,
 
-	private String jwtSecretKey;
+		String jwtSecretKey,
 
+		Long cacheExpiry) {
 }

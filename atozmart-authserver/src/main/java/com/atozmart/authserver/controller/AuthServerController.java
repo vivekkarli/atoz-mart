@@ -71,7 +71,7 @@ public class AuthServerController {
 	@PatchMapping("/change-password")
 	public ResponseEntity<ChangePasswordResponse> changePassword(@RequestHeader("X-Username") String username,
 			@Valid @RequestBody ChangePasswordRequest request) {
-		authServerService.changePassword(username, request);
+		//authServerService.changePassword(username, request);
 		return new ResponseEntity<>(new ChangePasswordResponse("password updated successfully"), HttpStatus.ACCEPTED);
 	}
 

@@ -14,13 +14,15 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.atozmart.authserver.dao.AppUserDao;
+import com.atozmart.authserver.dto.AppUserDto;
 import com.atozmart.authserver.dto.AuthorizeResponse;
-import com.atozmart.authserver.dto.ChangePasswordRequest;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
@@ -55,7 +57,7 @@ public class AuthServerService {
 				.authenticate(new UsernamePasswordAuthenticationToken(loginForm.username(), loginForm.password()));
 
 		log.info("{}", authenticateduser);
-		AppUser appUser = (AppUser) authenticateduser.getPrincipal();
+		AppUserDto appUser = (AppUserDto) authenticateduser.getPrincipal();
 
 		List<String> roles = appUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		Map<String, Object> customClaims = new HashMap<>();
@@ -89,7 +91,7 @@ public class AuthServerService {
 		profileService.createProfileAsync(signUpForm);
 
 		// send email verification mail, async process
-		notificationService.sendNewMailVerifiyLinkAsync(appUser.getUsername(), appUser.getMail());
+		notificationService.sendNewMailVerifiyLinkAsync(appUser.getUsername());
 
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
 	}
@@ -98,16 +100,13 @@ public class AuthServerService {
 
 		String username = jwtService.extractUsername(token);
 		log.debug("username: {}", username);
-		AppUser appUser = appUserDao.loadUserByUsername(username);
+		AppUserDto appUser = (AppUserDto) appUserDao.loadUserByUsername(username);
 		log.debug("userDetails: {}", appUser);
-
-		if (appUser == null)
-			throw new AuthServerException(username + " not found", HttpStatus.NOT_FOUND);
 
 		if (jwtService.isTokenExpired(token))
 			throw new AuthServerException("token expired", HttpStatus.UNAUTHORIZED);
 
-		Collection<? extends GrantedAuthority> authorities = appUser.getAuthorities();
+		Collection<SimpleGrantedAuthority> authorities = appUser.getAuthorities();
 		List<String> roles = authorities.stream().map(s -> s.getAuthority()).toList();
 
 		AuthorizeResponse response = new AuthorizeResponse();
@@ -123,7 +122,10 @@ public class AuthServerService {
 	}
 
 	public String getEmail(String username) throws UsernameNotFoundException {
-		AppUser appUser = appUserDao.loadUserByUsername(username);
+		UserDetails userDetails = appUserDao.loadUserByUsername(username);
+		
+		AppUserDto appUser = (AppUserDto) userDetails;
+		
 		if (Boolean.FALSE.equals(appUser.getEmailVerified())) {
 			log.info("email not verified by user: {}", username);
 			return null;
@@ -131,13 +133,15 @@ public class AuthServerService {
 		return appUser.getMail();
 	}
 
+	/*
 	public void changePassword(String username, ChangePasswordRequest request) {
-		AppUser appUser = appUserDao.loadUserByUsername(username);
+		AppUserDto appUser = (AppUserDto) appUserDao.loadUserByUsername(username);
 		if (!passwordEncoder.matches(request.oldPassword(), appUser.getPassword())) {
 			throw new AuthServerException("Incorrect old password", HttpStatus.UNAUTHORIZED);
 		}
 		appUser.setPassword(passwordEncoder.encode(request.newPassword()));
 		appUserDao.updateUser(appUser);
 	}
+	*/
 
 }

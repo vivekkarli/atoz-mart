@@ -54,7 +54,7 @@ public class NotificationService {
 					.findEmailVerificationTokenUsername(username);
 			if (!emailVerificationToken.isExpired()) {
 				String encodedToken = authServerUtil.getEncodedToken(emailVerificationToken.getToken());
-				var verifyLink = authServerUtil.getVerifyLink(atozMartConfig.getBaseUrl(), encodedToken);
+				var verifyLink = authServerUtil.getVerifyLink(atozMartConfig.baseUrl(), encodedToken);
 				log.info("verify link: {}", verifyLink);
 				mailVerifyLink(username, verifyLink.toString());
 				return;
@@ -63,21 +63,21 @@ public class NotificationService {
 			log.debug("exception finding existing token", ex.getMessage());
 		}
 
-		sendNewMailVerifiyLink(username, email);
+		sendNewMailVerifiyLink(username);
 	}
 
-	private void sendNewMailVerifiyLink(String username, String email) {
+	private void sendNewMailVerifiyLink(String username) {
 		String token = UUID.randomUUID().toString();
-		storeVerifyToken(username, token, atozMartConfig.getEmailVerifyTokenExpiry());
-		URI verifyLink = authServerUtil.getVerifyLink(atozMartConfig.getBaseUrl(),
+		storeVerifyToken(username, token, atozMartConfig.emailVerifyTokenExpiry());
+		URI verifyLink = authServerUtil.getVerifyLink(atozMartConfig.baseUrl(),
 				authServerUtil.getEncodedToken(token));
 		mailVerifyLink(username, verifyLink.toString());
 	}
 	
 	@Async
 	@Transactional
-	public void sendNewMailVerifiyLinkAsync(String username, String email) {
-		sendNewMailVerifiyLink(username, email);
+	public void sendNewMailVerifiyLinkAsync(String username) {
+		sendNewMailVerifiyLink(username);
 	}
 
 	@Transactional
@@ -89,7 +89,7 @@ public class NotificationService {
 					.findPasswordResetTokenByUsername(request.username());
 			if (!passwordResetToken.isExpired()) {
 				String encodedToken = authServerUtil.getEncodedToken(passwordResetToken.getToken());
-				var resetLink = authServerUtil.getResetLink(atozMartConfig.getBaseUrl(), encodedToken);
+				var resetLink = authServerUtil.getResetLink(atozMartConfig.baseUrl(), encodedToken);
 				log.info("reset link: {}", resetLink);
 				mailResetLink(request.username(), resetLink.toString());
 				return;
@@ -103,8 +103,8 @@ public class NotificationService {
 
 	private void sendNewPwdResetLink(ForgotPasswordRequest request) {
 		String token = UUID.randomUUID().toString();
-		storeResetToken(request.username(), token, atozMartConfig.getPwdResetTokenExpiry());
-		var resetLink = authServerUtil.getResetLink(atozMartConfig.getBaseUrl(), authServerUtil.getEncodedToken(token));
+		storeResetToken(request.username(), token, atozMartConfig.pwdResetTokenExpiry());
+		var resetLink = authServerUtil.getResetLink(atozMartConfig.baseUrl(), authServerUtil.getEncodedToken(token));
 		log.info("reset link: {}", resetLink);
 		mailResetLink(request.username(), resetLink.toString());
 	}
