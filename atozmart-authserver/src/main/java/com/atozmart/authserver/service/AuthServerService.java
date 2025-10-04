@@ -1,6 +1,5 @@
 package com.atozmart.authserver.service;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dto.AppUserDto;
 import com.atozmart.authserver.dto.AuthorizeResponse;
+import com.atozmart.authserver.dto.ChangePasswordRequest;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
@@ -56,7 +54,7 @@ public class AuthServerService {
 		Authentication authenticateduser = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(loginForm.username(), loginForm.password()));
 
-		log.info("{}", authenticateduser);
+		log.info("authenticated user: {}", authenticateduser);
 		AppUserDto appUser = (AppUserDto) authenticateduser.getPrincipal();
 
 		List<String> roles = appUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
@@ -91,7 +89,7 @@ public class AuthServerService {
 		profileService.createProfileAsync(signUpForm);
 
 		// send email verification mail, async process
-		notificationService.sendNewMailVerifiyLinkAsync(appUser.getUsername());
+		notificationService.sendNewMailVerifiyLinkAsync(signUpForm.username(), signUpForm.mail());
 
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
 	}
@@ -100,14 +98,14 @@ public class AuthServerService {
 
 		String username = jwtService.extractUsername(token);
 		log.debug("username: {}", username);
+
 		AppUserDto appUser = (AppUserDto) appUserDao.loadUserByUsername(username);
 		log.debug("userDetails: {}", appUser);
 
 		if (jwtService.isTokenExpired(token))
 			throw new AuthServerException("token expired", HttpStatus.UNAUTHORIZED);
 
-		Collection<SimpleGrantedAuthority> authorities = appUser.getAuthorities();
-		List<String> roles = authorities.stream().map(s -> s.getAuthority()).toList();
+		List<String> roles = appUser.getRoles().stream().toList();
 
 		AuthorizeResponse response = new AuthorizeResponse();
 		response.setValid(true);
@@ -122,10 +120,8 @@ public class AuthServerService {
 	}
 
 	public String getEmail(String username) throws UsernameNotFoundException {
-		UserDetails userDetails = appUserDao.loadUserByUsername(username);
-		
-		AppUserDto appUser = (AppUserDto) userDetails;
-		
+		AppUserDto appUser = (AppUserDto) appUserDao.loadUserByUsername(username);
+
 		if (Boolean.FALSE.equals(appUser.getEmailVerified())) {
 			log.info("email not verified by user: {}", username);
 			return null;
@@ -133,15 +129,15 @@ public class AuthServerService {
 		return appUser.getMail();
 	}
 
-	/*
 	public void changePassword(String username, ChangePasswordRequest request) {
-		AppUserDto appUser = (AppUserDto) appUserDao.loadUserByUsername(username);
-		if (!passwordEncoder.matches(request.oldPassword(), appUser.getPassword())) {
+		AppUserDto appUserDto = (AppUserDto) appUserDao.loadUserByUsername(username);
+		if (!passwordEncoder.matches(request.oldPassword(), appUserDto.getPassword())) {
 			throw new AuthServerException("Incorrect old password", HttpStatus.UNAUTHORIZED);
 		}
-		appUser.setPassword(passwordEncoder.encode(request.newPassword()));
+
+		appUserDto.setPassword(passwordEncoder.encode(request.newPassword()));
+		AppUser appUser = new AppUser(appUserDto);
 		appUserDao.updateUser(appUser);
 	}
-	*/
 
 }

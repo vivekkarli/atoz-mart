@@ -14,28 +14,35 @@ import com.atozmart.authserver.repository.AppUserRepository;
 import com.atozmart.authserver.util.RedisCacheHelper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class AppUserDao implements UserDetailsService {
 
 	private final AppUserRepository appUserRepository;
 
-	private final RedisCacheHelper<AppUserDto> appUserCacheHelper;
+	private final RedisCacheHelper<String, AppUserDto> appUserCacheHelper;
 
 	private static final String CACHE_PREFIX = "app-user::";
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+		// cache get
 		AppUserDto cachedAppUser = appUserCacheHelper.getCache(CACHE_PREFIX + username);
 
-		if (cachedAppUser != null)
+		if (cachedAppUser != null) {
+			log.info("cache hit, key: {}", CACHE_PREFIX + username);
 			return cachedAppUser;
+		}
+		log.info("cache miss, key: {}", CACHE_PREFIX + username);
 
 		AppUser appUser = appUserRepository.findById(username)
 				.orElseThrow(() -> new UsernameNotFoundException("user not found"));
 
+		// cache miss, cache put
 		AppUserDto appUserDto = new AppUserDto(appUser);
 		appUserCacheHelper.cachePut(CACHE_PREFIX + username, appUserDto);
 		return appUserDto;

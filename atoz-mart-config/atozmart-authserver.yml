@@ -100,3 +100,5 @@ atozmart:
   reset-token-expiry: 1800 # 30 mins, in seconds
   jwt-token-expiry: 3600000 # 1 hr, in seconds
   jwt-secret-key: '{cipher}AYBOxHVNd5pG/kJQs7ZS882/zpSl0+6xTxBunpdVOav9oCPAgaZXCn5ZqiyefZdYIN/dHPtUx6AYlL5TKwoJw5bst6mOz5QEEFnpiie+0d6kfS7NUD9390HmVpOzoceJSahAgtZNg3UiTrI83ufj/y5JKkx4OSDFjK/L1jOYejsi2lwtPP8vUcAfrKOCyQ2ENzQkJ46dh0vSM1LntTGBR+bPPGNVDHtkDTnOBgLmAxC7rjRCbROGyXJb3Lqix6z8APQooU9jvZvoGrpzcDbfvXX8KbvAGPDmQ1JpefOvnAid/yeLq2hk1jBtb3GwSLB4i/RTFZ6mxwGyvrOYzkr3Zun4q1b94nsC3e1og1tFF6E97WY/ZXKfil0xMRK0ojSOhQEqjzoRcO350Vc7K7XvT74voKFRZqZqfvyF2VrTc0Js3QcUzrYFS/nitMaCtClfQ3xFrXqCMzKheG4pDWR7B7evHgM6xg/qHuO9ZgPFBxPiNLHmlm09jiuM8/Vsr2+zTiUGxD8TyD0rVZKUG6qU0Wf5fie+HEeJP4hLEfjbI2qrOLbV2l0iXKTi2wCiM//A3TGvfXwY7UJALP9gfGS2ZoLG3CgUHlNNRkmvfHI7FxaFFZmosf021g2kW5EAnkn+4o0='
+  email-verify-token-expiry: 1800 # 30 mins, in seconds
+  cache-expiry: 360 # 6 mins, in seconds

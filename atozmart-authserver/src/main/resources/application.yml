@@ -36,7 +36,12 @@ spring:
       port: 5672
       username: guest
       connection-timeout: 10s
-
+   cache:
+     type: redis
+   redis:
+     host: localhost
+     port: 6379
+       
 eureka:
    instance:
       prefer-ip-address: true
@@ -87,3 +92,4 @@ atozmart:
   jwt-token-expiry: 3600000 # 1 hr, in seconds
   jwt-secret-key: 
   email-verify-token-expiry: 1800 # 30 mins, in seconds
+  cache-expiry: 360 # 6 mins, in seconds

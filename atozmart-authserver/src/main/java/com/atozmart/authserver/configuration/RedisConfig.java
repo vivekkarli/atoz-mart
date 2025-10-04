@@ -17,10 +17,10 @@ import com.atozmart.authserver.util.RedisCacheHelper;
 public class RedisConfig {
 
 	@Bean
-	public RedisCacheHelper<AppUserDto> appUserCacheHelper(RedisConnectionFactory connectionFactory,
+	public RedisCacheHelper<String, AppUserDto> appUserCacheHelper(RedisConnectionFactory connectionFactory,
 			AtozMartConfig atozMartConfig) {
 
-		return new RedisCacheHelper<>(AppUserDto.class, atozMartConfig, connectionFactory);
+		return new RedisCacheHelper<>(String.class, AppUserDto.class, atozMartConfig.cacheExpiry(), connectionFactory);
 	}
 
 	@Bean

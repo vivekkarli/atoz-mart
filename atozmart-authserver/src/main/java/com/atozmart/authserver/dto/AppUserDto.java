@@ -46,7 +46,9 @@ public class AppUserDto implements UserDetails, Serializable {
 		this.username = appUser.getUsername();
 		this.password = appUser.getPassword();
 		this.mail = appUser.getMail();
+		this.mobileNo = appUser.getMobileNo();
 		this.emailVerified = appUser.getEmailVerified();
+		this.mobileNoVerified = appUser.getMobileNoVerified();
 		this.roles = appUser.getRoles().stream().map(AppRole::getRole).collect(Collectors.toSet());
 	}
 

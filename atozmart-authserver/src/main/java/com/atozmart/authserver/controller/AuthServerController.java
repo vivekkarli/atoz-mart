@@ -41,9 +41,10 @@ public class AuthServerController {
 	public ResponseEntity<LoginResponse> signUp(@Valid @RequestBody SignUpForm signUpForm) {
 		return authServerService.signUp(signUpForm);
 	}
-	
+
 	@PostMapping("/verify-email")
-	public ResponseEntity<String> verifyEmail(@RequestHeader("X-Username") String username, @RequestParam String email){
+	public ResponseEntity<String> verifyEmail(@RequestHeader("X-Username") String username,
+			@RequestParam(required = false) String email) {
 		notificationService.handleEmailVerfication(username, email);
 		return new ResponseEntity<>("verification link sent to your mail id", HttpStatus.OK);
 	}
@@ -71,7 +72,7 @@ public class AuthServerController {
 	@PatchMapping("/change-password")
 	public ResponseEntity<ChangePasswordResponse> changePassword(@RequestHeader("X-Username") String username,
 			@Valid @RequestBody ChangePasswordRequest request) {
-		//authServerService.changePassword(username, request);
+		authServerService.changePassword(username, request);
 		return new ResponseEntity<>(new ChangePasswordResponse("password updated successfully"), HttpStatus.ACCEPTED);
 	}
 

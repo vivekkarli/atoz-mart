@@ -24,7 +24,9 @@ import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.util.AuthServerConstants;
 import com.atozmart.authserver.util.AuthServerUtil;
 
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,68 +47,41 @@ public class NotificationService {
 
 	private final AuthServerUtil authServerUtil;
 
+	private final EntityManager entityManager;
+
 	@Transactional
 	public void handleEmailVerfication(String username, String email) {
 
 		// check if there is already an un-expired token
+		boolean doesTokenExist = sendUnExpiredVerifyToken(username, email);
+		if (doesTokenExist)
+			return;
+
+		sendNewMailVerifiyLink(username, email);
+	}
+
+	@Transactional(value = TxType.REQUIRES_NEW)
+	private boolean sendUnExpiredVerifyToken(String username, String email) {
 		try {
 			EmailVerificationToken emailVerificationToken = notificationDao
 					.findEmailVerificationTokenUsername(username);
 			if (!emailVerificationToken.isExpired()) {
 				String encodedToken = authServerUtil.getEncodedToken(emailVerificationToken.getToken());
-				var verifyLink = authServerUtil.getVerifyLink(atozMartConfig.baseUrl(), encodedToken);
-				log.info("verify link: {}", verifyLink);
-				mailVerifyLink(username, verifyLink.toString());
-				return;
+				URI verifyLink = authServerUtil.getVerifyLink(atozMartConfig.baseUrl(), encodedToken);
+				log.info("existing verify link: {}", verifyLink);
+				mailVerifyLink(username, email, verifyLink.toString());
+				return true;
 			}
+
+			// if expired delete old token
+			log.info("emailVerificationToken expired");
+			notificationDao.deleteEmailVerificationToken(emailVerificationToken);
+			entityManager.flush();
 		} catch (AuthServerException ex) {
 			log.debug("exception finding existing token", ex.getMessage());
 		}
 
-		sendNewMailVerifiyLink(username);
-	}
-
-	private void sendNewMailVerifiyLink(String username) {
-		String token = UUID.randomUUID().toString();
-		storeVerifyToken(username, token, atozMartConfig.emailVerifyTokenExpiry());
-		URI verifyLink = authServerUtil.getVerifyLink(atozMartConfig.baseUrl(),
-				authServerUtil.getEncodedToken(token));
-		mailVerifyLink(username, verifyLink.toString());
-	}
-	
-	@Async
-	@Transactional
-	public void sendNewMailVerifiyLinkAsync(String username) {
-		sendNewMailVerifiyLink(username);
-	}
-
-	@Transactional
-	public void handleForgotPassword(ForgotPasswordRequest request) {
-
-		// check if there is already an un-expired token
-		try {
-			PasswordResetToken passwordResetToken = notificationDao
-					.findPasswordResetTokenByUsername(request.username());
-			if (!passwordResetToken.isExpired()) {
-				String encodedToken = authServerUtil.getEncodedToken(passwordResetToken.getToken());
-				var resetLink = authServerUtil.getResetLink(atozMartConfig.baseUrl(), encodedToken);
-				log.info("reset link: {}", resetLink);
-				mailResetLink(request.username(), resetLink.toString());
-				return;
-			}
-		} catch (AuthServerException ex) {
-			log.debug("exception finding existing token", ex.getMessage());
-		}
-
-		sendNewPwdResetLink(request);
-	}
-
-	private void sendNewPwdResetLink(ForgotPasswordRequest request) {
-		String token = UUID.randomUUID().toString();
-		storeResetToken(request.username(), token, atozMartConfig.pwdResetTokenExpiry());
-		var resetLink = authServerUtil.getResetLink(atozMartConfig.baseUrl(), authServerUtil.getEncodedToken(token));
-		log.info("reset link: {}", resetLink);
-		mailResetLink(request.username(), resetLink.toString());
+		return false;
 	}
 
 	@Transactional
@@ -124,6 +99,41 @@ public class NotificationService {
 
 		appUserDao.updateUser(appUser);
 		notificationDao.deleteEmailVerificationToken(emailVerificationToken);
+	}
+
+	@Transactional
+	public void handleForgotPassword(ForgotPasswordRequest request) {
+
+		// check if there is already an un-expired token
+		boolean doesTokenExist = sendunExpiredResetToken(request);
+		if (doesTokenExist)
+			return;
+
+		sendNewPwdResetLink(request);
+	}
+
+	@Transactional(value = TxType.REQUIRES_NEW)
+	private boolean sendunExpiredResetToken(ForgotPasswordRequest request) {
+		try {
+			PasswordResetToken passwordResetToken = notificationDao
+					.findPasswordResetTokenByUsername(request.username());
+			if (!passwordResetToken.isExpired()) {
+				String encodedToken = authServerUtil.getEncodedToken(passwordResetToken.getToken());
+				URI resetLink = authServerUtil.getResetLink(atozMartConfig.baseUrl(), encodedToken);
+				log.info("existing reset link: {}", resetLink);
+				mailResetLink(request.username(), resetLink.toString());
+				return true;
+			}
+
+			// if expired delete old token
+			log.info("passwordResetToken expired");
+			notificationDao.deletePasswordResetToken(passwordResetToken);
+			entityManager.flush();
+		} catch (AuthServerException ex) {
+			log.debug("exception finding existing token", ex.getMessage());
+		}
+
+		return false;
 	}
 
 	@Transactional
@@ -145,13 +155,35 @@ public class NotificationService {
 		notificationDao.deletePasswordResetToken(passwordResetToken);
 	}
 
+	@Async
+	@Transactional
+	public void sendNewMailVerifiyLinkAsync(String username, String email) {
+		sendNewMailVerifiyLink(username, email);
+	}
+
+	private void sendNewMailVerifiyLink(String username, String email) {
+		String token = UUID.randomUUID().toString();
+		storeVerifyToken(username, token, atozMartConfig.emailVerifyTokenExpiry());
+		URI verifyLink = authServerUtil.getVerifyLink(atozMartConfig.baseUrl(), authServerUtil.getEncodedToken(token));
+		log.info("verify link: {}", verifyLink);
+		mailVerifyLink(username, email, verifyLink.toString());
+	}
+
+	private void sendNewPwdResetLink(ForgotPasswordRequest request) {
+		String token = UUID.randomUUID().toString();
+		storeResetToken(request.username(), token, atozMartConfig.pwdResetTokenExpiry());
+		URI resetLink = authServerUtil.getResetLink(atozMartConfig.baseUrl(), authServerUtil.getEncodedToken(token));
+		log.info("reset link: {}", resetLink);
+		mailResetLink(request.username(), resetLink.toString());
+	}
+
 	private void storeVerifyToken(String username, String token, Long expiry) {
 		EmailVerificationToken emailVerificationToken = new EmailVerificationToken();
 		emailVerificationToken.setToken(token);
 		AppUser appUser = new AppUser();
 		appUser.setUsername(username);
 		emailVerificationToken.setAppUser(appUser);
-		emailVerificationToken.setExpiresAt(LocalDateTime.now().plusMinutes(expiry));
+		emailVerificationToken.setExpiresAt(LocalDateTime.now().plusSeconds(expiry));
 		notificationDao.saveEmailVerificationToken(emailVerificationToken);
 	}
 
@@ -161,12 +193,14 @@ public class NotificationService {
 		AppUser appUser = new AppUser();
 		appUser.setUsername(username);
 		passwordResetToken.setAppUser(appUser);
-		passwordResetToken.setExpiresAt(LocalDateTime.now().plusMinutes(expiry));
+		passwordResetToken.setExpiresAt(LocalDateTime.now().plusSeconds(expiry));
 		notificationDao.savePasswordResetToken(passwordResetToken);
 	}
 
 	private void mailResetLink(String username, String resetLink) {
 		String email = getEmail(username);
+		log.info("sending reset link to: {}", email);
+
 		String emailBody = AuthServerConstants.getPasswordResetEmailContent(username, resetLink);
 		try {
 			sendEmail(email, emailBody);
@@ -177,8 +211,13 @@ public class NotificationService {
 		}
 	}
 
-	private void mailVerifyLink(String username, String resetLink) {
-		String email = getEmail(username);
+	private void mailVerifyLink(String username, String email, String resetLink) {
+
+		if (email == null) {
+			email = getEmail(username);
+		}
+
+		log.info("sending email verification link to: {}", email);
 		String emailBody = AuthServerConstants.getConfirmEmailContent(username, resetLink);
 		try {
 			sendEmail(email, emailBody);
