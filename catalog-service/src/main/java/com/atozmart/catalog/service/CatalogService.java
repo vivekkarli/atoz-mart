@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.atozmart.catalog.dao.CatalogDao;
+import com.atozmart.catalog.dto.ImageDataDto;
 import com.atozmart.catalog.dto.ItemDto;
 import com.atozmart.catalog.dto.NewItemDto;
 import com.atozmart.catalog.dto.PageDto;
@@ -60,9 +61,7 @@ public class CatalogService {
 	}
 
 	public void addNewItem(NewItemDto newItemDto) throws CatalogException {
-
 		catalogDao.addNewItem(newItemDto);
-
 	}
 
 	public void updateStock(StockUpdateDto stockUpdateDto) throws CatalogException {
@@ -86,6 +85,10 @@ public class CatalogService {
 
 		catalogDao.updateStock(stockUpdateDto.singleStockUpdates());
 
+	}
+
+	public List<ImageDataDto> getImages(List<String> ids) {
+		return catalogDao.findImageData(ids);
 	}
 
 }

@@ -12,9 +12,9 @@ import com.atozmart.gatewayserver.dto.FallBackResponse;
 @RestController
 public class GatewayController {
 
-	@GetMapping("/test")
+	@GetMapping("/ping")
 	public String testEndpoint() {
-		return "test";
+		return "pong";
 	}
 
 	@RequestMapping("/fallback/authserver")

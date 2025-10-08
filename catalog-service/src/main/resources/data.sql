@@ -1,3 +1,4 @@
+delete from image_data;
 delete from inventory;
 delete from item;
 delete from category;
@@ -419,3 +420,13 @@ insert into inventory (item_id, category, stock, created_at) values
 ( 'ITEM198', 'Jewelry', 31, now()),
 ( 'ITEM199', 'Clothing', 77, now()),
 ( 'ITEM200', 'Jewelry', 53, now());
+
+
+insert into image_data (item_id, location, created_at) 
+values ('ITEM001', 'https://m.media-amazon.com/images/I/61djF1vN5zL.jpg', now()),
+('ITEM002', 'https://m.media-amazon.com/images/I/41wKWbxqyTL._UF894,1000_QL80_.jpg', now()),
+('ITEM003', 'https://m.media-amazon.com/images/I/41d9z6EH2KL._UF894,1000_QL80_.jpg', now()),
+('ITEM004', 'https://m.media-amazon.com/images/I/71qimMnXNoL._UF1000,1000_QL80_.jpg', now()),
+('ITEM005', 'https://m.media-amazon.com/images/I/51utxVZAszL._UF894,1000_QL80_.jpg', now()),
+('ITEM006', 'https://image-us.samsung.com/SamsungUS/home/mobile/tablets/pdp/tab-a/black/sm-t510_tab_a_10_1_bk_v_front_rgb.jpg?$product-details-jpg$', now()),
+('ITEM123', 'https://m.media-amazon.com/images/I/61djF1vN5zL.jpg', now());

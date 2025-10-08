@@ -32,11 +32,11 @@ public class Item {
 	
 	private String details;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category")
 	private Category category;
 	
-	@OneToOne(mappedBy = "item", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Inventory inventory;
 	
 	@CreationTimestamp

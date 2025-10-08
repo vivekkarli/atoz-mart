@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.atozmart.cart.dto.ItemDto;
 import com.atozmart.cart.entity.Cart;
@@ -51,6 +52,7 @@ public class CartDao {
 
 	}
 
+	@Transactional
 	public void deleteItems(String username, String itemId) {
 		if (itemId == null || itemId.isBlank()) {
 			cartRepo.deleteByUsername(username);

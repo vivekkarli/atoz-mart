@@ -23,7 +23,7 @@ spring:
             webflux:
                httpclient:
                   connect-timeout: 1000
-                  response-timeout: 5s
+                  response-timeout: 10s
                discovery:
                   locator:
                      enabled: false # disable default routes
@@ -120,7 +120,7 @@ resilience4j:
    timelimiter:
       instances:
          authserver:
-            timeoutDuration: 5s
+            timeoutDuration: 10s
    circuitbreaker:
       configs:
          default:
