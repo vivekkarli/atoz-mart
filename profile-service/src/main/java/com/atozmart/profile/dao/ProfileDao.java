@@ -8,10 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.atozmart.profile.dto.ProfilePhotoMetadataDto;
+import com.atozmart.profile.entity.ProfilePhotoMetadata;
 import com.atozmart.profile.entity.UserAddress;
 import com.atozmart.profile.entity.UserAddressCompKey;
 import com.atozmart.profile.entity.UserProfile;
 import com.atozmart.profile.exception.ProfileException;
+import com.atozmart.profile.repository.ProfilePhotoMetadataRepo;
 import com.atozmart.profile.repository.UserAddressRepository;
 import com.atozmart.profile.repository.UserProfileRepository;
 import com.atozmart.profile.util.AddressTypeEnum;
@@ -27,6 +30,8 @@ public class ProfileDao {
 	private final UserProfileRepository userProfileRepo;
 
 	private final UserAddressRepository userAddressRepo;
+
+	private final ProfilePhotoMetadataRepo profilePhotoMetadataRepo;
 
 	public UserProfile getProfileDetails(String username) {
 
@@ -77,6 +82,30 @@ public class ProfileDao {
 				() -> log.info("existing default address not found"));
 
 		existingAddress.setDefaultAddress(true);
+
+	}
+
+	public void saveProfilePhotoMetadata(ProfilePhotoMetadataDto dto) {
+
+		profilePhotoMetadataRepo.findByUserProfileUsername(dto.username()).ifPresentOrElse(profilePhotoMetadata -> {
+			// if present, modify data
+			profilePhotoMetadata.setUniqueKey(dto.uniqueKey());
+			profilePhotoMetadata.setLocation(dto.location());
+			profilePhotoMetadataRepo.save(profilePhotoMetadata);
+		}, () -> {
+			// or else, save new data
+			ProfilePhotoMetadata newMetaData = new ProfilePhotoMetadata(dto);
+			profilePhotoMetadataRepo.save(newMetaData);
+		});
+
+	}
+
+	public ProfilePhotoMetadataDto getProfilePhotoMetadata(String username) {
+
+		ProfilePhotoMetadata metadata = profilePhotoMetadataRepo.findByUserProfileUsername(username)
+				.orElseThrow(() -> new ProfileException("", HttpStatus.NOT_FOUND));
+
+		return new ProfilePhotoMetadataDto(username, metadata.getUniqueKey(), metadata.getLocation());
 
 	}
 

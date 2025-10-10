@@ -1,5 +1,9 @@
 package com.atozmart.profile.controller;
 
+import java.io.IOException;
+import java.net.URI;
+
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.atozmart.profile.dto.ProfileDetailsDto;
 import com.atozmart.profile.exception.ProfileException;
@@ -69,6 +74,20 @@ public class ProfileController {
 		log.info("X-Username: {}", username);
 		profileService.changeDefaultTo(username, addressType);
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/profile-photo")
+	public ResponseEntity<Void> uploadProfilePicture(@RequestHeader("X-Username") String username,
+			@RequestParam("file") MultipartFile profilePicture) {
+		log.info("X-Username: {}", username);
+		URI uri = profileService.uploadProfilePicture(username, profilePicture);
+		return ResponseEntity.created(uri).build();
+	}
+
+	@GetMapping("/profile-photo")
+	public ResponseEntity<byte[]> viewProfilePicture(@RequestHeader("X-Username") String username) throws IOException {
+		log.info("X-Username: {}", username);
+		return ResponseEntity.ok(profileService.getProfilePicture(username).getContentAsByteArray());
 	}
 
 }

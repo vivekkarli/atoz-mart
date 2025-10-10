@@ -34,7 +34,15 @@ spring:
       username: guest
       password: '{cipher}AYAta5h4fJKI2e7hQpNdQMnD84CmgYSYC5eyJMUcsTglJCeCmpDpHEVQxLU14FM1LOiIp/iaZvZsk5df0QwZALGzssGcoBhCntFJ813lX09SQBV9ospDFmbpzRwIu1mSpcf+xfMzH9PhWzvAqBWjmly+1GvP79EZtgIRjbRFFiRYG4DzqlCoRke10Ry1u6018cYJnDjT7YroU7ITzeJWAVkS1JFBKwFSh7P81IyEHFkHyZpeYL1X/9gOgQ/GkT2eDT2/CKKQq3CnZCI7sKGwXbbmdfvdbCZFKFfoJT3ExIL5zqJ2PDiEbz3w1whsBDKaPnh0MkYBk6JgbUHMtZQAR+fGq7Hy7JRFZkqUz7SCnXI5PbSCmqBIcOSJP9h8diTbved2NsFz1sr4beNoUkip4nxA79AwTrIsiRnUY0y4LnAwuUDuIOtUwp0EU8tuPWu1KqV3MYuyIRxikbJaiUS05xE5gTenTWKC8XGJ3aCtyqo3cLWRTE2xS0ss1m+XpgLKoS0Iuj3zC9OcN4m1RET8Ms5TnqJbLqV6XMqwSLVhHzSteA=='
       connection-timeout: 10s
+   cache:
+      type: redis
+   redis:
+      host: localhost
+      port: 6379
 
+atozmart:
+   cache-expiry: 360 # 6 mins, in seconds
+   
 eureka:
    instance:
       prefer-ip-address: true
