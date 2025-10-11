@@ -8,15 +8,12 @@ import java.util.Set;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.atozmart.authserver.cache.CacheHelper;
 import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dto.AppUserDto;
 import com.atozmart.authserver.dto.AuthorizeResponse;
@@ -24,8 +21,6 @@ import com.atozmart.authserver.dto.ChangePasswordRequest;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
 import com.atozmart.authserver.dto.SignUpForm;
-import com.atozmart.authserver.entity.AppRole;
-import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.exception.AuthServerException;
 
 import lombok.RequiredArgsConstructor;
@@ -46,24 +41,35 @@ public class AuthServerService {
 
 	private final PasswordEncoder passwordEncoder;
 
-	private final AuthenticationManager authenticationManager;
+	private final CacheHelper appUserCacheHelper;
+
+	private static final String CACHE_PREFIX;
+
+	static {
+		CACHE_PREFIX = "app-user::";
+	}
 
 	public ResponseEntity<LoginResponse> login(LoginForm loginForm)
 			throws BadCredentialsException, UsernameNotFoundException {
 
-		Authentication authenticateduser = authenticationManager
-				.authenticate(new UsernamePasswordAuthenticationToken(loginForm.username(), loginForm.password()));
+		AppUserDto appUserDto = appUserDao.getUser(loginForm.username());
+		try {
+			if (!passwordEncoder.matches(loginForm.password(), appUserDto.getPassword())) {
+				throw new AuthServerException("username or password is incorrect", HttpStatus.UNAUTHORIZED);
+			}
+		} catch (UsernameNotFoundException e) {
+			log.debug(e.getMessage());
+			throw new AuthServerException("username or password is incorrect", HttpStatus.UNAUTHORIZED);
+		}
 
-		log.info("authenticated user: {}", authenticateduser);
-		AppUserDto appUser = (AppUserDto) authenticateduser.getPrincipal();
+		log.info("authenticated user: {}", appUserDto);
 
-		List<String> roles = appUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
 		Map<String, Object> customClaims = new HashMap<>();
-		customClaims.put("preferred_username", appUser.getUsername());
-		customClaims.put("roles", roles);
-		customClaims.put("email", Boolean.TRUE.equals(appUser.getEmailVerified()) ? appUser.getMail() : null);
+		customClaims.put("preferred_username", appUserDto.getUsername());
+		customClaims.put("roles", appUserDto.getRoles());
+		customClaims.put("email", Boolean.TRUE.equals(appUserDto.getEmailVerified()) ? appUserDto.getMail() : null);
 
-		String accessToken = jwtService.generateToken(appUser, customClaims);
+		String accessToken = jwtService.generateToken(appUserDto, customClaims);
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add("X-Access-Token", accessToken);
 
@@ -72,18 +78,22 @@ public class AuthServerService {
 
 	public ResponseEntity<LoginResponse> signUp(SignUpForm signUpForm) throws AuthServerException {
 
-		AppUser appUser = new AppUser();
-		appUser.setUsername(signUpForm.username());
-		appUser.setPassword(passwordEncoder.encode(signUpForm.password()));
-		appUser.setMail(signUpForm.mail());
-		appUser.setMobileNo(signUpForm.mobileNo());
-		appUser.setEmailVerified(false);
-		appUser.setMobileNoVerified(false);
-		appUser.setRoles(Set.of(new AppRole("user", null)));
+		AppUserDto appUserDto = new AppUserDto();
+		appUserDto.setUsername(signUpForm.username());
+		appUserDto.setPassword(passwordEncoder.encode(signUpForm.password()));
+		appUserDto.setMail(signUpForm.mail());
+		appUserDto.setMobileNo(signUpForm.mobileNo());
+		appUserDto.setEmailVerified(false);
+		appUserDto.setMobileNoVerified(false);
+		appUserDto.setRoles(Set.of("user"));
 
-		log.debug("new appUser: {}", appUser);
+		log.info("new appUser: {}", appUserDto);
+		appUserDao.createUser(appUserDto);
 
-		appUserDao.signUp(appUser);
+		/*
+		 * cache the new user
+		 */
+		appUserCacheHelper.cachePut(CACHE_PREFIX + appUserDto.getUsername(), appUserDto);
 
 		// create new profile, async process
 		profileService.createProfileAsync(signUpForm);
@@ -94,50 +104,54 @@ public class AuthServerService {
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
 	}
 
-	public ResponseEntity<AuthorizeResponse> authorizeToken(String token) throws AuthServerException {
-
-		String username = jwtService.extractUsername(token);
-		log.debug("username: {}", username);
-
-		AppUserDto appUser = (AppUserDto) appUserDao.loadUserByUsername(username);
-		log.debug("userDetails: {}", appUser);
+	public ResponseEntity<AuthorizeResponse> authorizeToken(String token) {
 
 		if (jwtService.isTokenExpired(token))
 			throw new AuthServerException("token expired", HttpStatus.UNAUTHORIZED);
+		
+		String username = jwtService.extractUsername(token);
+		log.info("username: {}", username);
 
-		List<String> roles = appUser.getRoles().stream().toList();
+		AppUserDto appUserDto = appUserDao.getUser(username);
+		log.info("appUser: {}", appUserDto);
+
+		List<String> roles = appUserDto.getRoles().stream().toList();
 
 		AuthorizeResponse response = new AuthorizeResponse();
 		response.setValid(true);
 		response.setRoles(roles);
 		response.setUsername(username);
-		response.setEmail(Boolean.TRUE.equals(appUser.getEmailVerified()) ? appUser.getMail() : null);
+		response.setEmail(Boolean.TRUE.equals(appUserDto.getEmailVerified()) ? appUserDto.getMail() : null);
 		response.setExpiresAt(jwtService.extractExpiration(token));
-		log.debug("AuthorizeResponse: {}", response);
+		log.info("AuthorizeResponse: {}", response);
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 
 	public String getEmail(String username) throws UsernameNotFoundException {
-		AppUserDto appUser = (AppUserDto) appUserDao.loadUserByUsername(username);
+		AppUserDto appUserDto = appUserDao.getUser(username);
 
-		if (Boolean.FALSE.equals(appUser.getEmailVerified())) {
+		if (Boolean.FALSE.equals(appUserDto.getEmailVerified())) {
 			log.info("email not verified by user: {}", username);
 			return null;
 		}
-		return appUser.getMail();
+		return appUserDto.getMail();
 	}
 
 	public void changePassword(String username, ChangePasswordRequest request) {
-		AppUserDto appUserDto = (AppUserDto) appUserDao.loadUserByUsername(username);
+		AppUserDto appUserDto = appUserDao.getUser(username);
 		if (!passwordEncoder.matches(request.oldPassword(), appUserDto.getPassword())) {
 			throw new AuthServerException("Incorrect old password", HttpStatus.UNAUTHORIZED);
 		}
 
 		appUserDto.setPassword(passwordEncoder.encode(request.newPassword()));
-		AppUser appUser = new AppUser(appUserDto);
-		appUserDao.updateUser(appUser);
+		appUserDao.updateUser(appUserDto);
+		
+		/*
+		 * cache the updated user
+		 */
+		appUserCacheHelper.cachePut(CACHE_PREFIX + username, appUserDto);
 	}
 
 }

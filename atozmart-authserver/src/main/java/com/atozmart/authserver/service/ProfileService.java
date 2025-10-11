@@ -37,16 +37,14 @@ public class ProfileService {
 		}
 
 	}
-	
+
 	@Async
-	public void createProfileAsync(SignUpForm signUpForm){
+	public void createProfileAsync(SignUpForm signUpForm) {
 		createProfile(signUpForm);
 	}
 
 	public void updateBasicDetails(String username, BasicDetailsDto basicDetailsDto) {
-
 		appUserDao.updateBasicDetails(username, basicDetailsDto);
-
 	}
 
 }

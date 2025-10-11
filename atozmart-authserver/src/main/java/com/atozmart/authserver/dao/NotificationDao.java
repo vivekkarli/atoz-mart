@@ -1,14 +1,11 @@
 package com.atozmart.authserver.dao;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
-import com.atozmart.authserver.entity.AppUser;
 import com.atozmart.authserver.entity.EmailVerificationToken;
 import com.atozmart.authserver.entity.PasswordResetToken;
 import com.atozmart.authserver.exception.AuthServerException;
-import com.atozmart.authserver.repository.AppUserRepository;
 import com.atozmart.authserver.repository.EmailVerificationTokenRepository;
 import com.atozmart.authserver.repository.PasswordResetTokenRepository;
 
@@ -17,8 +14,6 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class NotificationDao {
-
-	private final AppUserRepository appUserRepository;
 
 	private final EmailVerificationTokenRepository emailVerificationTokenRepo;
 
@@ -43,19 +38,13 @@ public class NotificationDao {
 	}
 
 	public PasswordResetToken findPasswordResetTokenByUsername(String username) {
-		AppUser appUser = new AppUser();
-		appUser.setUsername(username);
-
-		return passwordResetTokenRepo.findByAppUser(appUser)
+		return passwordResetTokenRepo.findByAppUserUsername(username)
 				.orElseThrow(() -> new AuthServerException("token not found", HttpStatus.BAD_REQUEST));
 
 	}
 
 	public EmailVerificationToken findEmailVerificationTokenUsername(String username) {
-		AppUser appUser = new AppUser();
-		appUser.setUsername(username);
-
-		return emailVerificationTokenRepo.findByAppUser(appUser)
+		return emailVerificationTokenRepo.findByAppUserUsername(username)
 				.orElseThrow(() -> new AuthServerException("token not found", HttpStatus.BAD_REQUEST));
 	}
 
@@ -65,10 +54,6 @@ public class NotificationDao {
 
 	public void deleteEmailVerificationToken(EmailVerificationToken emailVerificationToken) {
 		emailVerificationTokenRepo.delete(emailVerificationToken);
-	}
-
-	public AppUser loadUserByUsername(String username) throws UsernameNotFoundException {
-		return appUserRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException("user not found"));
 	}
 
 }

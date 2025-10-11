@@ -6,7 +6,6 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -15,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.atozmart.profile.cache.RedisCacheHelper;
+import com.atozmart.profile.cache.CacheHelper;
 import com.atozmart.profile.configuration.ProfileConfig;
 import com.atozmart.profile.dao.ProfileDao;
 import com.atozmart.profile.dto.ProfileDetailsDto;
@@ -37,7 +36,7 @@ public class ProfileService {
 
 	private final S3ClientHelper s3ClientHelper;
 
-	private final RedisCacheHelper redisCacheHelper;
+	private final CacheHelper cacheHelper;
 
 	private static final String CACHE_PREFIX;
 
@@ -46,10 +45,10 @@ public class ProfileService {
 	}
 
 	public ProfileService(ProfileDao profileDao, S3Client s3Client, ProfileConfig profileConfig,
-			RedisCacheHelper redisCacheHelper) {
+			CacheHelper redisCacheHelperety) {
 		this.profileDao = profileDao;
 		this.s3ClientHelper = new S3ClientHelper(s3Client, profileConfig.aws().bucketName());
-		this.redisCacheHelper = redisCacheHelper;
+		this.cacheHelper = redisCacheHelperety;
 	}
 
 	public ProfileDetailsDto getProfileDetails(String username) {
@@ -106,11 +105,11 @@ public class ProfileService {
 		profileDao.saveProfilePhotoMetadata(new ProfilePhotoMetadataDto(username, key, url.toString()));
 
 		try {
-			redisCacheHelper.cachePut(CACHE_PREFIX + key, new ProfilePhotoCache(profilePicture.getBytes()));
+			cacheHelper.cachePut(CACHE_PREFIX + key, new ProfilePhotoCache(profilePicture.getBytes()));
 		} catch (IOException e) {
 			log.debug("Exception caching file: {}", e.getMessage());
 			log.info("Evicting cache if any, key: {}", CACHE_PREFIX + key);
-			redisCacheHelper.cacheEvict(CACHE_PREFIX + key);
+			cacheHelper.cacheEvict(CACHE_PREFIX + key);
 		}
 
 		return URI.create("/profile/profile-photo/" + username);
@@ -142,7 +141,7 @@ public class ProfileService {
 	public Resource getProfilePicture(String username) {
 		String key = profileDao.getProfilePhotoMetadata(username).uniqueKey();
 
-		ProfilePhotoCache profilePhotoCache = redisCacheHelper.getCache(CACHE_PREFIX + key);
+		ProfilePhotoCache profilePhotoCache = cacheHelper.getCache(CACHE_PREFIX + key);
 		if (profilePhotoCache != null) {
 			log.info("cache hit, key: {}", CACHE_PREFIX + key);
 			return new ByteArrayResource(profilePhotoCache.bytes());
@@ -151,7 +150,7 @@ public class ProfileService {
 
 		byte[] fileBytes = s3ClientHelper.getFile(key);
 
-		redisCacheHelper.cachePut(CACHE_PREFIX + key, new ProfilePhotoCache(fileBytes));
+		cacheHelper.cachePut(CACHE_PREFIX + key, new ProfilePhotoCache(fileBytes));
 		return new ByteArrayResource(fileBytes);
 	}
 

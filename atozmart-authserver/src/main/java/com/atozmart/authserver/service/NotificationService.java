@@ -11,9 +11,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.atozmart.authserver.cache.CacheHelper;
 import com.atozmart.authserver.configuration.AtozMartConfig;
 import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dao.NotificationDao;
+import com.atozmart.authserver.dto.AppUserDto;
 import com.atozmart.authserver.dto.ForgotPasswordRequest;
 import com.atozmart.authserver.dto.MailContentDto;
 import com.atozmart.authserver.dto.ResetPasswordRequest;
@@ -48,6 +50,14 @@ public class NotificationService {
 	private final AuthServerUtil authServerUtil;
 
 	private final EntityManager entityManager;
+
+	private final CacheHelper appUserCacheHelper;
+
+	private static final String CACHE_PREFIX;
+
+	static {
+		CACHE_PREFIX = "app-user::";
+	}
 
 	@Transactional
 	public void handleEmailVerfication(String username, String email) {
@@ -94,11 +104,16 @@ public class NotificationService {
 			throw new AuthServerException("link expired", HttpStatus.GONE);
 		}
 
-		AppUser appUser = notificationDao.loadUserByUsername(emailVerificationToken.getAppUser().getUsername());
-		appUser.setEmailVerified(true);
+		AppUserDto appUserDto = appUserDao.getUser(emailVerificationToken.getAppUser().getUsername());
+		appUserDto.setEmailVerified(true);
 
-		appUserDao.updateUser(appUser);
+		appUserDao.updateUser(appUserDto);
 		notificationDao.deleteEmailVerificationToken(emailVerificationToken);
+
+		/*
+		 * cache the updated user
+		 */
+		appUserCacheHelper.cachePut(CACHE_PREFIX + appUserDto.getUsername(), appUserDto);
 	}
 
 	@Transactional
@@ -148,11 +163,16 @@ public class NotificationService {
 			throw new AuthServerException("link expired", HttpStatus.GONE);
 		}
 
-		AppUser appUser = notificationDao.loadUserByUsername(passwordResetToken.getAppUser().getUsername());
-		appUser.setPassword(passwordEncoder.encode(request.newPassword()));
+		AppUserDto appUserDto = appUserDao.getUser(passwordResetToken.getAppUser().getUsername());
+		appUserDto.setPassword(passwordEncoder.encode(request.newPassword()));
 
-		appUserDao.updateUser(appUser);
+		appUserDao.updateUser(appUserDto);
 		notificationDao.deletePasswordResetToken(passwordResetToken);
+
+		/*
+		 * cache the updated user
+		 */
+		appUserCacheHelper.cachePut(CACHE_PREFIX + appUserDto.getUsername(), appUserDto);
 	}
 
 	@Async
@@ -234,7 +254,7 @@ public class NotificationService {
 	}
 
 	private String getEmail(String username) throws UsernameNotFoundException {
-		return notificationDao.loadUserByUsername(username).getMail();
+		return appUserDao.getUser(username).getMail();
 	}
 
 }
