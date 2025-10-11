@@ -39,9 +39,6 @@ spring:
    redis:
       host: localhost
       port: 6379
-
-atozmart:
-   cache-expiry: 360 # 6 mins, in seconds
    
 eureka:
    instance:
@@ -90,3 +87,12 @@ logging:
    level:
       com.atozmart.profile: DEBUG
       com.netflix.discovery.DiscoveryClient: OFF
+
+profile-service:
+   cache-expiry: 360 # 6 mins, in seconds
+   public-base-url: https://localhost:8072/atozmart/profile
+   aws:
+      access-key: '{cipher}AYBE9kktTkon4ZGe0UF1gXxjIZp7iqyPKrGghfv3xkPjqsKMlMDCY19E0HP4LQs9JOSZyvHyMtncvLOqfDSF9LiQ7PrkQSeZS6/+Zh5rVz4F6Zi9XC/ph9j14SDVYYrW34TOePKmvGWg4nR6sImUkIVRrE7wVWFROoWECYOkvwsrQ5ZqtJSHCgNu1E5txgwe4rVkElvdBjZqL1mtpmrSmemYYDYXcG6UuNWWMdhph0wfvYZPczc+tG3c57TZPexwZcbHHKI7gROcBLpgoe/hzY88fqi4CclSORrszHrhlbVlE+PmQRcem4HJBLozcILvVhmq2hlbzcihR16ZnuWj9sJV8oi0XVsoK0SPuDHtoDlvbN2uOtA5wSCk8VMSD/7Mi4SaPiG+WnKC0d0gSlcJBwsKHQNnWk/3l7Mx/wRSVMqJK0sT8KunLZkfkdj/KcJPjrAGmFAlN0ZL+HamAnfoYPhnlXmMS2AnCB33EfaeH0+kABRdaj2Eiynjlv5BTotSWFehU+4KCDi9wMPEmEE1rJz81ADFU6wSSRfgomfDQYQXUgLbNB+HyOYK27KSEe9LkL8='
+      secret-key: '{cipher}AYB7M26fuzd4HYiIlVyK3I2uhAOOhWp9+0ey5XGYFPtBFQleHrR7Ny3Q1QuHdo2K/GRIyoa85v0gKSW44jhJS12on/op6EDSWcizZE2oepNLi7YTCoJNbsp2PPrhjwyeBnujkVjEGsKyNQUpOw/d0CqGXS88TGpFC7PxQ+gnuykIsFRKyYJsEoDUqsCfnjLVSrp51dPWIGPctgvOgTVOcJGfJkej1DyjPicG3DhJRGyHr9Q1x+xJnaQceQnKiPoWg6/zeRpgfyW1oD84uarFsTYFeNyYJMyntdJV1JI8BShe4j1I3iyskQOA/G12M5pqndMD6F4O39MesPtCmHnGFdAVB/u8ENF4HDjrBeqVuLcGvbTEWkjITbzjW9IEZ6y75hdkqEeO7ogc8Ftf+eOrLBUk00upWci+soBGrTIyxDOgY8FB1uEu6i9HHFo4pEwvrxKed++C/kcbUmw+/SvJfUjMIlA/m43C6htLzWKbTeO/2mK7T6UZ1Ik8bUhp55pVyD7+a1f9KmCGv/5SE5j2gqwWX23Qc/z+RsN5hT8LgpvwaIxq/TCWECOArja1dPZdA0YULS1RGdwy8X5LiZGQNbAt'
+      region: ap-south-1
+      bucket-name: atozmart-bucket

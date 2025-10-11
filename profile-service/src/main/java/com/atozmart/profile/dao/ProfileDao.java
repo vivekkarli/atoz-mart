@@ -103,7 +103,7 @@ public class ProfileDao {
 	public ProfilePhotoMetadataDto getProfilePhotoMetadata(String username) {
 
 		ProfilePhotoMetadata metadata = profilePhotoMetadataRepo.findByUserProfileUsername(username)
-				.orElseThrow(() -> new ProfileException("", HttpStatus.NOT_FOUND));
+				.orElseThrow(() -> new ProfileException("No profile photo information", HttpStatus.NOT_FOUND));
 
 		return new ProfilePhotoMetadataDto(username, metadata.getUniqueKey(), metadata.getLocation());
 

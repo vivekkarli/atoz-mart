@@ -10,18 +10,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.atozmart.catalog.dto.ImageDataDto;
+import com.atozmart.catalog.dto.ImageMetadataDto;
 import com.atozmart.catalog.dto.NewItemDto;
 import com.atozmart.catalog.dto.PageDto;
 import com.atozmart.catalog.dto.SearchFilters;
 import com.atozmart.catalog.dto.SingleStockUpdateDto;
 import com.atozmart.catalog.entity.Category;
-import com.atozmart.catalog.entity.ImageData;
+import com.atozmart.catalog.entity.ImageMetadata;
 import com.atozmart.catalog.entity.Inventory;
 import com.atozmart.catalog.entity.Item;
 import com.atozmart.catalog.exception.CatalogException;
 import com.atozmart.catalog.repository.CategoryRepository;
-import com.atozmart.catalog.repository.ImageDataRepository;
+import com.atozmart.catalog.repository.ImageMetadataRepository;
 import com.atozmart.catalog.repository.InventoryRepository;
 import com.atozmart.catalog.repository.ItemRepository;
 
@@ -37,7 +37,7 @@ public class CatalogDao {
 
 	private final InventoryRepository inventoryRepo;
 
-	private final ImageDataRepository imageDataRepo;
+	private final ImageMetadataRepository imageDataRepo;
 
 	public List<Item> getAllItems() {
 		return itemRepo.findAll();
@@ -133,11 +133,35 @@ public class CatalogDao {
 
 	}
 
-	public List<ImageDataDto> findImageData(List<String> ids) {
-		List<ImageData> imageDataLst = imageDataRepo.findByItemIdIn(ids);
+	public List<ImageMetadataDto> findImageData(List<String> ids) {
+		List<ImageMetadata> imageMetaDataLst = imageDataRepo.findByItemIdIn(ids);
 
-		return imageDataLst.stream()
-				.map(imageData -> new ImageDataDto(imageData.getItem().getId(), imageData.getLocation())).toList();
+		return imageMetaDataLst.stream().map(imageMetaData -> new ImageMetadataDto(imageMetaData.getItem().getId(),
+				imageMetaData.getUniqueKey(), imageMetaData.getLocation())).toList();
 
 	}
+
+	public ImageMetadataDto findImageData(String id) throws CatalogException {
+		ImageMetadata imageMetadata = imageDataRepo.findByItemId(id)
+				.orElseThrow(() -> new CatalogException("image data not found", HttpStatus.NOT_FOUND));
+
+		return new ImageMetadataDto(imageMetadata.getItem().getId(), imageMetadata.getUniqueKey(),
+				imageMetadata.getLocation());
+	}
+
+	public void saveImageData(ImageMetadataDto dto) {
+
+		imageDataRepo.findByItemId(dto.itemId()).ifPresentOrElse(imageMetadata -> {
+			// if present, modify data
+			imageMetadata.setUniqueKey(dto.uniqueKey());
+			imageMetadata.setLocation(dto.location());
+			imageDataRepo.save(imageMetadata);
+		}, () -> {
+			// or else, save new data
+			ImageMetadata newMetaData = new ImageMetadata(dto);
+			imageDataRepo.save(newMetaData);
+		});
+
+	}
+
 }

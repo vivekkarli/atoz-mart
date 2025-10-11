@@ -37,11 +37,6 @@
 			<artifactId>atozmart-exception-handler</artifactId>
 			<version>${atozmart-exception-handler.version}</version>
 		</dependency>
-		<!--<dependency>
-			<groupId>com.atozmart.cache</groupId>
-			<artifactId>atozmart-cache-handler</artifactId>
-			<version>${atozmart-cache-handler.version}</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-redis</artifactId>

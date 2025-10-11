@@ -1,4 +1,4 @@
-package com.atozmart.profile.cache;
+package com.atozmart.catalog.cache;
 
 import java.time.Duration;
 
@@ -26,7 +26,7 @@ public class CacheConfig {
 
 	@Bean
 	@Profile("prod")
-	public CacheHelper redisCacheHelper(@Value("${profile-service.cache-expiry}") Long cacheExpiry,
+	public CacheHelper redisCacheHelper(@Value("${catalog-service.cache-expiry:360}") Long cacheExpiry,
 			RedisConnectionFactory connectionFactory) {
 		return new RedisCacheHelper(cacheExpiry, connectionFactory);
 	}
@@ -34,7 +34,7 @@ public class CacheConfig {
 	@Bean
 	@Profile("prod")
 	public CacheManager redisCacheManager(RedisConnectionFactory connectionFactory,
-			@Value("${profile-service.cache-expiry}") Long cacheExpiry) {
+			@Value("${catalog-service.cache-expiry:360}") Long cacheExpiry) {
 
 		RedisCacheConfiguration defaultRedisConfig = RedisCacheConfiguration.defaultCacheConfig()
 				.entryTtl(Duration.ofSeconds(cacheExpiry))

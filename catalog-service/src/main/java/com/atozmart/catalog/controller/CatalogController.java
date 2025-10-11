@@ -1,16 +1,18 @@
 package com.atozmart.catalog.controller;
 
-import java.util.List;
+import java.net.URI;
 import java.util.Set;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.atozmart.catalog.dto.ImageDataDto;
 import com.atozmart.catalog.dto.PageDto;
 import com.atozmart.catalog.dto.SearchFilters;
 import com.atozmart.catalog.dto.ViewItemsDto;
@@ -50,14 +52,17 @@ public class CatalogController {
 		return ResponseEntity.ok().body(catalogService.getAllCategories());
 	}
 
-	@GetMapping("/image")
-	public ResponseEntity<List<ImageDataDto>> getImages(@RequestParam(name = "item-id") List<String> itemIds) {
-		
-		List<ImageDataDto> imageDataDtos = catalogService.getImages(itemIds);
-		if(imageDataDtos.size() != itemIds.size())
-			return new ResponseEntity<>(imageDataDtos, HttpStatus.PARTIAL_CONTENT);
-		
-		return ResponseEntity.ok(imageDataDtos);
+	@GetMapping("/image/{item-id}")
+	public ResponseEntity<Resource> getImages(@PathVariable(name = "item-id") String itemId) throws CatalogException {
+		return ResponseEntity.ok(catalogService.getImage(itemId));
+	}
+
+	@PostMapping("/image/{item-id}")
+	public ResponseEntity<Void> uploadImage(@PathVariable(name = "item-id") String itemId,
+			@RequestParam("file") MultipartFile file) throws CatalogException {
+		URI uri = catalogService.uploadImage(itemId, file);
+		return ResponseEntity.created(uri).build();
+
 	}
 
 }
