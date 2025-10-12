@@ -129,12 +129,7 @@ public class ProfileService {
 	}
 
 	private String getUniqueKeyForProfilePhoto(String username) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
-		String todayDateTime = LocalDateTime.now().format(dateTimeFormatter);
-		String fileName = "profile-photo-" + todayDateTime;
-		/*
-		 * <username>/profile-photo-yyyyMMddHHmmssSSS
-		 */
+		String fileName = "profile-photo";
 		return new StringBuilder(username).append("/").append(fileName).toString();
 	}
 
