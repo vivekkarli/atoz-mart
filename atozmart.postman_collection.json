@@ -1,0 +1,3333 @@
+{
+	"info": {
+		"_postman_id": "fb80a85f-7c18-40be-91db-a984f47787b6",
+		"name": "AtoZ Mart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15460930"
+	},
+	"item": [
+		{
+			"name": "catalog",
+			"item": [
+				{
+					"name": "get all items page filters",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "atozmart-correlation-id",
+								"value": "123abc",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8086/items?page=0&size=5&sort-by=name&direction=asc&lastPage=false",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"items"
+							],
+							"query": [
+								{
+									"key": "category",
+									"value": "test",
+									"disabled": true
+								},
+								{
+									"key": "fromPriceRange",
+									"value": "99",
+									"disabled": true
+								},
+								{
+									"key": "toPriceRange",
+									"value": "199",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "Action",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sort-by",
+									"value": "name"
+								},
+								{
+									"key": "direction",
+									"value": "asc"
+								},
+								{
+									"key": "lastPage",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all items",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8086/items/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"items",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8086/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add new item",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"ITEM201\",\r\n    \"name\": \"ITEM201\",\r\n    \"unitPrice\": {{$randomPrice}},\r\n    \"details\": null,\r\n    \"category\": \"test\",\r\n    \"categoryDescription\": null,\r\n    \"stock\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/item",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update stock",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"singleStockUpdates\": [\r\n        {\r\n            \"itemId\": \"ITEM001\",\r\n            \"incrementBy\": 1,\r\n            \"decrementBy\": 1\r\n        },\r\n        {\r\n            \"itemId\": \"ITEM002\",\r\n            \"incrementBy\": 1,\r\n            \"decrementBy\": null\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/item/stock",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"item",
+								"stock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "shutdown",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/actuator/shutdown",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"actuator",
+								"shutdown"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8086/image/ITEM123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"image",
+								"ITEM123"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get image url",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8086/image?item-id=ITEM123",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"image"
+							],
+							"query": [
+								{
+									"key": "item-id",
+									"value": "ITEM123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/my-projects/catalog-items/ITEM196.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8086/image/ITEM096",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8086",
+							"path": [
+								"image",
+								"ITEM096"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "add to cart",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"itemId\": \"ITEM002\",\r\n    \"itemName\": \"Wireless Earbuds\",\r\n    \"unitPrice\": 79.99,\r\n    \"quantity\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change quantity",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"itemId\": \"ITEM123\",\r\n    \"quantity\": 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/items/quantity",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"items",
+								"quantity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cart items",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "items",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/items?itemId=ITEM002",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"items"
+							],
+							"query": [
+								{
+									"key": "itemId",
+									"value": "ITEM002"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "checkout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderAmount\": 169.98,\r\n    \"couponCode\": \"DISCOUNT10\",\r\n    \"orderSavings\": 17.0,\r\n    \"orderTotal\": 152.98,\r\n    \"paymentMode\": \"COD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/checkout/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"checkout",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "gatewayserver",
+			"item": [
+				{
+					"name": "catalog",
+					"item": [
+						{
+							"name": "catalog items all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/catalog/items/all",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"items",
+										"all"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all items page filters",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "atozmart-correlation-id",
+										"value": "123abc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/catalog/items?page=1&size=10&sort-by=name&direction=asc&lastPage=false",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"items"
+									],
+									"query": [
+										{
+											"key": "category",
+											"value": "Toys %26 Games",
+											"disabled": true
+										},
+										{
+											"key": "fromPriceRange",
+											"value": "99",
+											"disabled": true
+										},
+										{
+											"key": "toPriceRange",
+											"value": "199",
+											"disabled": true
+										},
+										{
+											"key": "name",
+											"value": "Action",
+											"disabled": true
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "size",
+											"value": "10"
+										},
+										{
+											"key": "sort-by",
+											"value": "name"
+										},
+										{
+											"key": "direction",
+											"value": "asc"
+										},
+										{
+											"key": "lastPage",
+											"value": "false"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all categories",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/atozmart/catalog/categories",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "add new item",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"id\": \"ITEM201\",\r\n    \"name\": \"ITEM201\",\r\n    \"unitPrice\": {{$randomPrice}},\r\n    \"details\": null,\r\n    \"category\": \"test\",\r\n    \"categoryDescription\": null,\r\n    \"stock\": 3\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/atozmart/catalog/admin/item",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"admin",
+										"item"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update stock",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8072/atozmart/catalog/admin/item/stock?itemId=ITEM201&incrementBy=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"admin",
+										"item",
+										"stock"
+									],
+									"query": [
+										{
+											"key": "itemId",
+											"value": "ITEM201"
+										},
+										{
+											"key": "incrementBy",
+											"value": "1"
+										},
+										{
+											"key": "decrementBy",
+											"value": "1",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "upload image",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/my-projects/catalog-items/ITEM123.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/catalog/image/ITEM123",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"image",
+										"ITEM123"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get image",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/catalog/image/ITEM123",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"image",
+										"ITEM123"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get image url",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/catalog/image?item-id=ITEM123",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"image"
+									],
+									"query": [
+										{
+											"key": "item-id",
+											"value": "ITEM123"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "catalog shutdown",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "atozmart-correlation-id",
+										"value": "123abc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8072/atozmart/catalog/actuator/shutdown",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"catalog",
+										"actuator",
+										"shutdown"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "cart",
+					"item": [
+						{
+							"name": "add to cart",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"itemId\": \"ITEM002\",\r\n    \"itemName\": \"Wireless Earbuds\",\r\n    \"unitPrice\": 79.99,\r\n    \"quantity\": 4\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/cart/items",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"cart",
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "change quantity",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"itemId\": \"ITEM123\",\r\n    \"quantity\": 6\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/cart/items/quantity",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"cart",
+										"items",
+										"quantity"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "cart items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/cart/items",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"cart",
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "coupon",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "http://localhost:8072/atozmart/cart/coupon",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"cart",
+										"coupon"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "cart items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "atozmart-correlation-id",
+										"value": "123abc",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/cart/items?itemId=ITEM061",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"cart",
+										"items"
+									],
+									"query": [
+										{
+											"key": "itemId",
+											"value": "ITEM061"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "payment",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"orderAmount\": 19.99,\r\n    \"couponCode\": \"DISCOUNT10\",\r\n    \"orderSavings\": 2.0,\r\n    \"orderTotal\": 17.99,\r\n    \"paymentMode\": \"COD\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/cart/checkout/payment",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"cart",
+										"checkout",
+										"payment"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "wishlist",
+					"item": [
+						{
+							"name": "wishlist add items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"itemId\": \"ITEM098\",\r\n    \"itemName\": \"Badminton Set\",\r\n    \"unitPrice\": 29.99\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/wishlist/items",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"wishlist",
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "wishlist view",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[\r\n    {\r\n        \"name\": \"\",\r\n        \"price\": \"\"\r\n    }\r\n]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/wishlist/items",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"wishlist",
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete items",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/wishlist/items?itemId=ITEM186",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"wishlist",
+										"items"
+									],
+									"query": [
+										{
+											"key": "itemId",
+											"value": "ITEM186"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "shutdown",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"vivek\",\r\n    \"password\": \"1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/atozmart/wishlist/actuator/shutdown",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"wishlist",
+										"actuator",
+										"shutdown"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "atozmart-authserver",
+					"item": [
+						{
+							"name": "login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+											"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"vivek_karli\",\r\n    \"password\": \"12345678\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/authserver/login",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "signup",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"vivek_karli_23\",\r\n    \"firstName\": \"vivek\",\r\n    \"lastName\": \"karli\",\r\n    \"password\": \"1234\",\r\n    \"mail\": \"vivekkarli7@gmail.com\",\r\n    \"mobileNo\": \"{{$randomPhoneNumber}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/authserver/signup",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "authorize",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/authserver/admin/authorize?token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ2aXZla19rYXJsaSIsInJvbGVzIjpbIlJPTEVfdXNlciIsIlJPTEVfYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidml2ZWtfa2FybGkiLCJpYXQiOjE3NTkwMzgyMzUsImlzcyI6ImF0b3ptYXJ0LWF1dGhzZXJ2ZXIiLCJleHAiOjE3NTkwNDE4MzV9.lqzET3pp_4sT6eZJ0JIjMgJKS34eiXAbVUUNqbStBmyQ73qX0cRrO1IVM0fOY36E\n",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"admin",
+										"authorize"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ2aXZla19rYXJsaSIsInJvbGVzIjpbIlJPTEVfdXNlciIsIlJPTEVfYWRtaW4iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidml2ZWtfa2FybGkiLCJpYXQiOjE3NTkwMzgyMzUsImlzcyI6ImF0b3ptYXJ0LWF1dGhzZXJ2ZXIiLCJleHAiOjE3NTkwNDE4MzV9.lqzET3pp_4sT6eZJ0JIjMgJKS34eiXAbVUUNqbStBmyQ73qX0cRrO1IVM0fOY36E\n"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "verify email",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/authserver/verify-email?email=vivekkarli7@gmail.com",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"verify-email"
+									],
+									"query": [
+										{
+											"key": "email",
+											"value": "vivekkarli7@gmail.com"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "confirm email",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/authserver/confirm-email?token=MDgwODBlM2YtNDU1Zi00NTkyLWJiNjUtMjgyMjJmMzAyY2Vm",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"confirm-email"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "MDgwODBlM2YtNDU1Zi00NTkyLWJiNjUtMjgyMjJmMzAyY2Vm"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "forgot password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+											"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"vivek_karli\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/authserver/forgot-password",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"forgot-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reset password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+											"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"newPassword\": \"1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/authserver/reset-password?token=ODliMzVkZDgtNjQ3ZC00NDZjLTg3NDItNzM2MmQwZDZhZmQz",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"reset-password"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "ODliMzVkZDgtNjQ3ZC00NDZjLTg3NDItNzM2MmQwZDZhZmQz"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "change password",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+											"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"oldPassword\": \"1234tkjgjdfhy\",\r\n    \"newPassword\": \"1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/atozmart/authserver/change-password",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "shutdown",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"vivek\",\r\n    \"password\": \"1234\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/atozmart/authserver/actuator/shutdown",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"authserver",
+										"actuator",
+										"shutdown"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "order",
+					"item": [
+						{
+							"name": "place order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"orderAmount\": 239.97,\r\n    \"couponCode\": null,\r\n    \"orderSavings\": 0,\r\n    \"orderTotal\": 239.97,\r\n    \"paymentMode\": \"COD\",\r\n    \"items\": [\r\n        {\r\n            \"itemId\": \"ITEM002\",\r\n            \"itemName\": \"Wireless Earbuds\",\r\n            \"unitPrice\": 79.99,\r\n            \"quantity\": 3,\r\n            \"effectivePrice\": 239.97\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/order/placeOrder",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"order",
+										"placeOrder"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get orders",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/order/orders?orderId=10000042",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"order",
+										"orders"
+									],
+									"query": [
+										{
+											"key": "orderId",
+											"value": "10000042"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "cancel order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"orderAmount\": 1000,\r\n    \"couponCode\": \"COUPON10\",\r\n    \"orderSavings\": 100,\r\n    \"orderTotal\": 900,\r\n    \"paymentMode\": \"COD\",\r\n    \"items\": [\r\n        {\r\n            \"item\": \"iPhone\",\r\n            \"unitPrice\": \"10000\",\r\n            \"quantity\": \"1\",\r\n            \"effectivePrice\": 10000\r\n        },\r\n        {\r\n            \"item\": \"watch\",\r\n            \"unitPrice\": \"1000\",\r\n            \"quantity\": \"1\",\r\n            \"effectivePrice\": 1000\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/order/cancelOrder?orderId=10000032",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"order",
+										"cancelOrder"
+									],
+									"query": [
+										{
+											"key": "orderId",
+											"value": "10000032"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "profile",
+					"item": [
+						{
+							"name": "get profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli_15",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/profile/profile",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"profile",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli_15",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"basicDetails\": {\r\n        \"firstName\": \"vivek\",\r\n        \"lastName\": \"karli\",\r\n        \"mail\": \"vivekkarli8@gmail.com\",\r\n        \"mobileNo\": \"{{$randomPhoneNumber}}\"\r\n    },\r\n    \"addressDetails\": [\r\n        {\r\n            \"addressType\": \"home\",\r\n            \"addressDesc\" : null,\r\n            \"defaultAddress\": true,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"work\",\r\n            \"addressDesc\" : null,\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"others\",\r\n            \"addressDesc\" : \"other address\",\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8072/atozmart/profile/profile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"profile",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli_14",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"basicDetails\": {\r\n        \"firstName\": \"vivek\",\r\n        \"lastName\": \"karli\",\r\n        \"mail\": \"vivekkarli7@gmail.com\",\r\n        \"mobileNo\": \"328-903-1679\"\r\n    },\r\n    \"addressDetails\": [\r\n        {\r\n            \"addressType\": \"home\",\r\n            \"addressDesc\": null,\r\n            \"defaultAddress\": true,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"work\",\r\n            \"addressDesc\": null,\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"others\",\r\n            \"addressDesc\": \"other address\",\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        }\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/profile/profile",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"profile",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "change default address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli_14",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/profile/profile/address?addressType=work",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"profile",
+										"profile",
+										"address"
+									],
+									"query": [
+										{
+											"key": "addressType",
+											"value": "work"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete address",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"url": {
+									"raw": "https://localhost:8072/atozmart/profile/profile/address?addressType=home",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"profile",
+										"profile",
+										"address"
+									],
+									"query": [
+										{
+											"key": "addressType",
+											"value": "home"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "upload profile photo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "/C:/Users/Vivek/OneDrive/Pictures/Screenshots 1/Screenshot 2025-10-09 220105.png"
+										}
+									]
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/profile/profile/profile-photo",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"profile",
+										"profile",
+										"profile-photo"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "view profile photo",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accesstoken}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "X-Username",
+										"value": "vivek_karli",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "https://localhost:8072/atozmart/profile/profile/profile-photo",
+									"protocol": "https",
+									"host": [
+										"localhost"
+									],
+									"port": "8072",
+									"path": [
+										"atozmart",
+										"profile",
+										"profile",
+										"profile-photo"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "gateway shut down",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accesstoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8072/actuator/shutdown",
+							"host": [
+								"localhost"
+							],
+							"port": "8072",
+							"path": [
+								"actuator",
+								"shutdown"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "actuator",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accesstoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8072/actuator/circuitbreakers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8072",
+							"path": [
+								"actuator",
+								"circuitbreakers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ping",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:8072/ping",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "8072",
+							"path": [
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "atozmart-authserver",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+									"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vivek_karli_24\",\r\n    \"password\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8074/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vivek_karli_25\",\r\n    \"firstName\": \"vivek\",\r\n    \"lastName\": \"karli\",\r\n    \"password\": \"12345678\",\r\n    \"mail\": \"vivekkarli7@gmail.com\",\r\n    \"mobileNo\": \"{{$randomPhoneNumber}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8074/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "authorize",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "vivek_karli",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vivek\",\r\n    \"password\": \"1234\",\r\n    \"mail\": \"vivekkarli@gmail.com\",\r\n    \"mobileNo\": \"984\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8074/admin/authorize?token=eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ2aXZla19rYXJsaSIsInJvbGVzIjpbImFkbWluIiwidXNlciJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ2aXZla19rYXJsaSIsImlhdCI6MTc2MDE4Mjk5MSwiaXNzIjoiYXRvem1hcnQtYXV0aHNlcnZlciIsImV4cCI6MTc2MDE4NjU5MX0.RO8pv6EL-9b1_teIN2Ije4J6Muxb8-Di_KhV1IV2dMlczOv7TD3golfbnEjuMbrT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"admin",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ2aXZla19rYXJsaSIsInJvbGVzIjpbImFkbWluIiwidXNlciJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ2aXZla19rYXJsaSIsImlhdCI6MTc2MDE4Mjk5MSwiaXNzIjoiYXRvem1hcnQtYXV0aHNlcnZlciIsImV4cCI6MTc2MDE4NjU5MX0.RO8pv6EL-9b1_teIN2Ije4J6Muxb8-Di_KhV1IV2dMlczOv7TD3golfbnEjuMbrT"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify email",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accesstoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli_24",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8074/verify-email",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"verify-email"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "vivekkarli7@gmail.com",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "confirm email",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8074/confirm-email?token=NjAxMjA0ZWMtMTQyNC00YmFjLWJjNjYtNWVjNzkxOTA5ZmVk",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"confirm-email"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "NjAxMjA0ZWMtMTQyNC00YmFjLWJjNjYtNWVjNzkxOTA5ZmVk"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get email",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "12345678",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "vivek_karli",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8074/admin/email/vivek_karli_24",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"admin",
+								"email",
+								"vivek_karli_24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "forgot password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+									"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vivek_karli_24\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8074/forgot-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+									"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"newPassword\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8074/reset-password?token=ZjJjZTkyMzAtMGNhNi00ZjgxLWJlZmEtNTUzYjJjNDY1NjE5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"reset-password"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "ZjJjZTkyMzAtMGNhNi00ZjgxLWJlZmEtNTUzYjJjNDY1NjE5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const accesstoken = pm.response.headers.get(\"X-Access-Token\")\r",
+									"pm.collectionVariables.set(\"accesstoken\", accesstoken);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli_24",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldPassword\": \"12345679\",\r\n    \"newPassword\": \"12345678\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8074/change-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"change-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "shutdown",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"vivek\",\r\n    \"password\": \"1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8074/actuator/shutdown",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8074",
+							"path": [
+								"actuator",
+								"shutdown"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "UI replica",
+			"item": [
+				{
+					"name": "cart items",
+					"request": {
+						"auth": {
+							"type": "oauth2",
+							"oauth2": [
+								{
+									"key": "clientSecret",
+									"value": "DSbXKNr3grP1roHL2L2EVftpr9KLT2Zp",
+									"type": "string"
+								},
+								{
+									"key": "useBrowser",
+									"value": true,
+									"type": "boolean"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://localhost:8080",
+									"type": "string"
+								},
+								{
+									"key": "state",
+									"value": "abcd",
+									"type": "string"
+								},
+								{
+									"key": "clientId",
+									"value": "atozmart-ui",
+									"type": "string"
+								},
+								{
+									"key": "authUrl",
+									"value": "http://localhost:8073/realms/master/protocol/openid-connect/auth",
+									"type": "string"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "string"
+								},
+								{
+									"key": "scope",
+									"value": "openid email",
+									"type": "string"
+								},
+								{
+									"key": "accessTokenUrl",
+									"value": "http://localhost:8073/realms/master/protocol/openid-connect/token",
+									"type": "string"
+								},
+								{
+									"key": "tokenName",
+									"value": "catalog access token",
+									"type": "string"
+								},
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8072/atozmart/cart/items",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8072",
+							"path": [
+								"atozmart",
+								"cart",
+								"items"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "wishlist",
+			"item": [
+				{
+					"name": "add to wishlist",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"itemId\": \"ITEM002\",\r\n    \"itemName\": \"Wireless Earbuds\",\r\n    \"unitPrice\": 79.99\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8082/items",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "view",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"name\": \"\",\r\n        \"price\": \"\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8082/items",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete items",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8082/items",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"items"
+							],
+							"query": [
+								{
+									"key": "itemId",
+									"value": "ITEM002",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "keycloak authserver",
+			"item": [
+				{
+					"name": "certs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8073/realms/atozmart/protocol/openid-connect/certs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8073",
+							"path": [
+								"realms",
+								"atozmart",
+								"protocol",
+								"openid-connect",
+								"certs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "atozmart-ui",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "XAheOVRCrpC2EQJnGMigVdnvBpmcDsQR",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "Authorization Code",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "openid email",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8073/realms/atozmart/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8073",
+							"path": [
+								"realms",
+								"atozmart",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order",
+			"item": [
+				{
+					"name": "place order",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli_14",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderAmount\": 239.97,\r\n    \"couponCode\": null,\r\n    \"orderSavings\": 0,\r\n    \"orderTotal\": 239.97,\r\n    \"paymentMode\": \"COD\",\r\n    \"items\": [\r\n        {\r\n            \"itemId\": \"ITEM002\",\r\n            \"itemName\": \"Wireless Earbuds\",\r\n            \"unitPrice\": 79.99,\r\n            \"quantity\": 3,\r\n            \"effectivePrice\": 239.97\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8084/placeOrder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"placeOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8084/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "10000001",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancel order",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli_14",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderAmount\": 1000,\r\n    \"couponCode\": \"COUPON10\",\r\n    \"orderSavings\": 100,\r\n    \"orderTotal\": 900,\r\n    \"paymentMode\": \"COD\",\r\n    \"items\": [\r\n        {\r\n            \"item\": \"iPhone\",\r\n            \"unitPrice\": \"10000\",\r\n            \"quantity\": \"1\",\r\n            \"effectivePrice\": 10000\r\n        },\r\n        {\r\n            \"item\": \"watch\",\r\n            \"unitPrice\": \"1000\",\r\n            \"quantity\": \"1\",\r\n            \"effectivePrice\": 1000\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8084/cancelOrder?orderId=10000026",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8084",
+							"path": [
+								"cancelOrder"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "10000026"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "profile",
+			"item": [
+				{
+					"name": "get profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8085/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accesstoken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"basicDetails\": {\r\n        \"firstName\": \"vivek\",\r\n        \"lastName\": \"karli\",\r\n        \"mail\": \"vivekkarli8@gmail.com\",\r\n        \"mobileNo\": \"{{$randomPhoneNumber}}\"\r\n    },\r\n    \"addressDetails\": [\r\n        {\r\n            \"addressType\": \"home\",\r\n            \"addressDesc\" : null,\r\n            \"defaultAddress\": true,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"work\",\r\n            \"addressDesc\" : null,\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"others\",\r\n            \"addressDesc\" : \"other address\",\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8085/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"basicDetails\": {\r\n        \"firstName\": \"vivek\",\r\n        \"lastName\": \"karli\",\r\n        \"mail\": \"vivekkarli7@gmail.com\",\r\n        \"mobileNo\": \"328-903-1679\"\r\n    },\r\n    \"addressDetails\": [\r\n        {\r\n            \"addressType\": \"home\",\r\n            \"addressDesc\": null,\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"work\",\r\n            \"addressDesc\": null,\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        },\r\n        {\r\n            \"addressType\": \"others\",\r\n            \"addressDesc\": \"other address\",\r\n            \"defaultAddress\": false,\r\n            \"addLine1\": \"{{$randomStreetAddress}}\",\r\n            \"addLine2\": \"{{$randomStreetAddress}}\",\r\n            \"addLine3\": \"{{$randomStreetAddress}}\",\r\n            \"pincode\": \"500001\",\r\n            \"country\": \"{{$randomCountry}}\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8085/profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "change default address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8085/profile/address?addressType=work",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"profile",
+								"address"
+							],
+							"query": [
+								{
+									"key": "addressType",
+									"value": "work"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8085/profile/address",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"profile",
+								"address"
+							],
+							"query": [
+								{
+									"key": "addressType",
+									"value": "home",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload profile photo",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Vivek/OneDrive/Pictures/Screenshots 1/Screenshot 2025-10-09 220105.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8085/profile/profile-photo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"profile",
+								"profile-photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "view profile photo",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Username",
+								"value": "vivek_karli",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "http://localhost:8085/profile/profile-photo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8085",
+							"path": [
+								"profile",
+								"profile-photo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "config server",
+			"item": [
+				{
+					"name": "encrypt",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "PEhV3ZeOg5FAUC/P1yfLSMYPuoVaEfPpBe3h1z6f",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8888/encrypt",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"encrypt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "decrypt",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "AYAErC+yd9rviROfRbZnQmswpFZ77pAu94BZ9AgXbnHpvmHyeEcngVCxP2tJbxqeRTZ1d77EOF6PgDUoKhW+aVkwVRzlWfDzMmOOcy6WQKmxZ6OFIxhLuySoc1Dghj3WjsECzmcUgn4IenS4adp5Z0m50QWbYJ44hJgy7SkjKaP85btZrixvbmPZkbe+0NJZW0Ej3HAkRof2yZWrOY24y8HVdI/TwJB26TvwbHERLyFnuGn+Z3evqIFVA86Es/qJiZN1ZP8CjFvAu5iOpZrx3dX/YAIEz9FPm5yUVBOSTNjJKFqOJStIejIeOdfnAPrvf6T7UU+MYkjX0iTvTqkNVDO7NJGqtdiGsAPMnS5pkTAR5+XSpEMZ1PeFD/lqDCfmAvxT8hjrXkLXQjV0xiHag5JVBmFja4124HXlfcnu/GO95vkkLg02At3wMQ95DRaTUMY7G2pbvjp7xbpo6P+lXKRt1eflCTLRQ3QL/FWFDb6cadP+zVp8G5zsj+MJggSAbio0WT3QV+niecM0jcoqQ9X8u+9yt6rUJxcrjKiTMhpY0A==",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8888/decrypt",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"decrypt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get configs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8888/atozmart-gatewayserver/prod",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8888",
+							"path": [
+								"atozmart-gatewayserver",
+								"prod"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "eurekaserver",
+			"item": [
+				{
+					"name": "shutdown",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:8761/actuator/shutdown",
+							"host": [
+								"localhost"
+							],
+							"port": "8761",
+							"path": [
+								"actuator",
+								"shutdown"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "accesstoken",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "{{accesstoken}}",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "accesstoken",
+			"value": ""
+		}
+	]
+}
