@@ -43,9 +43,10 @@ spring:
 
    cache:
      type: redis
-   redis:
-     host: localhost
-     port: 6379
+   data:
+      redis:
+         host: localhost
+         port: 6379
      
 eureka:
    instance:

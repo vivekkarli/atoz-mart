@@ -26,9 +26,10 @@ spring:
       mode: never # to load items data
   cache:
     type: redis
-  redis:
-    host: localhost
-    port: 6379
+  data:
+    redis:
+      host: localhost
+      port: 6379
       
 eureka:
   instance:
