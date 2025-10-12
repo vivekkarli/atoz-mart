@@ -5,6 +5,7 @@ import static com.atozmart.gatewayserver.util.GatewayConstants.ROLE_USER;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -28,7 +29,7 @@ import reactor.core.publisher.Mono;
 public class SecurityConfig {
 
 	private final CustomTokenAuthenticationConverter customTokenAuthenticationConverter;
-	
+
 	private final AtozmartConfig atozmartConfig;
 
 	@Bean
@@ -52,6 +53,7 @@ public class SecurityConfig {
 
 				// catalog-service endpoints
 				.pathMatchers("/atozmart/catalog/admin/**").hasRole(GatewayConstants.ROLE_ADMIN)
+				.pathMatchers(HttpMethod.POST, "/atozmart/catalog/image/{item-id}").hasRole(GatewayConstants.ROLE_ADMIN)
 
 				// cart-service endpoints
 				.pathMatchers("/atozmart/cart/**").permitAll()

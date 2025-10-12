@@ -47,6 +47,8 @@ public class CatalogService {
 
 	private final CacheHelper cacheHelper;
 
+	private final CatalogConfig catalogConfig;
+
 	private static final String CACHE_PREFIX;
 
 	static {
@@ -59,6 +61,7 @@ public class CatalogService {
 		this.catalogDao = catalogDao;
 		this.s3ClientHelper = new S3ClientHelper(s3Client, catalogConfig.aws().bucketName());
 		this.cacheHelper = cacheHelper;
+		this.catalogConfig = catalogConfig;
 	}
 
 	public ViewItemsDto getItems() throws CatalogException {
@@ -185,12 +188,19 @@ public class CatalogService {
 	private String getUniqueKeyForImage(String itemId) {
 		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
 		String todayDateTime = LocalDateTime.now().format(dateTimeFormatter);
-		String fileName = itemId + "-" + todayDateTime;
+		String fileName = itemId;
 
 		/*
 		 * ex: catalog/ITEM001-yyyyMMddHHmmssSSS
 		 */
 		return new StringBuilder("catalog").append("/").append(fileName).toString();
+	}
+
+	public List<ImageMetadataDto> getImageMetadata(List<String> itemIds) {
+		List<ImageMetadataDto> imageData = catalogDao.findImageData(itemIds);
+		return imageData.stream().map(
+				s -> new ImageMetadataDto(s.itemId(), null, catalogConfig.publicBaseUrl() + "/image/" + s.itemId()))
+				.toList();
 	}
 
 }

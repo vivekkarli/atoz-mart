@@ -1,6 +1,7 @@
 package com.atozmart.catalog.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.core.io.Resource;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.atozmart.catalog.dto.ImageMetadataDto;
 import com.atozmart.catalog.dto.PageDto;
 import com.atozmart.catalog.dto.SearchFilters;
 import com.atozmart.catalog.dto.ViewItemsDto;
@@ -55,6 +57,11 @@ public class CatalogController {
 	@GetMapping("/image/{item-id}")
 	public ResponseEntity<Resource> getImages(@PathVariable(name = "item-id") String itemId) throws CatalogException {
 		return ResponseEntity.ok(catalogService.getImage(itemId));
+	}
+	
+	@GetMapping("/image")
+	public ResponseEntity<List<ImageMetadataDto>> getImageMetadata(@RequestParam(name = "item-id") List<String> itemIds) throws CatalogException {
+		return ResponseEntity.ok(catalogService.getImageMetadata(itemIds));
 	}
 
 	@PostMapping("/image/{item-id}")
