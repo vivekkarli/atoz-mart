@@ -23,7 +23,7 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: cart-service
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://cartdb:3306/cartdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
@@ -50,6 +50,8 @@ services:
         condition: service_healthy
       eurekaserver:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -57,7 +59,7 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://catalogdb:3306/catalogdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
@@ -68,6 +70,7 @@ services:
       OTEL_METRICS_EXPORTER: none
       OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
+      SPRING_DATA_REDIS_HOST: redis
 
   wishlist:
     image: "vivekkarli/wishlist:v1"
@@ -92,7 +95,7 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://wishlistdb:3306/wishlistdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
@@ -128,7 +131,7 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: notification-service
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_PROFILES_ACTIVE: prod
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       OTEL_SERVICE_NAME: notification-service
@@ -155,6 +158,8 @@ services:
         condition: service_healthy
       eurekaserver:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -163,7 +168,7 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: order-service
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://orderdb:3306/orderdb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
@@ -191,6 +196,10 @@ services:
         condition: service_healthy
       eurekaserver:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -199,7 +208,7 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: profile-service
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://profiledb:3306/profiledb"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
@@ -210,14 +219,15 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_DATA_REDIS_HOST: redis
       
   configserver:
     image: "vivekkarli/configserver:v1"
     container_name: "atozmart-configserver"
     ports:
-      - 8080:8071
+      - 8080:8888
     healthcheck:
-      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -230,7 +240,7 @@ services:
       - atozmart
     environment:
       SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: 'main'
-      SERVER_PORT: 8071
+      SERVER_PORT: 8888
       SPRING_PROFILES_ACTIVE: prod
       ENCRYPT_KEYSTORE_PASSWORD: 123456
       ENCRYPT_KEYSTORE_SECRET: 123456
@@ -257,7 +267,8 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
+      SPRING_APPLICATION_NAME: "atozmart-eurekaserver"
       
   gatewayserver:
     image: "vivekkarli/gatewayserver:v1"
@@ -298,7 +309,7 @@ services:
     networks:
       - atozmart
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://keycloak-authserver:8080/realms/atozmart/protocol/openid-connect/certs"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
       SPRING_APPLICATION_NAME: atozmart-gatewayserver
@@ -354,6 +365,8 @@ services:
         condition: service_healthy
       rabbitmq:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -362,7 +375,7 @@ services:
       - atozmart
     environment:
       SPRING_APPLICATION_NAME: atozmart-authserver
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8888"
       SPRING_PROFILES_ACTIVE: prod
       SPRING_DATASOURCE_URL: "jdbc:mysql://atozmart-authserver-db:3306/atozmart_authserver_db"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8761/eureka"
@@ -373,6 +386,7 @@ services:
       OTEL_TRACES_EXPORTER: otlp
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-2.13.2.jar"
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_DATA_REDIS_HOST: redis
 
   rabbitmq:
     image: "rabbitmq:4.0-management"
@@ -387,6 +401,23 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - atozmart
+
+  redis:
+    image: "redis:latest"
+    container_name: "redis"
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
     deploy:
       resources:
         limits:
