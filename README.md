@@ -103,26 +103,21 @@ The images are served from **AWS S3** service and these images are cached to avo
 ## Project overview using Postman
 
 download `atozmart.postman_collection.json` file. Import the collection into postman.
-Make sure all the services are up and running in docker (refer: [run the project using docker](#run-the-project-using-docker))\
-Go to gateway folder, you can see all the services and their APIs.<br/>
-Test if gateway server is up and running<br/>
-<br/>
-<img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/0d6b6809-2104-4984-b59d-e72833933d65" />
-<br/>
+Make sure all the services are up and running in docker (refer: [run the project using docker](#run-the-project-using-docker))
+### explore gatewayserver
+- Go to gateway folder, you can see all the services and their APIs.<br/>
+- Test if gateway server is up and running
+  <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/0d6b6809-2104-4984-b59d-e72833933d65" /></p>
 ### explore authserver
 1. **Sign up** by giving username, password, email and other details. Upon successfull signup we get 202 accepted status.
    - password will be hashed and stored into the database securely.
-   <br/>
-   <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/3e5b0a5c-dc55-4d88-8f7c-3ccac2b5f171" /></p>
-   <br/>
-3. **Log in** by same username and password, we get access token (JWT token) in the headers with 30 mins of validatiy.
-   <br/>
-   <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/e02082fa-5d17-4487-bf6b-c4230cedbac5" /></p>
-   <br/>
+     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/3e5b0a5c-dc55-4d88-8f7c-3ccac2b5f171" /></p>
+3. **Log in** by same username and password
+   - we get access token (JWT token) in the headers with 30 mins of validatiy.
+     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/e02082fa-5d17-4487-bf6b-c4230cedbac5" /></p>
    - This access token should be passed to all API calls in Authorization header.
    - For simplicity this access token will be passed automatically to all APIs in Postman in the form of env variable, set by post script.
-     <br/>
-4. **Forgot Password** and **Reset Password**- These APIs are used when user forgets his/her password.
+5. **Forgot Password** and **Reset Password**- These APIs are used when user forgets his/her password.
    - A reset link with unique token will be sent to users registered email id. This reset link is bound to expiry.
    - User/frontend application then calls the reset-password API to update the new credentials.
    - User Flow:
@@ -136,11 +131,11 @@ Test if gateway server is up and running<br/>
      - provide new password and then submit. User can now login with new password.
         <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/6d22d2b9-5b58-4ce9-bc43-4102f22a0ab8" /></p>
         <br/>
-5. **Authorize** endpoint is used by gateway server to authorize the JWT tokens. Requires previlaged access.
+6. **Authorize** endpoint is used by gateway server to authorize the JWT tokens. Requires previlaged access.
    <br/>
    <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/c00bfbc5-43a0-4f14-ad77-83e07ee3cc91" /></p>
    <br/>
-6. explore other APIs like change-password, verify-email & confirm-email etc.
+7. explore other APIs like change-password, verify-email & confirm-email etc.
 
 ### explore catalog-service
 - All GET endpoints in catalog-service doesn't require any authentication
