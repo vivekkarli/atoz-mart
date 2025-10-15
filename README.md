@@ -24,7 +24,8 @@ wait for few mins (10 mins) untill all services status is healthy<br/>
 if you face memory issues in docker, download the lite version of docker-compose from this repo.  
 [`docker-compose.yml (lite)`](/docker/lite/docker-compose.yml)
 > [!NOTE]
-> lite version doesn't collect telemetry data. Hence we can't view logs, metrics, traces of any service
+> - lite version doesn't collect telemetry data. Hence we can't view logs, metrics, traces of any service<br/>
+> - to stop and remove containers use `docker compose down` command
 
 
 **Step 3:** download the [`atozmart.postman_collection.json`](/atozmart.postman_collection.json) file. Import the collection into postman.
@@ -38,8 +39,8 @@ if you face memory issues in docker, download the lite version of docker-compose
 - <a name="default-users">default users</a> for testing
   | role  | username               | password |
   | ------ | --------------------- |----------|
-  | ADMIN  | demo-admin            | 1234 |
-  | USER  | demo-user              | 1234 |
+  | ADMIN  | demo_admin            | 1234 |
+  | USER  | demo_user              | 1234 |
   | APP   | atozmart_gatewayserver | 1244 |
 
 **2. atozmart-gatewayserver**
@@ -112,53 +113,103 @@ if you face memory issues in docker, download the lite version of docker-compose
 
 download [`atozmart.postman_collection.json`](/atozmart.postman_collection.json) file. Import the collection into postman.
 Make sure all the services are up and running in docker (refer: [run the project using docker](#run-the-project-using-docker))
-### explore gatewayserver
-- Go to gateway folder, you can see all the services and their APIs.<br/>
-- Test if gateway server is up and running
-  <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/0d6b6809-2104-4984-b59d-e72833933d65" /></p>
+### Explore gatewayserver
+   - Go to gateway folder, you can see all the services and their APIs.<br/>
+   - Test if gateway server is up and running
+     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/0d6b6809-2104-4984-b59d-e72833933d65" /></p>
+   - to know about user authorization details, refer [`SecurityConfig.java`](gatewayserver/src/main/java/com/atozmart/gatewayserver/configuration/SecurityConfig.java) class
 ### explore authserver
 1. **Sign up** by giving username, password, email and other details. Upon successfull signup we get 202 accepted status.
      <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/3e5b0a5c-dc55-4d88-8f7c-3ccac2b5f171" /></p>
-- password will be hashed and stored into the database securely
-- A mail is sent to registered mail-id for verification
-- A basic profile is created in the profile-service
+   - password will be hashed and stored into the database securely
+   - A mail is sent to registered mail-id for verification
+   - A basic profile is created in the profile-service
+
 2. **Login** by same username and password
-  - we get access token (JWT token) in the headers with 30 mins of validatiy.
+   - we get access token (JWT token) in the headers with 30 mins of validatiy.
      <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/e02082fa-5d17-4487-bf6b-c4230cedbac5" /></p>
-  - This access token should be passed to all API calls in Authorization header.
-  - For simplicity this access token will be passed automatically to all APIs in Postman in the form of env variable, set by post script.
+   - This access token should be passed to all API calls in Authorization header.
+   - For simplicity this access token will be passed automatically to all APIs in Postman in the form of env variable, set by post script.
+
 3. **Forgot Password** and **Reset Password**- These APIs are used when user forgets his/her password.
-- A reset link with unique token will be sent to users registered email id. This reset link is bound to expiry.
-- User/frontend application then calls the reset-password API to update the new credentials.
-- User Flow:
-  - to send reset link enter username
+   - A reset link with unique token will be sent to users registered email id. This reset link is bound to expiry.
+   - User/frontend application then calls the reset-password API to update the new credentials.
+   - User Flow:
+     - to send reset link enter username
         <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/191597f9-b149-49d9-9c91-64e2a43dce1d" /></p>
-  - email notification
+     - email notification
         <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/22bd868a-e3da-4219-a0fb-d534f356f649" /></p>
         <br/>
-  - click on reset-password link and copy the token from the url and paste in the reset-password API
+     - click on reset-password link and copy the token from the url and paste in the reset-password API
         ex: `http://localhost:3000/reset-password?token=ZDkwZjMyMzgtOWFiYi00YzYzLWI0YTQtOGRlMjYzMGZjYTEw`
-  - provide new password and then submit. User can now login with new password.
+     - provide new password and then submit. User can now login with new password.
         <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/6d22d2b9-5b58-4ce9-bc43-4102f22a0ab8" /></p>
+
 4. **Authorize** endpoint is used by gateway server to authorize the JWT tokens. Requires previlaged access. role- [Admin or app](#default-users)
    <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/c00bfbc5-43a0-4f14-ad77-83e07ee3cc91" /></p>
+
 5. explore other APIs like change-password, verify-email & confirm-email etc.
 
-### explore catalog-service
+### Explore catalog-service
 > [!NOTE]
 > All GET endpoints in catalog-service doesn't require any authentication
 1. **get all items page filters**- returns items based on catagories and pagination parameters
     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/79d455c9-8f31-42a5-af0f-4ac17346c978" /></p>
+
 2. **upload image**- to upload item images to S3, requires privilaged access (refer: [default users](#default-users))
-  - Consumes multipart form data. Attach any image for the item. Give key as "file". Specify item id in the path params. Submit the request.
-  - upon succesfull image upload, we get 201 created status
-    <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/a4a6ee99-ccd5-4f18-a726-ab654046e218" /></p>
-  - Creates a new bucket (atozmart-bucket), by using IAM user credentials.
+   - Consumes multipart form data. Attach any image for the item. Give key as "file". Specify item id in the path params. Submit the request.
+   - upon succesfull image upload, we get 201 created status
+     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/a4a6ee99-ccd5-4f18-a726-ab654046e218" /></p>
+   - Creates a new bucket (atozmart-bucket), by using IAM user credentials.
     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/ce55427e-e50a-47be-a0c1-06ecb7e6f94b" /></p>
-3. **get image** API used to view the image, This API is consumed by frontend to render the item image. The image is cached to redis with a ttl of 6 mins, to avoid repeated http calls to S3
+
+3. **get image** API used to view the image, This API is consumed by frontend to render the item image. The images are cached to redis with a higher ttl as these images are used in many places.
     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/61ab3a8c-3afc-4615-ab98-7c231e5e9f32" /></p>
    
+### Explore profile-service
+> [!NOTE]
+> All endpoints in profile-service requires authentication
 
+1. **get profile** API is used to view profile information
+   - The basic profile is already created when user signs up.
+     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/1cce7915-0df0-4347-89d5-197daa3b3f42" /></p>
 
+2. **create-profile** API allows users to create their own profile
+   > [!NOTE]
+   > If user is a third-party user i.e Logged-in via OAuth flow Keycloak or Google, Basic profile is not created. In that case user has the option to create profile
+   - user can create basic profile profile or full profile along with address details.
 
+3. **upload profile photo** and **view profile photo** API allows users to upload and view their profile photos.
+   - images are saved in AWS S3 and are cached with a ttl of 6 mins.
 
+4. explore other APIs like change default address, delete address.
+
+### Explore cart-service
+> [!NOTE]
+> All endpoints in cart-service requires authentication
+1. **add to cart** API allows users to add items to cart.
+2. **view cart** API allows users to view items in their cart.
+   - calculates items' effective price and order amount
+     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/38e90f69-db54-4bfa-8e74-9366c915f6e0" /></p>
+3. **coupon** API list all the available coupons, user can apply any coupon to avail discount
+   <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/4316c7fb-0909-4a35-8658-d87177fa0f33" /></p>
+4. **checkout** API allows user to checkout and make payment
+> [!NOTE]
+> As of now COD is the only payment option
+   - validates the order amount, order savings based on coupon discount
+   - places the order i.e calls place order API from order-service
+     <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/d3e814f5-3324-40ff-a7ee-0a811a84aa90" /></p>
+   - an order confirmation mail is sent to registered mail-id
+   - items in the cart are deleted
+
+### Explore order-service
+> [!NOTE]
+> All endpoints in order-service requires authentication
+1. **view orders** API allows users to view their orders
+   <p align="left"><img width="700" height="300" alt="image" src="https://github.com/user-attachments/assets/d7d3a72c-3b7d-456a-8365-a3a13ed837e5" /></p>
+2. **cancel order** API allows users to cancel their orders
+
+### Explore wishlist-service
+> [!NOTE]
+> All endpoints in wishlist-service requires authentication
+- wishlist allows user to basic add, view, remove items
