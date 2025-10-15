@@ -5,7 +5,7 @@ AtoZ mart is a e-commerce shopping application, which allows users to shop items
 [Run the project using Docker](#run-the-project-using-docker)<br/>
 [Overview of all microservices](#overview-of-the-microservices)<br/>
 [Project overview using Postman](#project-overview-using-postman)<br/>
-[Project overview using Frontend]<br/>
+[Project overview using Frontend](#project-overview-using-frontend)<br/>
 [Tech stack used]
 
 ## Run the project using Docker
@@ -213,4 +213,7 @@ Make sure all the services are up and running in docker (refer: [run the project
 ### Explore wishlist-service
 > [!NOTE]
 > All endpoints in wishlist-service requires authentication
-- wishlist allows user to basic add, view, remove items
+- wishlist service allows users to do basic operations like add, view, remove items
+
+## Project overview using Frontend
+refer [atoz-mart-frontend](https://github.com/vivekkarli/atoz-mart-frontend) project for details.
