@@ -9,10 +9,11 @@ AtoZ mart is a e-commerce shopping application, which allows users to shop items
 [Tech stack used]
 
 ## Run the project using Docker
-prerequisites: Docker desktop, Postman
+> [!IMPORTANT]
+> prerequisites: Docker desktop, Postman
 
 **Step 1:** download the [`docker-compose.yml`](/docker-compose.yml) file  
-**Step 2:** go to docker compose terminal and execute below command
+**Step 2:** go to docker desktop terminal and execute below command
 ```
 docker compose up -d
 ```
