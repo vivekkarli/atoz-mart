@@ -5,14 +5,15 @@ AtoZ mart is a e-commerce shopping application, which allows users to shop items
 [Run the project using Docker](#run-the-project-using-docker)<br/>
 [Overview of all microservices](#overview-of-the-microservices)<br/>
 [Project overview using Postman](#project-overview-using-postman)<br/>
-[Project overview using Frontend]<br/>
+[Project overview using Frontend](#project-overview-using-frontend)<br/>
 [Tech stack used]
 
 ## Run the project using Docker
-prerequisites: Docker desktop, Postman
+> [!IMPORTANT]
+> prerequisites: Docker desktop, Postman
 
 **Step 1:** download the [`docker-compose.yml`](/docker-compose.yml) file  
-**Step 2:** go to docker compose terminal and execute below command
+**Step 2:** go to docker desktop terminal and execute below command
 ```
 docker compose up -d
 ```
@@ -38,8 +39,8 @@ if you face memory issues in docker, download the lite version of docker-compose
 - <a name="default-users">default users</a> for testing
   | role  | username               | password |
   | ------ | --------------------- |----------|
-  | ADMIN  | demo-admin            | 1234 |
-  | USER  | demo-user              | 1234 |
+  | ADMIN  | demo_admin            | 1234 |
+  | USER  | demo_user              | 1234 |
   | APP   | atozmart_gatewayserver | 1244 |
 
 **2. atozmart-gatewayserver**
@@ -160,5 +161,5 @@ Make sure all the services are up and running in docker (refer: [run the project
    
 
 
-
-
+## Project overview using Frontend
+Checkout [atoz-mart-frontend](https://github.com/vivekkarli/atoz-mart-frontend/tree/main) project 
