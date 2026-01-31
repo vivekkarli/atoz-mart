@@ -17,7 +17,7 @@ public class AtozmartAuthenticationToken extends UsernamePasswordAuthenticationT
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private AuthorizeResponse authorizeResponse;
+	private final AuthorizeResponse authorizeResponse;
 	 
 
 	public AtozmartAuthenticationToken(Object principal, Object credentials) {
