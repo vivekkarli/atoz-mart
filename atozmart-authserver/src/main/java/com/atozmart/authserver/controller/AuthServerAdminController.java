@@ -7,12 +7,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.atozmart.authserver.dto.AuthorizeResponse;
 import com.atozmart.authserver.dto.profile.BasicDetailsDto;
-import com.atozmart.authserver.exception.AuthServerException;
 import com.atozmart.authserver.service.AuthServerService;
 import com.atozmart.authserver.service.ProfileService;
 
@@ -47,13 +44,6 @@ public class AuthServerAdminController {
 		log.info("X-Username: {}", username);
 		profileService.updateBasicDetails(username, basicDetailsDto);
 		return ResponseEntity.ok().build();
-	}
-	
-	@GetMapping("/authorize")
-	public ResponseEntity<AuthorizeResponse> authorize(@RequestParam(name = "token") String accesstoken)
-			throws AuthServerException {
-		log.info("accesstoken: {}", accesstoken);
-		return authServerService.authorizeToken(accesstoken);
 	}
 
 }

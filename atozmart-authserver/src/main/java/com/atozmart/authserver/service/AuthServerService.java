@@ -1,7 +1,6 @@
 package com.atozmart.authserver.service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.atozmart.authserver.cache.CacheHelper;
 import com.atozmart.authserver.dao.AppUserDao;
 import com.atozmart.authserver.dto.AppUserDto;
-import com.atozmart.authserver.dto.AuthorizeResponse;
 import com.atozmart.authserver.dto.ChangePasswordRequest;
 import com.atozmart.authserver.dto.LoginForm;
 import com.atozmart.authserver.dto.LoginResponse;
@@ -102,31 +100,6 @@ public class AuthServerService {
 		notificationService.sendNewMailVerifiyLinkAsync(signUpForm.username(), signUpForm.mail());
 
 		return new ResponseEntity<>(new LoginResponse("signed up successfully"), HttpStatus.ACCEPTED);
-	}
-
-	public ResponseEntity<AuthorizeResponse> authorizeToken(String token) {
-
-		if (jwtService.isTokenExpired(token))
-			throw new AuthServerException("token expired", HttpStatus.UNAUTHORIZED);
-		
-		String username = jwtService.extractUsername(token);
-		log.info("username: {}", username);
-
-		AppUserDto appUserDto = appUserDao.getUser(username);
-		log.info("appUser: {}", appUserDto);
-
-		List<String> roles = appUserDto.getRoles().stream().toList();
-
-		AuthorizeResponse response = new AuthorizeResponse();
-		response.setValid(true);
-		response.setRoles(roles);
-		response.setUsername(username);
-		response.setEmail(Boolean.TRUE.equals(appUserDto.getEmailVerified()) ? appUserDto.getMail() : null);
-		response.setExpiresAt(jwtService.extractExpiration(token));
-		log.info("AuthorizeResponse: {}", response);
-
-		return new ResponseEntity<>(response, HttpStatus.OK);
-
 	}
 
 	public String getEmail(String username) throws UsernameNotFoundException {
