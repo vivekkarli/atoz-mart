@@ -12,8 +12,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 
-import com.atozmart.gatewayserver.authentication.AtozmartAuthenticationToken;
-
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
@@ -52,7 +50,6 @@ public class UsernameHeaderFilter implements GlobalFilter {
 		log.info("authentication: {}", authentication);
 
 		String email = switch (authentication) {
-		case AtozmartAuthenticationToken atozmartToken -> atozmartToken.getAuthorizeResponse().email();
 		case JwtAuthenticationToken jwtAuthToken -> jwtAuthToken.getToken().getClaimAsString("email");
 		case UsernamePasswordAuthenticationToken upat -> (String) upat.getPrincipal();
 		default -> null;
@@ -69,7 +66,6 @@ public class UsernameHeaderFilter implements GlobalFilter {
 		log.info("authentication: {}", authentication);
 
 		String username = switch (authentication) {
-		case AtozmartAuthenticationToken atozmartToken -> atozmartToken.getAuthorizeResponse().username();
 		case JwtAuthenticationToken jwtAuthToken -> jwtAuthToken.getToken().getClaimAsString("preferred_username");
 		case UsernamePasswordAuthenticationToken upat -> (String) upat.getPrincipal();
 		default -> "anonymousUser";

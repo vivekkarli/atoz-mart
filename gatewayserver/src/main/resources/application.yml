@@ -2,7 +2,7 @@ server:
    port: 8072
    ssl:
       enabled: true
-      key-store: classpath:atozmart-keystore.p12
+      key-store: classpath:atozmart_keystore.p12
       key-store-password: 
       key-store-type: PKCS12
       key-alias: atozmart-gatewayserver
@@ -12,11 +12,6 @@ spring:
       name: atozmart-gatewayserver
    config:
       import: 'optional:configserver:'
-   security:
-      oauth2:
-         resourceserver:
-            jwt:
-               jwk-set-uri: http://localhost:8073/realms/atozmart/protocol/openid-connect/certs
    cloud:
       gateway:
          server:
@@ -189,10 +184,14 @@ logging:
    level:
       com.netflix.discovery.DiscoveryClient: OFF
       com.atozmart.gatewayserver: DEBUG
+      org.springframework.security: TRACE
 
 atozmart:
    admin:
       username: atozmart_gatewayserver
+   token-issuer-jwks-map:
+     '[http://localhost:8073/realms/atozmart]': 'http://localhost:8073/realms/atozmart/protocol/openid-connect/certs'
+     '[http://localhost:8074]': 'http://localhost:8074/.well-known/jwks.json'
    cors:
       allowed-origins:
       - http://localhost:3000

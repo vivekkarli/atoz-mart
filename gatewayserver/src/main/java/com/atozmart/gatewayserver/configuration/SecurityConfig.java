@@ -35,10 +35,6 @@ public class SecurityConfig {
 	@Bean
 	public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) {
 
-		// Create the AuthenticationWebFilter with a ReactiveAuthenticationManager
-		AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(reactiveAuthenticationManager());
-		authenticationWebFilter.setServerAuthenticationConverter(customTokenAuthenticationConverter);
-
 		http.authorizeExchange(exchanges -> exchanges
 
 				// management endpoints
@@ -69,9 +65,11 @@ public class SecurityConfig {
 
 				.anyExchange().permitAll());
 
-		http.csrf(CsrfSpec::disable);
-
+		AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(reactiveAuthenticationManager());
+		authenticationWebFilter.setServerAuthenticationConverter(customTokenAuthenticationConverter);
 		http.addFilterAt(authenticationWebFilter, SecurityWebFiltersOrder.AUTHENTICATION);
+
+		http.csrf(CsrfSpec::disable);
 
 		return http.build();
 	}

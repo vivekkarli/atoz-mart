@@ -43,6 +43,13 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- Source:
+		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -103,6 +110,15 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${jjwt-jackson.version}</version>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Source:
+		https://mvnrepository.com/artifact/com.nimbusds/nimbus-jose-jwt -->
+		<dependency>
+			<groupId>com.nimbusds</groupId>
+			<artifactId>nimbus-jose-jwt</artifactId>
+			<version>10.7</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
