@@ -15,7 +15,7 @@ spring:
    jpa:
       database-platform: org.hibernate.dialect.MySQL8Dialect
       show-sql: true
-      defer-datasource-initialization: false
+      defer-datasource-initialization: true
       hibernate:
          ddl-auto: update
       properties:
@@ -23,7 +23,7 @@ spring:
             format_sql: true
    sql:
       init:
-         mode: never
+         mode: always
    cloud:
       stream:
          bindings:
@@ -92,8 +92,10 @@ atozmart:
   base-url: http://localhost:3000
   pwd-reset-token-expiry: 1800 # 30 mins, in seconds
   jwt-token-expiry: 3600000 # 1 hr, in seconds
+  jwt-issuer: http://localhost:8074
   email-verify-token-expiry: 1800 # 30 mins, in seconds
   cache-expiry: 360 # 6 mins, in seconds
-  key-store-location: 
+  key-store-location: classpath:atozmart_keystore.p12
   key-store-pass:
+  key-alias: 'atozmart_authserver'
   key-pass: 

@@ -126,5 +126,5 @@ public class AuthServerService {
 		 */
 		appUserCacheHelper.cachePut(CACHE_PREFIX + username, appUserDto);
 	}
-
+	
 }

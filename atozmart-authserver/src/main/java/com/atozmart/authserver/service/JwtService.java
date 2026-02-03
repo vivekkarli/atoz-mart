@@ -28,7 +28,7 @@ public class JwtService {
 	public String generateToken(AppUserDto appUser, Map<String, Object> customClaims) {
 
 		return Jwts.builder().subject(appUser.getUsername()).claims(customClaims)
-				.issuedAt(new Date(System.currentTimeMillis())).issuer("atozmart-authserver")
+				.issuedAt(new Date(System.currentTimeMillis())).issuer(atozMartConfig.jwtIssuer())
 				.expiration(new Date(System.currentTimeMillis() + atozMartConfig.jwtTokenExpiry()))
 				.signWith(getPrivateKey()).compact();
 

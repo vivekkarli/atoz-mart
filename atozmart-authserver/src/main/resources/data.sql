@@ -6,7 +6,7 @@ delete from atozmart_authserver_db.app_role
 where role in ('app', 'user', 'admin', 'agent');
 
 delete from atozmart_authserver_db.app_user 
-where username in ('order_service', 'profile_service', 'atozmart_gatewayserver', 'vivek_karli', 'test_agent', 'test_agent_2');
+where username in ('order_service', 'profile_service', 'atozmart_gatewayserver', 'vivek_karli', 'test_agent', 'test_agent_2', 'demo_admin', 'demo_user');
 
 insert into atozmart_authserver_db.app_user
 (username, password, mail, mobile_no, email_verified, mobile_no_verified, created_at)

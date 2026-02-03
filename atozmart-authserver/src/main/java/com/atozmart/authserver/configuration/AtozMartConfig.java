@@ -11,7 +11,9 @@ public record AtozMartConfig(
 
 		Long jwtTokenExpiry,
 
+		String jwtIssuer,
+
 		Long emailVerifyTokenExpiry,
 
-		Long cacheExpiry, String keyStorePass, String keyPass) {
+		Long cacheExpiry, String keyStoreLocation, String keyStorePass, String keyAlias, String keyPass) {
 }
