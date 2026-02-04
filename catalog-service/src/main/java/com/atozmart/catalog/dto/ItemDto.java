@@ -10,8 +10,6 @@ public record ItemDto(
 		
 		String details,
 
-		String category,
-		
-		String imageUrl) {
+		String category) {
 
 }

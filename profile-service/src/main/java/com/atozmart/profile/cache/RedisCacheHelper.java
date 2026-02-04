@@ -37,6 +37,7 @@ public class RedisCacheHelper implements CacheHelper {
 		redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
 		redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 		redisTemplate.afterPropertiesSet();
+		log.info("RedisCacheHelper created");
 	}
 
 	public void cachePut(String key, ProfilePhotoCache value) {

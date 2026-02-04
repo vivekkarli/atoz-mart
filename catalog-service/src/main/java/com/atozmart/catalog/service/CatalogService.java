@@ -3,8 +3,6 @@ package com.atozmart.catalog.service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -70,13 +68,8 @@ public class CatalogService {
 		if (items.isEmpty())
 			throw new CatalogException("no items found", HttpStatus.NOT_FOUND);
 
-		List<String> itemIds = items.stream().map(Item::getId).toList();
-		List<ImageMetadataDto> imageData = catalogDao.findImageData(itemIds);
-
-		List<ItemDto> itemsDto = items.stream()
-				.map(item -> new ItemDto(item.getId(), item.getName(), item.getUnitPrice(), item.getDetails(),
-						item.getCategory().getName(), getImageUrl(item.getId(), imageData)))
-				.toList();
+		List<ItemDto> itemsDto = items.stream().map(item -> new ItemDto(item.getId(), item.getName(),
+				item.getUnitPrice(), item.getDetails(), item.getCategory().getName())).toList();
 		return new ViewItemsDto(itemsDto.size(), 1, itemsDto);
 
 	}
@@ -88,23 +81,11 @@ public class CatalogService {
 		if (pageItems.isEmpty())
 			throw new CatalogException("no items found", HttpStatus.NOT_FOUND);
 
-		List<String> itemIds = pageItems.getContent().stream().map(Item::getId).toList();
-		List<ImageMetadataDto> imageData = catalogDao.findImageData(itemIds);
-
-		List<ItemDto> itemsDto = pageItems
-				.getContent().stream().map(item -> new ItemDto(item.getId(), item.getName(), item.getUnitPrice(),
-						item.getDetails(), item.getCategory().getName(), getImageUrl(item.getId(), imageData)))
-				.toList();
+		List<ItemDto> itemsDto = pageItems.getContent().stream().map(item -> new ItemDto(item.getId(), item.getName(),
+				item.getUnitPrice(), item.getDetails(), item.getCategory().getName())).toList();
 
 		return new ViewItemsDto(pageItems.getNumberOfElements(), pageItems.getTotalPages(), itemsDto);
 
-	}
-
-	String getImageUrl(String itemId, List<ImageMetadataDto> imageData) {
-		ImageMetadataDto imageDataDto = imageData.stream().filter(image -> image.itemId().equals(itemId)).findFirst()
-				.orElseGet(() -> new ImageMetadataDto(itemId, null, null));
-		log.info("item: {}, location: {}", itemId, imageDataDto.location());
-		return imageDataDto.location();
 	}
 
 	public Set<String> getAllCategories() {
@@ -186,14 +167,10 @@ public class CatalogService {
 	}
 
 	private String getUniqueKeyForImage(String itemId) {
-		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS");
-		String todayDateTime = LocalDateTime.now().format(dateTimeFormatter);
-		String fileName = itemId;
-
 		/*
 		 * ex: catalog/ITEM001-yyyyMMddHHmmssSSS
 		 */
-		return new StringBuilder("catalog").append("/").append(fileName).toString();
+		return new StringBuilder("catalog").append("/").append(itemId).toString();
 	}
 
 	public List<ImageMetadataDto> getImageMetadata(List<String> itemIds) {

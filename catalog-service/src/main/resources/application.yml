@@ -2,10 +2,12 @@ server:
   port: 8086
   
 spring:
+  profiles:
+    active: default
   application:
     name: catalog-service
   config:
-    import: "optional:configserver:http://localhost:8080"
+    import: "optional:configserver:"
   datasource:
     url: jdbc:mysql://localhost:3306/catalogdb
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -67,3 +69,10 @@ logging:
   level:
     com.atozmart.catalog: DEBUG
     com.netflix.discovery.DiscoveryClient: OFF
+    
+catalog-service:
+   public-base-url: https://localhost:8072/atozmart/catalog
+   cache-expiry: 360 # 6 mins, in seconds
+   aws:
+      region: ap-south-1
+      bucket-name: atozmart-bucket

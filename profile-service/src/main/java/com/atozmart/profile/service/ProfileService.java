@@ -3,8 +3,6 @@ package com.atozmart.profile.service;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.core.io.ByteArrayResource;

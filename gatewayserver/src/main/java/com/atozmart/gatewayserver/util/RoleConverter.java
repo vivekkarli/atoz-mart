@@ -23,7 +23,7 @@ public class RoleConverter implements Converter<Jwt, Collection<GrantedAuthority
 	public Collection<GrantedAuthority> convert(Jwt token) {
 		List<String> roles = extractRoles(token);
 
-		log.info("keyCloakUserRoles: {}", roles);
+		log.info("extracted roles from JWT: {}", roles);
 
 		if (roles == null || roles.isEmpty()) {
 			return Collections.emptyList();

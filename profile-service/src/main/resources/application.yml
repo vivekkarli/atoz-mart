@@ -2,6 +2,8 @@ server:
    port: 8085
 
 spring:
+   profiles:
+     active: default
    application:
       name: profile-service
    config:
@@ -32,10 +34,11 @@ spring:
       port: 5672
       username: guest
       connection-timeout: 10s
-
-atozmart:
-   admin:
-      user: profile_service
+   cache:
+      type: redis
+   redis:
+      host: localhost
+      port: 6379
 
 eureka:
    instance:
@@ -80,3 +83,10 @@ logging:
    level:
       com.atozmart.profile: DEBUG
       com.netflix.discovery.DiscoveryClient: OFF
+
+profile-service:
+   cache-expiry: 360 # 6 mins, in seconds
+   public-base-url: https://localhost:8072/atozmart/profile
+   aws:
+      region: ap-south-1
+      bucket-name: atozmart-bucket
