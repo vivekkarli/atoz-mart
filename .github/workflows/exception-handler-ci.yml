@@ -1,4 +1,4 @@
-name: exception handler ci cd pipeline
+name: common util ci cd pipeline
 
 on:
   workflow_dispatch:
@@ -6,14 +6,14 @@ on:
     branches:
       - main
     paths:
-      - "common-util/exception-handler/**"
+      - "common-util/**"
 
 jobs:
   maven-build-test-publish:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./common-util/exception-handler
+        working-directory: ./common-util
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
