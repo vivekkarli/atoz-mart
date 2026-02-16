@@ -1,4 +1,4 @@
-name: cart service Server ci cd pipeline
+name: cart service ci cd pipeline
 
 on:
   workflow_dispatch:
