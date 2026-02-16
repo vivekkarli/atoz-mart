@@ -23,9 +23,10 @@ jobs:
         with:
           java-version: "21"
           distribution: "temurin"
-
-      - name: install pakages
-        run: mvn install -DskipTests
+          cache: maven
+          server-id: github
+          server-username: ${{ secrets.USERNAME_GITHUB }}
+          server-password: ${{ secrets.PAT_GITHUB }}
 
       - name: Build with maven
         run: mvn clean package -DskipTests
