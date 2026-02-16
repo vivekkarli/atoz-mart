@@ -30,7 +30,9 @@ jobs:
           server-password: ${{ secrets.PAT_GITHUB }}
 
       - name: Build with maven
-        run: mvn clean package -DskipTests
+        run: mvn clean package -DskipTests -s ${{github.workspace}}/settings.xml
+        env:
+          GITHUB_TOKEN: ${{secrets.PAT_GITHUB}}
 
       - name: run tests
         run: mvn test
