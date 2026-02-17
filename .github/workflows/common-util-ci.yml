@@ -1,4 +1,4 @@
-name: common util ci cd pipeline
+name: common util ci pipeline
 
 on:
   workflow_dispatch:
@@ -24,13 +24,12 @@ jobs:
           java-version: "21"
           distribution: "temurin"
           server-id: github
-          settings-path: ${{ github.workspace }}
 
       - name: Build with maven
         run: mvn -B package --file pom.xml
       
       - name: Publish to GitHub Packages
-        run: mvn deploy -DskipTests -s $GITHUB_WORKSPACE/settings.xml
+        run: mvn deploy -DskipTests
         env:
           GITHUB_TOKEN: ${{ github.token }}
         

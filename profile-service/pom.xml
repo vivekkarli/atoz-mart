@@ -116,6 +116,10 @@
 			<version>2.35.3</version>
 			<scope>compile</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-config</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -169,5 +173,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/vivekkarli/atoz-mart</url>
+		</repository>
+	</repositories>
 
 </project>

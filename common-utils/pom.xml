@@ -34,6 +34,7 @@
 	</scm>
 	<properties>
 		<atozmart-exception-handler.version>1.0.0</atozmart-exception-handler.version>
+		<atozmart-cache-handler.version>1.0.0</atozmart-cache-handler.version>
 		<java.version>21</java.version>
 		<spring-boot.version>3.5.0</spring-boot.version>
 		<lombok.version>1.18.36</lombok.version>
@@ -145,4 +146,11 @@
 	<modules>
 		<module>exception-handler</module>
 	</modules>
+
+	<repositories>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/vivekkarli/atoz-mart</url>
+		</repository>
+	</repositories>
 </project>

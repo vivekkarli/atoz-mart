@@ -1,4 +1,4 @@
-name: catalog service Server ci cd pipeline
+name: catalog service ci cd pipeline
 
 on:
   workflow_dispatch:
