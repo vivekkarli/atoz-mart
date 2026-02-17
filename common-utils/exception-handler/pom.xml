@@ -46,4 +46,11 @@
 			<url>https://maven.pkg.github.com/vivekkarli/atoz-mart</url>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/vivekkarli/atoz-mart</url>
+		</repository>
+	</distributionManagement>
 </project>
