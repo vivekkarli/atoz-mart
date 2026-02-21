@@ -51,24 +51,16 @@ jobs:
 
   deploy-to-ec2:
     needs: maven-build-and-test
-    runs-on: configserver-ec2-runner
+    runs-on: configserver-runner-ec2
     defaults:
       run:
         working-directory: /home/ubuntu/atozmart-configserver
     steps:
-      - name: find and stop running instance
+      - name: stop running instance
         run: |
-          PID=$(pgrep -f "atozmart-configserver-.*.jar" || true)
-          
-          if [ -n "$PID" ]; then
-            echo "Found process $PID. Stopping gracefully..."
-            sudo kill -15 $PID
-            sleep 15
-          else
-            echo "No running instance found."
-          fi
+          sudo systemctl stop atozmart-configserver.service
 
-      - name: remove old jar file
+      - name: remove old artifacts
         run: |
           sudo rm -rf ./* || true
       
