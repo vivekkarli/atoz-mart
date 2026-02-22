@@ -62,9 +62,9 @@ jobs:
 
       - name: remove old artifacts
         run: |
-          sudo rm -rf ./* || true
+          sudo rm -rf * || true
       
-      - name: download artifact
+      - name: download new artifact
         uses: actions/download-artifact@v7.0.0
         with:
           name: atozmart-configserver
